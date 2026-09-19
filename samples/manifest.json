@@ -1,6 +1,6 @@
 [
   {
-    "file": "classic.wav",
+    "file": "classic.mp3",
     "slug": "classic",
     "label": "Classic Mew",
     "dur_ms": 258.7,
@@ -9,7 +9,7 @@
     "source_segment": "clip1_39"
   },
   {
-    "file": "swell.wav",
+    "file": "swell.mp3",
     "slug": "swell",
     "label": "Rising Meow",
     "dur_ms": 449.8,
@@ -18,7 +18,7 @@
     "source_segment": "clip2_00"
   },
   {
-    "file": "chirp.wav",
+    "file": "chirp.mp3",
     "slug": "chirp",
     "label": "Chirp",
     "dur_ms": 305.7,
@@ -27,7 +27,7 @@
     "source_segment": "clip1_50"
   },
   {
-    "file": "double.wav",
+    "file": "double.mp3",
     "slug": "double",
     "label": "Double Meow",
     "dur_ms": 1410.0,
@@ -36,7 +36,7 @@
     "source_segment": "clip2_06"
   },
   {
-    "file": "chatty.wav",
+    "file": "chatty.mp3",
     "slug": "chatty",
     "label": "Chatty",
     "dur_ms": 919.8,
@@ -45,7 +45,7 @@
     "source_segment": "clip1_08"
   },
   {
-    "file": "yowl.wav",
+    "file": "yowl.mp3",
     "slug": "yowl",
     "label": "Yowl",
     "dur_ms": 1181.5,
@@ -54,7 +54,7 @@
     "source_segment": "clip2_05"
   },
   {
-    "file": "grumble.wav",
+    "file": "grumble.mp3",
     "slug": "grumble",
     "label": "Grumble",
     "dur_ms": 273.4,
@@ -63,7 +63,7 @@
     "source_segment": "clip1_20"
   },
   {
-    "file": "shriek.wav",
+    "file": "shriek.mp3",
     "slug": "shriek",
     "label": "Shriek",
     "dur_ms": 219.8,
