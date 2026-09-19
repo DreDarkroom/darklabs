@@ -1,0 +1,74 @@
+[
+  {
+    "file": "classic.wav",
+    "slug": "classic",
+    "label": "Classic Mew",
+    "dur_ms": 258.7,
+    "pitch_hz": 329.1,
+    "isChromaticBase": true,
+    "source_segment": "clip1_39"
+  },
+  {
+    "file": "swell.wav",
+    "slug": "swell",
+    "label": "Rising Meow",
+    "dur_ms": 449.8,
+    "pitch_hz": 469.1,
+    "isChromaticBase": false,
+    "source_segment": "clip2_00"
+  },
+  {
+    "file": "chirp.wav",
+    "slug": "chirp",
+    "label": "Chirp",
+    "dur_ms": 305.7,
+    "pitch_hz": 512.8,
+    "isChromaticBase": false,
+    "source_segment": "clip1_50"
+  },
+  {
+    "file": "double.wav",
+    "slug": "double",
+    "label": "Double Meow",
+    "dur_ms": 1410.0,
+    "pitch_hz": 336.6,
+    "isChromaticBase": false,
+    "source_segment": "clip2_06"
+  },
+  {
+    "file": "chatty.wav",
+    "slug": "chatty",
+    "label": "Chatty",
+    "dur_ms": 919.8,
+    "pitch_hz": 380.2,
+    "isChromaticBase": false,
+    "source_segment": "clip1_08"
+  },
+  {
+    "file": "yowl.wav",
+    "slug": "yowl",
+    "label": "Yowl",
+    "dur_ms": 1181.5,
+    "pitch_hz": 506.9,
+    "isChromaticBase": false,
+    "source_segment": "clip2_05"
+  },
+  {
+    "file": "grumble.wav",
+    "slug": "grumble",
+    "label": "Grumble",
+    "dur_ms": 273.4,
+    "pitch_hz": 81.7,
+    "isChromaticBase": false,
+    "source_segment": "clip1_20"
+  },
+  {
+    "file": "shriek.wav",
+    "slug": "shriek",
+    "label": "Shriek",
+    "dur_ms": 219.8,
+    "pitch_hz": 816.7,
+    "isChromaticBase": false,
+    "source_segment": "clip1_48"
+  }
+]
