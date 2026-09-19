@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- MeowSynth brand palette (mirrors www/style.css :root) -->
+    <color name="colorPrimary">#060607</color>
+    <color name="colorPrimaryDark">#060607</color>
+    <color name="colorAccent">#FF2F4E</color>
+    <color name="appBackground">#060607</color>
+</resources>
