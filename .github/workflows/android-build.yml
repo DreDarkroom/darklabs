@@ -26,8 +26,8 @@ jobs:
           distribution: "temurin"
           java-version: "21"
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
+      - name: Accept Android SDK licenses (preinstalled SDK on this runner)
+        run: yes | sdkmanager --licenses > /dev/null || true
 
       - name: Set up Python (for icon recolor)
         uses: actions/setup-python@v5
