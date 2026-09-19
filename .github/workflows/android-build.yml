@@ -1,0 +1,82 @@
+name: Build MeowSynth Android APK
+
+on:
+  workflow_dispatch: {}
+  push:
+    branches: [main]
+    paths:
+      - "mobile/**"
+      - ".github/workflows/android-build.yml"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "21"
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Set up Python (for icon recolor)
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Install Pillow
+        run: pip install --quiet Pillow
+
+      - name: Copy audio samples into the mobile www folder
+        run: |
+          mkdir -p mobile/www/samples
+          cp -v samples/*.mp3 mobile/www/samples/
+          cp -v samples/manifest.json mobile/www/samples/
+
+      - name: Install Capacitor deps
+        working-directory: mobile
+        run: npm install
+
+      - name: Add Android platform
+        working-directory: mobile
+        run: npx cap add android
+
+      - name: Sync web assets into the Android project
+        working-directory: mobile
+        run: npx cap sync android
+
+      - name: Overlay native branding patches
+        working-directory: mobile
+        run: |
+          cp -v native-patch/colors.xml android/app/src/main/res/values/colors.xml
+          cp -v native-patch/ic_launcher_background.xml android/app/src/main/res/values/ic_launcher_background.xml
+          cp -v native-patch/styles.xml android/app/src/main/res/values/styles.xml
+          cp -v native-patch/AndroidManifest.xml android/app/src/main/AndroidManifest.xml
+
+      - name: Recolor icons and splash screens
+        working-directory: mobile
+        run: python3 scripts/recolor_icons.py android/app/src/main/res
+
+      - name: Build debug APK
+        working-directory: mobile/android
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug --no-daemon
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: meowsynth-debug-apk
+          path: mobile/android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+          retention-days: 30
