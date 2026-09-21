@@ -1,0 +1,59 @@
+body {
+    background-color: #1a1a1a;
+    color: #e0e0e0;
+    font-family: monospace;
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.container {
+    max-width: 600px;
+    width: 100%;
+}
+
+h1 {
+    text-align: center;
+    border-bottom: 2px solid #333;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+.controls {
+    margin: 20px 0;
+    text-align: center;
+}
+
+button {
+    background-color: #333;
+    color: #fff;
+    border: 2px solid #555;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-family: monospace;
+    cursor: pointer;
+    transition: all 0.1s;
+    border-radius: 4px;
+}
+
+button:active, button.active {
+    background-color: #d32f2f;
+    border-color: #ff5252;
+}
+
+.instructions {
+    background: #2a2a2a;
+    padding: 20px;
+    border-radius: 4px;
+    line-height: 1.6;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    margin: 5px 0;
+}
