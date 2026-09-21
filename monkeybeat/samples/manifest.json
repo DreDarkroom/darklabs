@@ -1,0 +1,626 @@
+{
+ "pads": [
+  {
+   "file": "pad1_kick.wav",
+   "name": "chest thump",
+   "role": "kick",
+   "segment": 9,
+   "pitch": -10,
+   "tail": 0.6,
+   "group": 0,
+   "verb": 0.15,
+   "gain": 0.9
+  },
+  {
+   "file": "pad2_snare.wav",
+   "name": "slap",
+   "role": "snare",
+   "segment": 38,
+   "pitch": 0,
+   "tail": 0.6,
+   "group": 0,
+   "verb": 1.0,
+   "gain": 0.85
+  },
+  {
+   "file": "pad3_clap.wav",
+   "name": "clap",
+   "role": "clap",
+   "segment": 62,
+   "pitch": 0,
+   "tail": 0.6,
+   "group": 0,
+   "verb": 1.0,
+   "gain": 0.8
+  },
+  {
+   "file": "pad4_chat.wav",
+   "name": "chatter",
+   "role": "chat",
+   "segment": 65,
+   "pitch": 0,
+   "tail": 0.3,
+   "group": 1,
+   "verb": 0.4,
+   "gain": 0.7
+  },
+  {
+   "file": "pad5_ohat.wav",
+   "name": "screech",
+   "role": "ohat",
+   "segment": 59,
+   "pitch": 0,
+   "tail": 0.7,
+   "group": 1,
+   "verb": 0.6,
+   "gain": 0.7
+  },
+  {
+   "file": "pad6_tomhi.wav",
+   "name": "hoot",
+   "role": "tomhi",
+   "segment": 61,
+   "pitch": 0,
+   "tail": 0.8,
+   "group": 0,
+   "verb": 0.8,
+   "gain": 0.85
+  },
+  {
+   "file": "pad7_tomlo.wav",
+   "name": "grunt",
+   "role": "tomlo",
+   "segment": 34,
+   "pitch": -5,
+   "tail": 0.8,
+   "group": 0,
+   "verb": 0.8,
+   "gain": 0.9
+  },
+  {
+   "file": "pad8_rim.wav",
+   "name": "tap",
+   "role": "rim",
+   "segment": 58,
+   "pitch": 0,
+   "tail": 0.8,
+   "group": 0,
+   "verb": 0.8,
+   "gain": 0.85
+  }
+ ],
+ "library": [
+  {
+   "file": "lib00.wav",
+   "label": "00 \u00b7 mixed dark short \u00b7 159 ms \u00b7 300 Hz",
+   "dur_ms": 158.5,
+   "pitch_hz": 300.0,
+   "source_segment": "take1_00_58"
+  },
+  {
+   "file": "lib01.wav",
+   "label": "01 \u00b7 mixed dark medium \u00b7 192 ms \u00b7 317 Hz",
+   "dur_ms": 191.8,
+   "pitch_hz": 317.3,
+   "source_segment": "take1_00_86"
+  },
+  {
+   "file": "lib02.wav",
+   "label": "02 \u00b7 tonal dark medium \u00b7 189 ms \u00b7 374 Hz",
+   "dur_ms": 189.1,
+   "pitch_hz": 373.7,
+   "source_segment": "take1_01_16"
+  },
+  {
+   "file": "lib03.wav",
+   "label": "03 \u00b7 tonal dark medium \u00b7 185 ms \u00b7 383 Hz",
+   "dur_ms": 185.5,
+   "pitch_hz": 383.5,
+   "source_segment": "take1_01_46"
+  },
+  {
+   "file": "lib04.wav",
+   "label": "04 \u00b7 noisy mid long \u00b7 563 ms \u00b7 203 Hz",
+   "dur_ms": 562.8,
+   "pitch_hz": 203.2,
+   "source_segment": "take1_01_77"
+  },
+  {
+   "file": "lib05.wav",
+   "label": "05 \u00b7 tonal dark short \u00b7 157 ms \u00b7 361 Hz",
+   "dur_ms": 157.1,
+   "pitch_hz": 361.5,
+   "source_segment": "take1_02_43"
+  },
+  {
+   "file": "lib06.wav",
+   "label": "06 \u00b7 noisy bright medium \u00b7 298 ms",
+   "dur_ms": 298.2,
+   "pitch_hz": null,
+   "source_segment": "take1_02_70"
+  },
+  {
+   "file": "lib07.wav",
+   "label": "07 \u00b7 tonal dark medium \u00b7 208 ms \u00b7 350 Hz",
+   "dur_ms": 208.4,
+   "pitch_hz": 350.0,
+   "source_segment": "take1_03_91"
+  },
+  {
+   "file": "lib08.wav",
+   "label": "08 \u00b7 mixed dark short \u00b7 142 ms \u00b7 258 Hz",
+   "dur_ms": 142.4,
+   "pitch_hz": 257.9,
+   "source_segment": "take1_05_07"
+  },
+  {
+   "file": "lib09.wav",
+   "label": "09 \u00b7 tonal mid short \u00b7 138 ms \u00b7 276 Hz",
+   "dur_ms": 138.0,
+   "pitch_hz": 275.6,
+   "source_segment": "take1_05_34"
+  },
+  {
+   "file": "lib10.wav",
+   "label": "10 \u00b7 tonal dark short \u00b7 147 ms \u00b7 322 Hz",
+   "dur_ms": 147.4,
+   "pitch_hz": 321.9,
+   "source_segment": "take1_05_56"
+  },
+  {
+   "file": "lib11.wav",
+   "label": "11 \u00b7 tonal dark short \u00b7 162 ms \u00b7 359 Hz",
+   "dur_ms": 162.2,
+   "pitch_hz": 358.5,
+   "source_segment": "take1_05_88"
+  },
+  {
+   "file": "lib12.wav",
+   "label": "12 \u00b7 tonal mid short \u00b7 147 ms \u00b7 387 Hz",
+   "dur_ms": 147.2,
+   "pitch_hz": 386.8,
+   "source_segment": "take1_06_24"
+  },
+  {
+   "file": "lib13.wav",
+   "label": "13 \u00b7 mixed dark short \u00b7 120 ms",
+   "dur_ms": 120.0,
+   "pitch_hz": null,
+   "source_segment": "take1_06_48"
+  },
+  {
+   "file": "lib14.wav",
+   "label": "14 \u00b7 mixed mid medium \u00b7 222 ms",
+   "dur_ms": 222.0,
+   "pitch_hz": null,
+   "source_segment": "take1_06_67"
+  },
+  {
+   "file": "lib15.wav",
+   "label": "15 \u00b7 mixed mid short \u00b7 166 ms \u00b7 387 Hz",
+   "dur_ms": 165.8,
+   "pitch_hz": 386.8,
+   "source_segment": "take1_07_25"
+  },
+  {
+   "file": "lib16.wav",
+   "label": "16 \u00b7 noisy bright short \u00b7 164 ms",
+   "dur_ms": 163.8,
+   "pitch_hz": null,
+   "source_segment": "take1_07_78"
+  },
+  {
+   "file": "lib17.wav",
+   "label": "17 \u00b7 mixed dark medium \u00b7 376 ms \u00b7 298 Hz",
+   "dur_ms": 376.0,
+   "pitch_hz": 298.0,
+   "source_segment": "take1_08_28"
+  },
+  {
+   "file": "lib18.wav",
+   "label": "18 \u00b7 tonal mid short \u00b7 143 ms \u00b7 383 Hz",
+   "dur_ms": 143.3,
+   "pitch_hz": 383.5,
+   "source_segment": "take1_08_77"
+  },
+  {
+   "file": "lib19.wav",
+   "label": "19 \u00b7 tonal dark short \u00b7 140 ms \u00b7 261 Hz",
+   "dur_ms": 140.4,
+   "pitch_hz": 260.9,
+   "source_segment": "take1_09_28"
+  },
+  {
+   "file": "lib20.wav",
+   "label": "20 \u00b7 tonal dark short \u00b7 150 ms \u00b7 390 Hz",
+   "dur_ms": 149.6,
+   "pitch_hz": 390.3,
+   "source_segment": "take1_09_51"
+  },
+  {
+   "file": "lib21.wav",
+   "label": "21 \u00b7 noisy bright short \u00b7 143 ms \u00b7 237 Hz",
+   "dur_ms": 143.1,
+   "pitch_hz": 237.1,
+   "source_segment": "take1_09_74"
+  },
+  {
+   "file": "lib22.wav",
+   "label": "22 \u00b7 mixed bright short \u00b7 160 ms \u00b7 240 Hz",
+   "dur_ms": 159.9,
+   "pitch_hz": 239.7,
+   "source_segment": "take1_09_99"
+  },
+  {
+   "file": "lib23.wav",
+   "label": "23 \u00b7 mixed mid short \u00b7 123 ms",
+   "dur_ms": 122.7,
+   "pitch_hz": null,
+   "source_segment": "take1_10_23"
+  },
+  {
+   "file": "lib24.wav",
+   "label": "24 \u00b7 tonal mid short \u00b7 164 ms \u00b7 394 Hz",
+   "dur_ms": 164.4,
+   "pitch_hz": 393.8,
+   "source_segment": "take1_10_47"
+  },
+  {
+   "file": "lib25.wav",
+   "label": "25 \u00b7 mixed mid short \u00b7 132 ms \u00b7 485 Hz",
+   "dur_ms": 131.9,
+   "pitch_hz": 484.6,
+   "source_segment": "take1_10_75"
+  },
+  {
+   "file": "lib26.wav",
+   "label": "26 \u00b7 tonal mid medium \u00b7 199 ms \u00b7 519 Hz",
+   "dur_ms": 198.7,
+   "pitch_hz": 518.8,
+   "source_segment": "take1_11_27"
+  },
+  {
+   "file": "lib27.wav",
+   "label": "27 \u00b7 mixed mid short \u00b7 163 ms \u00b7 437 Hz",
+   "dur_ms": 163.3,
+   "pitch_hz": 436.6,
+   "source_segment": "take1_11_98"
+  },
+  {
+   "file": "lib28.wav",
+   "label": "28 \u00b7 noisy bright medium \u00b7 383 ms \u00b7 630 Hz",
+   "dur_ms": 382.7,
+   "pitch_hz": 630.0,
+   "source_segment": "take1_12_26"
+  },
+  {
+   "file": "lib29.wav",
+   "label": "29 \u00b7 noisy bright medium \u00b7 364 ms \u00b7 612 Hz",
+   "dur_ms": 364.0,
+   "pitch_hz": 612.5,
+   "source_segment": "take1_12_76"
+  },
+  {
+   "file": "lib30.wav",
+   "label": "30 \u00b7 mixed dark medium \u00b7 384 ms \u00b7 327 Hz",
+   "dur_ms": 384.2,
+   "pitch_hz": 326.7,
+   "source_segment": "take1_13_25"
+  },
+  {
+   "file": "lib32.wav",
+   "label": "32 \u00b7 mixed dark medium \u00b7 182 ms \u00b7 469 Hz",
+   "dur_ms": 182.5,
+   "pitch_hz": 469.1,
+   "source_segment": "take1_14_03"
+  },
+  {
+   "file": "lib33.wav",
+   "label": "33 \u00b7 tonal mid short \u00b7 145 ms \u00b7 244 Hz",
+   "dur_ms": 144.9,
+   "pitch_hz": 243.6,
+   "source_segment": "take1_14_31"
+  },
+  {
+   "file": "lib34.wav",
+   "label": "34 \u00b7 mixed dark short \u00b7 179 ms \u00b7 205 Hz",
+   "dur_ms": 179.2,
+   "pitch_hz": 205.1,
+   "source_segment": "take1_14_55"
+  },
+  {
+   "file": "lib35.wav",
+   "label": "35 \u00b7 tonal mid medium \u00b7 186 ms \u00b7 538 Hz",
+   "dur_ms": 186.4,
+   "pitch_hz": 537.8,
+   "source_segment": "take1_14_83"
+  },
+  {
+   "file": "lib36.wav",
+   "label": "36 \u00b7 tonal mid short \u00b7 167 ms \u00b7 565 Hz",
+   "dur_ms": 166.9,
+   "pitch_hz": 565.4,
+   "source_segment": "take1_15_29"
+  },
+  {
+   "file": "lib37.wav",
+   "label": "37 \u00b7 mixed mid short \u00b7 149 ms \u00b7 227 Hz",
+   "dur_ms": 148.8,
+   "pitch_hz": 227.3,
+   "source_segment": "take1_15_54"
+  },
+  {
+   "file": "lib38.wav",
+   "label": "38 \u00b7 noisy bright short \u00b7 159 ms",
+   "dur_ms": 159.5,
+   "pitch_hz": null,
+   "source_segment": "take1_15_81"
+  },
+  {
+   "file": "lib39.wav",
+   "label": "39 \u00b7 tonal dark medium \u00b7 424 ms \u00b7 441 Hz",
+   "dur_ms": 424.3,
+   "pitch_hz": 441.0,
+   "source_segment": "take1_16_24"
+  },
+  {
+   "file": "lib40.wav",
+   "label": "40 \u00b7 noisy bright medium \u00b7 337 ms \u00b7 558 Hz",
+   "dur_ms": 336.6,
+   "pitch_hz": 558.2,
+   "source_segment": "take1_16_76"
+  },
+  {
+   "file": "lib41.wav",
+   "label": "41 \u00b7 tonal mid short \u00b7 138 ms \u00b7 380 Hz",
+   "dur_ms": 138.5,
+   "pitch_hz": 380.2,
+   "source_segment": "take1_17_23"
+  },
+  {
+   "file": "lib43.wav",
+   "label": "43 \u00b7 tonal mid short \u00b7 114 ms \u00b7 519 Hz",
+   "dur_ms": 114.2,
+   "pitch_hz": 518.8,
+   "source_segment": "take1_17_72"
+  },
+  {
+   "file": "lib44.wav",
+   "label": "44 \u00b7 noisy bright medium \u00b7 374 ms",
+   "dur_ms": 374.4,
+   "pitch_hz": null,
+   "source_segment": "take1_17_97"
+  },
+  {
+   "file": "lib45.wav",
+   "label": "45 \u00b7 tonal mid long \u00b7 874 ms \u00b7 565 Hz",
+   "dur_ms": 873.7,
+   "pitch_hz": 565.4,
+   "source_segment": "take1_18_42"
+  },
+  {
+   "file": "lib47.wav",
+   "label": "47 \u00b7 tonal dark medium \u00b7 303 ms \u00b7 525 Hz",
+   "dur_ms": 302.9,
+   "pitch_hz": 525.0,
+   "source_segment": "take1_19_88"
+  },
+  {
+   "file": "lib48.wav",
+   "label": "48 \u00b7 noisy bright medium \u00b7 352 ms \u00b7 519 Hz",
+   "dur_ms": 352.4,
+   "pitch_hz": 518.8,
+   "source_segment": "take1_20_33"
+  },
+  {
+   "file": "lib49.wav",
+   "label": "49 \u00b7 tonal mid short \u00b7 134 ms \u00b7 531 Hz",
+   "dur_ms": 133.8,
+   "pitch_hz": 531.3,
+   "source_segment": "take1_21_02"
+  },
+  {
+   "file": "lib50.wav",
+   "label": "50 \u00b7 tonal mid short \u00b7 169 ms \u00b7 596 Hz",
+   "dur_ms": 169.5,
+   "pitch_hz": 595.9,
+   "source_segment": "take1_21_22"
+  },
+  {
+   "file": "lib51.wav",
+   "label": "51 \u00b7 noisy bright medium \u00b7 352 ms \u00b7 639 Hz",
+   "dur_ms": 351.9,
+   "pitch_hz": 639.1,
+   "source_segment": "take1_21_46"
+  },
+  {
+   "file": "lib52.wav",
+   "label": "52 \u00b7 noisy bright medium \u00b7 375 ms",
+   "dur_ms": 375.4,
+   "pitch_hz": null,
+   "source_segment": "take1_21_91"
+  },
+  {
+   "file": "lib53.wav",
+   "label": "53 \u00b7 tonal mid short \u00b7 153 ms \u00b7 450 Hz",
+   "dur_ms": 152.8,
+   "pitch_hz": 450.0,
+   "source_segment": "take1_22_39"
+  },
+  {
+   "file": "lib54.wav",
+   "label": "54 \u00b7 tonal dark medium \u00b7 351 ms \u00b7 420 Hz",
+   "dur_ms": 350.5,
+   "pitch_hz": 420.0,
+   "source_segment": "take1_22_88"
+  },
+  {
+   "file": "lib55.wav",
+   "label": "55 \u00b7 mixed bright medium \u00b7 189 ms \u00b7 244 Hz",
+   "dur_ms": 188.8,
+   "pitch_hz": 243.6,
+   "source_segment": "take1_23_33"
+  },
+  {
+   "file": "lib56.wav",
+   "label": "56 \u00b7 tonal mid short \u00b7 157 ms \u00b7 211 Hz",
+   "dur_ms": 157.1,
+   "pitch_hz": 211.0,
+   "source_segment": "take1_23_79"
+  },
+  {
+   "file": "lib57.wav",
+   "label": "57 \u00b7 mixed mid medium \u00b7 403 ms \u00b7 216 Hz",
+   "dur_ms": 402.7,
+   "pitch_hz": 216.2,
+   "source_segment": "take1_24_07"
+  },
+  {
+   "file": "lib58.wav",
+   "label": "58 \u00b7 tonal mid short \u00b7 110 ms \u00b7 428 Hz",
+   "dur_ms": 110.4,
+   "pitch_hz": 428.2,
+   "source_segment": "take1_24_75"
+  },
+  {
+   "file": "lib59.wav",
+   "label": "59 \u00b7 noisy bright long \u00b7 1095 ms",
+   "dur_ms": 1095.3,
+   "pitch_hz": null,
+   "source_segment": "take1_24_95"
+  },
+  {
+   "file": "lib61.wav",
+   "label": "61 \u00b7 tonal mid short \u00b7 164 ms \u00b7 573 Hz",
+   "dur_ms": 164.5,
+   "pitch_hz": 572.7,
+   "source_segment": "take1_26_37"
+  },
+  {
+   "file": "lib62.wav",
+   "label": "62 \u00b7 noisy bright short \u00b7 176 ms",
+   "dur_ms": 176.5,
+   "pitch_hz": null,
+   "source_segment": "take1_26_64"
+  },
+  {
+   "file": "lib63.wav",
+   "label": "63 \u00b7 tonal mid short \u00b7 154 ms \u00b7 519 Hz",
+   "dur_ms": 154.3,
+   "pitch_hz": 518.8,
+   "source_segment": "take1_26_90"
+  },
+  {
+   "file": "lib64.wav",
+   "label": "64 \u00b7 tonal mid medium \u00b7 366 ms \u00b7 390 Hz",
+   "dur_ms": 366.0,
+   "pitch_hz": 390.3,
+   "source_segment": "take1_27_23"
+  },
+  {
+   "file": "lib65.wav",
+   "label": "65 \u00b7 noisy bright medium \u00b7 332 ms \u00b7 596 Hz",
+   "dur_ms": 332.5,
+   "pitch_hz": 595.9,
+   "source_segment": "take1_27_68"
+  },
+  {
+   "file": "lib66.wav",
+   "label": "66 \u00b7 noisy bright medium \u00b7 223 ms \u00b7 596 Hz",
+   "dur_ms": 222.8,
+   "pitch_hz": 595.9,
+   "source_segment": "take1_28_28"
+  },
+  {
+   "file": "lib67.wav",
+   "label": "67 \u00b7 tonal mid medium \u00b7 364 ms \u00b7 588 Hz",
+   "dur_ms": 364.2,
+   "pitch_hz": 588.0,
+   "source_segment": "take1_28_61"
+  },
+  {
+   "file": "lib68.wav",
+   "label": "68 \u00b7 noisy bright long \u00b7 602 ms \u00b7 604 Hz",
+   "dur_ms": 602.2,
+   "pitch_hz": 604.1,
+   "source_segment": "take1_29_08"
+  },
+  {
+   "file": "lib69.wav",
+   "label": "69 \u00b7 noisy mid medium \u00b7 336 ms \u00b7 519 Hz",
+   "dur_ms": 336.4,
+   "pitch_hz": 518.8,
+   "source_segment": "take1_29_80"
+  },
+  {
+   "file": "lib70.wav",
+   "label": "70 \u00b7 tonal mid medium \u00b7 395 ms \u00b7 544 Hz",
+   "dur_ms": 395.3,
+   "pitch_hz": 544.4,
+   "source_segment": "take1_30_42"
+  },
+  {
+   "file": "lib71.wav",
+   "label": "71 \u00b7 mixed bright short \u00b7 146 ms",
+   "dur_ms": 145.7,
+   "pitch_hz": null,
+   "source_segment": "take1_30_94"
+  },
+  {
+   "file": "lib72.wav",
+   "label": "72 \u00b7 tonal bright long \u00b7 660 ms \u00b7 416 Hz",
+   "dur_ms": 660.2,
+   "pitch_hz": 416.0,
+   "source_segment": "take1_31_36"
+  },
+  {
+   "file": "lib74.wav",
+   "label": "74 \u00b7 tonal dark medium \u00b7 303 ms \u00b7 334 Hz",
+   "dur_ms": 302.8,
+   "pitch_hz": 334.1,
+   "source_segment": "take1_32_50"
+  },
+  {
+   "file": "lib75.wav",
+   "label": "75 \u00b7 noisy bright medium \u00b7 470 ms \u00b7 551 Hz",
+   "dur_ms": 469.6,
+   "pitch_hz": 551.2,
+   "source_segment": "take1_32_88"
+  },
+  {
+   "file": "lib76.wav",
+   "label": "76 \u00b7 tonal bright short \u00b7 169 ms \u00b7 544 Hz",
+   "dur_ms": 169.3,
+   "pitch_hz": 544.4,
+   "source_segment": "take1_33_48"
+  },
+  {
+   "file": "lib77.wav",
+   "label": "77 \u00b7 noisy bright long \u00b7 826 ms \u00b7 565 Hz",
+   "dur_ms": 825.6,
+   "pitch_hz": 565.4,
+   "source_segment": "take1_33_74"
+  },
+  {
+   "file": "lib78.wav",
+   "label": "78 \u00b7 tonal mid medium \u00b7 200 ms \u00b7 513 Hz",
+   "dur_ms": 199.5,
+   "pitch_hz": 512.8,
+   "source_segment": "take1_34_76"
+  },
+  {
+   "file": "lib79.wav",
+   "label": "79 \u00b7 noisy bright medium \u00b7 210 ms",
+   "dur_ms": 210.1,
+   "pitch_hz": null,
+   "source_segment": "take1_35_09"
+  },
+  {
+   "file": "lib80.wav",
+   "label": "80 \u00b7 noisy bright long \u00b7 577 ms",
+   "dur_ms": 577.4,
+   "pitch_hz": null,
+   "source_segment": "take1_35_42"
+  }
+ ]
+}
