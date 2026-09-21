@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MonkeyBeat</title>
+<meta name="description" content="A browser drum machine built from your own monkey impressions. Load recordings onto pads, program patterns, record live, and export loops and one-shots as WAV or MIDI.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐵</text></svg>">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<main>
+  <pre class="monkey" id="monkey" aria-hidden="true">
+    .--"""--.
+ ,-/  o   o  \-,    MONKEYBEAT
+(  |    ^    |  )
+ `-\   '-'   /-'
+    `-.___.-'
+</pre>
+
+  <h1 class="title">MonkeyBeat<span class="blink">_</span></h1>
+  <p class="tagline">a browser drum machine made entirely of human monkey impressions</p>
+
+  <section class="start" id="startScreen">
+    <button id="startBtn" class="start-btn">click / tap to wake the monkey</button>
+    <p class="hint">(browsers block audio until you interact — one click and it's live)</p>
+    <p class="hint">the default kit is sliced from real human monkey recordings</p>
+  </section>
+
+  <section class="panel" id="panel" hidden>
+
+    <!-- transport -->
+    <div class="row transport">
+      <button id="playBtn" class="btn primary" title="Play / stop (Space)">&#9654; Play</button>
+      <button id="recBtn" class="btn" title="Record pad hits into the pattern (R)">&#9679; Rec</button>
+      <label class="inline">BPM <input type="number" id="bpm" min="40" max="220" value="100"></label>
+      <button id="tapBtn" class="btn small" title="Tap tempo">Tap</button>
+      <label class="inline grow">Swing <input type="range" id="swing" min="0" max="100" value="0"></label>
+      <label class="inline check"><input type="checkbox" id="clickChk"> Click</label>
+    </div>
+
+    <!-- patterns -->
+    <div class="row patterns">
+      <h2 class="section-label">pattern <span class="dim">— keys 1–8</span></h2>
+      <div class="pat-row">
+        <div class="pat-btns" id="patBtns"></div>
+        <div class="pat-tools">
+          <button id="copyPat" class="btn small">Copy</button>
+          <button id="pastePat" class="btn small">Paste</button>
+          <button id="clearPat" class="btn small">Clear</button>
+        </div>
+      </div>
+      <div class="song-row">
+        <label class="inline check"><input type="checkbox" id="songChk"> Song mode</label>
+        <input type="text" id="chainInput" value="A" maxlength="64" spellcheck="false" placeholder="A A B A" aria-label="Pattern chain">
+        <span class="dim" id="chainInfo"></span>
+      </div>
+    </div>
+
+    <!-- sequencer -->
+    <div class="row">
+      <h2 class="section-label">sequencer <span class="dim">— tap a step: full &rarr; medium &rarr; soft &rarr; off (right-click clears)</span></h2>
+      <div class="seq" id="seq"></div>
+    </div>
+
+    <!-- pads -->
+    <div class="row">
+      <h2 class="section-label">pads <span class="dim">— keys A S D F G H J K</span></h2>
+      <div class="pads" id="pads"></div>
+    </div>
+
+    <!-- chromatic keys -->
+    <div class="row">
+      <h2 class="section-label">monkey keys <span class="dim">— the selected pad, pitched up the scale</span></h2>
+      <div class="keys-tools">
+        <button id="keysMode" class="btn small" title="Map the computer keyboard to the keys below (A W S E D F T G Y H U J K O L P ; ')">Keys mode: off</button>
+        <span class="oct-group">
+          <span class="dim">Octave</span>
+          <button id="octDown" class="oct-btn" title="Octave down (Z in keys mode)">&minus;</button>
+          <span id="octLabel">0</span>
+          <button id="octUp" class="oct-btn" title="Octave up (X in keys mode)">+</button>
+        </span>
+      </div>
+      <div class="keyboard" id="keyboard"></div>
+    </div>
+
+    <!-- pad editor -->
+    <div class="row editor">
+      <h2 class="section-label">pad editor <span class="dim" id="padTitle"></span></h2>
+
+      <div class="ed-top">
+        <input type="text" id="padName" maxlength="24" spellcheck="false" aria-label="Pad name">
+        <label class="btn small file-btn">Load recording<input type="file" id="fileInput" accept="audio/*,.wav,.mp3,.m4a,.aac,.ogg,.flac"></label>
+        <select id="libSelect" aria-label="Library of monkey slices"><option value="">Library: slices of your recording…</option></select>
+        <button id="resetPad" class="btn small" title="Put this pad's default monkey slice and settings back">Reset pad</button>
+        <button id="clearSample" class="btn small" title="Use the built-in synth voice instead of a recording">Use synth</button>
+        <button id="auditionBtn" class="btn small">Play</button>
+      </div>
+
+      <canvas id="wave" height="84"></canvas>
+      <p class="dim small-note" id="padInfo"></p>
+
+      <div class="ed-grid">
+        <div class="knob-group"><label for="padGain">Gain</label><input type="range" id="padGain" min="0" max="100" value="80"></div>
+        <div class="knob-group"><label for="padPitch">Pitch <span id="padPitchVal">0</span> st</label><input type="range" id="padPitch" min="-24" max="24" value="0" step="1"></div>
+        <div class="knob-group"><label for="padPan">Pan</label><input type="range" id="padPan" min="-100" max="100" value="0"></div>
+        <div class="knob-group"><label for="padTail">Tail</label><input type="range" id="padTail" min="0" max="100" value="50"></div>
+        <div class="knob-group"><label for="padVerb">Reverb send</label><input type="range" id="padVerb" min="0" max="100" value="100"></div>
+        <div class="knob-group"><label for="padStart">Start</label><input type="range" id="padStart" min="0" max="1000" value="0"></div>
+        <div class="knob-group"><label for="padEnd">End</label><input type="range" id="padEnd" min="0" max="1000" value="1000"></div>
+        <div class="knob-group">
+          <label for="padGroup">Choke group</label>
+          <select id="padGroup">
+            <option value="0">none</option>
+            <option value="1">1 (hats)</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+          </select>
+        </div>
+      </div>
+      <div class="ed-flags">
+        <label class="inline check"><input type="checkbox" id="padReverse"> Reverse</label>
+        <label class="inline check"><input type="checkbox" id="padMute"> Mute</label>
+        <label class="inline check"><input type="checkbox" id="padSolo"> Solo</label>
+      </div>
+    </div>
+
+    <!-- master -->
+    <div class="row controls">
+      <div class="knob-group">
+        <label for="filterKnob">Filter</label>
+        <input type="range" id="filterKnob" min="200" max="16000" value="16000" step="1">
+      </div>
+      <div class="knob-group">
+        <label for="reverbKnob">Reverb</label>
+        <input type="range" id="reverbKnob" min="0" max="100" value="18" step="1">
+      </div>
+      <div class="knob-group">
+        <label for="volumeKnob">Volume</label>
+        <input type="range" id="volumeKnob" min="0" max="100" value="75" step="1">
+      </div>
+      <div class="knob-group check-group">
+        <label class="inline check"><input type="checkbox" id="limiterChk" checked> Glue limiter</label>
+      </div>
+    </div>
+
+    <!-- export -->
+    <div class="row export">
+      <h2 class="section-label">export <span class="dim">— WAV and MIDI for Reaper and game audio</span></h2>
+
+      <div class="ex-grid">
+        <label class="field">Sound type<input type="text" id="exType" value="loop" maxlength="24" spellcheck="false"></label>
+        <label class="field">Source<input type="text" id="exSrc" value="own" maxlength="16" spellcheck="false"></label>
+        <label class="field">Version<input type="number" id="exVer" min="1" max="99" value="1"></label>
+        <label class="field">Sample rate
+          <select id="exRate"><option value="44100">44.1 kHz</option><option value="48000">48 kHz</option></select>
+        </label>
+        <label class="field">Bit depth
+          <select id="exBits"><option value="16">16-bit</option><option value="24">24-bit</option></select>
+        </label>
+        <label class="field">Loop repeats
+          <select id="exRepeat"><option value="1">1&times;</option><option value="2">2&times;</option><option value="4">4&times;</option></select>
+        </label>
+      </div>
+      <div class="ex-flags">
+        <label class="inline check"><input type="checkbox" id="exNorm" checked> Normalise to &minus;1 dBFS</label>
+        <label class="inline check"><input type="checkbox" id="exWrap" checked> Seamless loop (fold tail to start)</label>
+      </div>
+      <p class="dim small-note" id="exName"></p>
+
+      <div class="ex-btns">
+        <button id="bounceBtn" class="btn primary">Bounce loop (.wav)</button>
+        <button id="midiExportBtn" class="btn">Pattern (.mid)</button>
+        <button id="shotBtn" class="btn">Selected pad one-shot (.wav)</button>
+        <button id="bundleBtn" class="btn">Bundle (.zip)</button>
+      </div>
+      <p class="status" id="status" role="status"></p>
+
+      <div class="midi-row">
+        <button id="midiEnable" class="btn small">Enable MIDI in</button>
+        <span class="dim" id="midiStatus">MIDI in: off (notes 36–43 play pads 1–8)</span>
+      </div>
+    </div>
+
+    <details class="instructions">
+      <summary>how to use this thing</summary>
+      <ul>
+        <li>The eight pads start out as slices of one real monkey-impression recording. Swap any pad for another slice from the <b>Library</b>, or record new noises on your phone or mic and hit <b>Load recording</b>. Trim with <b>Start</b> / <b>End</b>, tune with <b>Pitch</b>. Your changes stay saved in this browser; <b>Reset pad</b> restores the default slice.</li>
+        <li><b>Monkey keys</b> plays the selected pad up and down the scale, like MeowSynth. Turn on <b>Keys mode</b> to play it from the computer keyboard (A W S E D F T G Y H U J K O L P ; ', with Z / X for octave).</li>
+        <li>Tap steps in the sequencer to build a pattern. Each tap cycles the step's velocity. Patterns <b>A&ndash;H</b> can be chained in <b>Song mode</b> (type a chain like <b>A A B A</b>).</li>
+        <li>Press <b>Rec</b> while playing, then hit the pads (keys <b>A S D F G H J K</b>, on-screen, or MIDI). Hits are quantised to the nearest step.</li>
+        <li><b>Choke group</b> makes pads cut each other off — put open and closed hats in the same group.</li>
+        <li><b>Bounce loop</b> renders the pattern (or song) offline to a WAV. With <b>seamless loop</b> on, the reverb tail is folded onto the start so it loops cleanly in a game engine.</li>
+        <li><b>One-shot</b> and <b>Bundle</b> export each pad dry (no reverb or filter), plus a <b>manifest.csv</b> for your tracking sheet. Files are named <b>dre_[type]_[source]_v[NN].wav</b>.</li>
+        <li><b>Pattern (.mid)</b> exports MIDI with pads on notes 36&ndash;43, ready to drop into Reaper.</li>
+      </ul>
+    </details>
+  </section>
+
+  <footer>
+    <p>part of <b>Dre Darklabs</b> — built from human vocal recordings and run through the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API" target="_blank" rel="noopener">Web Audio API</a>. no libraries, no build step, one page.</p>
+  </footer>
+</main>
+
+<script src="app.js"></script>
+</body>
+</html>
