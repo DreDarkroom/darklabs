@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MeowSynth</title>
+<meta name="description" content="A tiny browser synth built from real human 'meow' impressions. Play a chromatic meow keyboard, trigger mood pads, and shape the sound with filter and reverb.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐱</text></svg>">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<main>
+  <pre class="cat" id="cat" aria-hidden="true">
+    /\_/\
+   ( o.o )   MEOWSYNTH
+    > ^ <
+  </pre>
+
+  <h1 class="title">MeowSynth<span class="blink">_</span></h1>
+  <p class="tagline">a browser synth made entirely of human "meow" impressions</p>
+
+  <section class="start" id="startScreen">
+    <button id="startBtn" class="start-btn">click / tap to wake the cat</button>
+    <p class="hint">(browsers block audio until you interact — one click and it's live)</p>
+  </section>
+
+  <section class="panel" id="panel" hidden>
+
+    <div class="row controls">
+      <div class="knob-group">
+        <label for="filterKnob">Filter</label>
+        <input type="range" id="filterKnob" min="200" max="12000" value="12000" step="1">
+      </div>
+      <div class="knob-group">
+        <label for="reverbKnob">Reverb</label>
+        <input type="range" id="reverbKnob" min="0" max="100" value="18" step="1">
+      </div>
+      <div class="knob-group">
+        <label for="releaseKnob">Release</label>
+        <input type="range" id="releaseKnob" min="0" max="100" value="40" step="1">
+      </div>
+      <div class="knob-group">
+        <label for="volumeKnob">Volume</label>
+        <input type="range" id="volumeKnob" min="0" max="100" value="75" step="1">
+      </div>
+      <div class="knob-group octave-group">
+        <label>Octave</label>
+        <div class="octave-buttons">
+          <button id="octDown" class="oct-btn" title="Octave down (Z)">−</button>
+          <span id="octLabel">0</span>
+          <button id="octUp" class="oct-btn" title="Octave up (X)">+</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <h2 class="section-label">chromatic meow keyboard <span class="dim">— keys A W S E D F T G Y H U J K O L P ; '</span></h2>
+      <div class="keyboard" id="keyboard"></div>
+    </div>
+
+    <div class="row">
+      <h2 class="section-label">mood pads <span class="dim">— keys 1–7</span></h2>
+      <div class="pads" id="pads"></div>
+    </div>
+
+    <details class="instructions">
+      <summary>how to use this thing</summary>
+      <ul>
+        <li>Row <b>A</b>&nbsp;→&nbsp;<b>'</b> is a chromatic scale — every key is a semitone up from the last, all pitch-shifted from one recorded meow.</li>
+        <li><b>Z</b> / <b>X</b> (or the − / + buttons) shift the whole keyboard up or down an octave.</li>
+        <li>Number keys <b>1–7</b> fire seven different meow one-shots — a chirp, a yowl, a grumble, a shriek, and friends.</li>
+        <li><b>Filter</b> tames the brightness, <b>Reverb</b> adds space, <b>Release</b> controls how long each meow rings out, <b>Volume</b> is volume.</li>
+        <li>Click the keys/pads on screen too — works on touchscreens.</li>
+      </ul>
+    </details>
+  </section>
+
+  <footer>
+    <p>part of <b>Dre Darklabs</b> — built from two human vocal recordings, sliced into samples and run through the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API" target="_blank" rel="noopener">Web Audio API</a>. no libraries, no build step, one page. source on <a id="repoLink" href="#" target="_blank" rel="noopener">GitHub</a>.</p>
+  </footer>
+</main>
+
+<script src="app.js"></script>
+</body>
+</html>
