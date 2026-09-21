@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Both Together | Darkroom Labs</title>
+<meta name="description" content="MeowSynth and MonkeyBeat side by side on one page.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2214%22 fill=%22%23060607%22/><text x=%2250%22 y=%2268%22 font-size=%2258%22 font-family=%22monospace%22 font-weight=%22700%22 text-anchor=%22middle%22 fill=%22%23ff1744%22>DD</text></svg>">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html{background:#0a0a0a}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;background:#0a0a0a;color:#fff;min-height:100vh;padding:1.25rem 1rem 2rem}
+.container{max-width:1400px;margin:0 auto}
+.topbar{margin-bottom:1.25rem}
+.topbar a{color:#ff1744;text-decoration:none;font-size:.9rem;font-weight:600}
+.topbar a:hover{text-decoration:underline}
+h1{font-size:2rem;font-weight:700;color:#ff1744;margin-bottom:.4rem}
+.lead{color:#999;font-size:.95rem;margin-bottom:.75rem}
+.hint{color:#777;font-size:.85rem;line-height:1.5;margin-bottom:1.5rem;max-width:70ch}
+.stage{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;align-items:start}
+.panel{border:2px solid #ff1744;border-radius:8px;background:#1a1a1a;overflow:hidden;min-width:0}
+.p-head{display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:.75rem 1rem;border-bottom:1px solid #333}
+.p-head b{color:#ff1744;letter-spacing:.08em;font-size:.9rem}
+.p-head a{color:#ff1744;text-decoration:none;font-size:.85rem}
+.p-head a:hover{text-decoration:underline}
+iframe{display:block;width:100%;height:560px;border:0;background:#0a0a0a}
+footer{text-align:center;color:#666;font-size:.9rem;margin-top:2.5rem;padding-top:1.5rem;border-top:1px solid #333}
+footer a{color:#ff1744;text-decoration:none}
+@media (max-width:900px){.stage{grid-template-columns:1fr}h1{font-size:1.6rem}}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="topbar"><a href="/darklabs/">&larr; Darkroom Labs</a></div>
+
+<h1>Both Together</h1>
+<p class="lead">MeowSynth and MonkeyBeat, side by side (stacked on phones).</p>
+<p class="hint">Browsers need a click before any sound, so tap inside each instrument first. Both use the computer keyboard, so keys go to whichever panel you clicked last.</p>
+
+<main class="stage">
+<section class="panel" aria-label="MeowSynth">
+<div class="p-head"><b>MEOWSYNTH</b><a href="/darklabs/meowsynth/">open full page &#8599;</a></div>
+<iframe id="f-meow" title="MeowSynth" src="/darklabs/meowsynth/" allow="autoplay; midi; fullscreen"></iframe>
+</section>
+<section class="panel" aria-label="MonkeyBeat">
+<div class="p-head"><b>MONKEYBEAT</b><a href="/darklabs/monkeybeat/">open full page &#8599;</a></div>
+<iframe id="f-monkey" title="MonkeyBeat" src="/darklabs/monkeybeat/" allow="autoplay; midi; fullscreen"></iframe>
+</section>
+</main>
+
+<footer>
+<p>Part of <a href="/darklabs/">Darkroom Labs</a></p>
+</footer>
+</div>
+
+<script>
+(function () {
+  // Same origin, so each frame can be tidied and sized to its content.
+  function tidy(frame) {
+    try {
+      var d = frame.contentDocument;
+      if (!d || !d.body) return;
+      // Hide the instrument's own back-link: inside a frame it would load the hub in the panel.
+      var back = d.querySelector('a[href="../"]');
+      if (back) back.style.display = 'none';
+      var h = Math.max(d.documentElement.scrollHeight, d.body.scrollHeight);
+      if (h > 300) frame.style.height = h + 'px';
+    } catch (e) { /* keep the CSS default height */ }
+  }
+  ['f-meow', 'f-monkey'].forEach(function (id) {
+    var f = document.getElementById(id);
+    f.addEventListener('load', function () {
+      tidy(f);
+      try {
+        if (window.ResizeObserver) new ResizeObserver(function () { tidy(f); }).observe(f.contentDocument.body);
+      } catch (e) {}
+    });
+  });
+})();
+</script>
+</body>
+</html>
