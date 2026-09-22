@@ -19,7 +19,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,san
 header{text-align:center;margin:1rem 0 2.5rem}
 h1{font-size:2.5rem;font-weight:700;color:#ff1744;margin-bottom:.5rem}
 .tagline{font-size:1rem;color:#999;letter-spacing:.05em}
-.instruments{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;align-items:stretch;margin-bottom:3rem}
+.instruments{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;align-items:stretch;margin-bottom:3rem}
 .card{display:flex;flex-direction:column;border:2px solid #ff1744;border-radius:8px;padding:1.75rem;background:#1a1a1a;transition:background .2s ease,box-shadow .2s ease}
 .card:hover{background:#222;box-shadow:0 0 20px rgba(255,23,68,.3)}
 .card-icon{font-size:3rem;margin-bottom:1rem}
@@ -86,6 +86,14 @@ footer a:hover{text-decoration:underline}
 <h2>Both Together</h2>
 <p>Run MeowSynth and MonkeyBeat side by side on one page (stacked on phones). Play the meows over your own beat.</p>
 <a class="btn" href="/darklabs/both/">Open Both</a>
+</section>
+
+<!-- Contact Sheet -->
+<section class="card" id="contact-sheet">
+<div class="card-icon">&#x1F39E;&#xFE0F;</div>
+<h2>Contact Sheet</h2>
+<p>A small pipeline that pulls new clips and stills off a VR headset's gallery, renames them cleanly, and gets them ready to publish &mdash; unlisted on YouTube until you say otherwise, stills backed up to your own cloud storage.</p>
+<a class="btn" href="https://dredarkroom.github.io/contact-sheet/">Open Contact Sheet</a>
 </section>
 </main>
 
