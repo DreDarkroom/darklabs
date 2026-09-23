@@ -1,33 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ThroatTapper</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta name="darkreader-lock">
+<title>ThroatTapper</title>
+<meta name="description" content="Percussion made from throat flicks and taps: four tap articulations and a chromatic tonal hum, played from the keyboard.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#127908;</text></svg>">
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <h1>ThroatTapper</h1>
-        
-        <div class="controls">
-            <button id="btn-drop" class="toggle-btn">DROP MODE: OFF</button>
-        </div>
 
-        <div class="instructions">
-            <h2>Controls</h2>
-            <p><strong>Numbers 1-4:</strong> Tap articulations</p>
-            <ul>
-                <li>1 = Soft Single Tap</li>
-                <li>2 = Hard Single Tap</li>
-                <li>3 = Double Tap</li>
-                <li>4 = Rapid Run</li>
-            </ul>
-            <p><strong>A - ' (QWERTY middle row):</strong> Chromatic Tonal Hum</p>
-            <p><em>Note: Upper row W,E,T,Y,U,O,P represent sharps/flats (black keys).</em></p>
-        </div>
-    </div>
-    
-    <script src="throattapper.js"></script>
+<a class="labs-link" href="../">&larr; Darkroom Labs</a>
+
+<main class="container">
+  <pre class="throat" aria-hidden="true">
+   .-""-.
+  /  __  \    THROATTAPPER
+  | (..) |
+  \  --  /
+   '-..-'</pre>
+
+  <h1>ThroatTapper<span class="blink">_</span></h1>
+  <p class="tagline">percussion made from throat flicks and taps</p>
+
+  <div class="controls">
+    <button id="btn-drop" class="toggle-btn">DROP MODE: OFF</button>
+    <p class="hint">press a key to wake it up &mdash; browsers block audio until you interact once</p>
+    <p class="hint">drop mode runs everything through distortion and a compressor</p>
+  </div>
+
+  <div class="instructions">
+    <h2>Controls</h2>
+    <p><strong>Numbers 1-4:</strong> Tap articulations</p>
+    <ul>
+      <li><kbd>1</kbd> Soft Single Tap</li>
+      <li><kbd>2</kbd> Hard Single Tap</li>
+      <li><kbd>3</kbd> Double Tap</li>
+      <li><kbd>4</kbd> Rapid Run</li>
+    </ul>
+    <p><strong>A - ' (QWERTY middle row):</strong> Chromatic Tonal Hum</p>
+    <p><em>Note: Upper row W,E,T,Y,U,O,P represent sharps/flats (black keys).</em></p>
+  </div>
+
+  <footer>
+    <p>part of <b>Darkroom Labs</b> &mdash; built from throat recordings and run through the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API" target="_blank" rel="noopener">Web Audio API</a>. prototype: keyboard only for now.</p>
+    <p class="mark" aria-hidden="true">dd&middot;rk</p>
+  </footer>
+</main>
+
+<script src="throattapper.js"></script>
 </body>
 </html>
