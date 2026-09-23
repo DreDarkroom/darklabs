@@ -1,0 +1,127 @@
+{
+  "station": "Darklabs Radio",
+  "updated": "2026-09-22",
+  "note": "Add a track: copy a block below, fill it in, save. No build step. See PIPELINE.md.",
+  "tracks": [
+    {
+      "id": "ld47",
+      "title": "Drum and Bass (LD47)",
+      "artist": "bertsz",
+      "url": "https://opengameart.org/sites/default/files/ld47.wav",
+      "source_page": "https://opengameart.org/content/drum-and-bass",
+      "licence": "CC0",
+      "risk": "none",
+      "notes": "Confirmed clean CC0, no third-party material disclosed."
+    },
+    {
+      "id": "bassline2",
+      "title": "Some Sorta Kinda 80's Sounding Theme",
+      "artist": "Spring Spring",
+      "url": "https://opengameart.org/sites/default/files/bassline2_0.ogg",
+      "source_page": "https://opengameart.org/content/some-sorta-kinda-80s-sounding-theme-but-not-really",
+      "licence": "CC0",
+      "risk": "none",
+      "notes": "Confirmed clean CC0, no third-party material disclosed."
+    },
+    {
+      "id": "gbl-medley",
+      "title": "GBL Medley",
+      "artist": "TAD",
+      "url": "https://opengameart.org/sites/default/files/GBL%20Medley_0.mp3",
+      "source_page": "https://opengameart.org/content/live-mixing-compilation",
+      "licence": "CC0",
+      "risk": "loop-licence",
+      "notes": "Built from GarageBand Loops per uploader. Dedication covers Tad's arrangement, not the underlying loops."
+    },
+    {
+      "id": "bs-cork-720",
+      "title": "BS Cork 720",
+      "artist": "TAD",
+      "url": "https://opengameart.org/sites/default/files/BS%20Cork%20720_0.mp3",
+      "source_page": "https://opengameart.org/content/live-mixing-compilation",
+      "licence": "CC0",
+      "risk": "loop-licence",
+      "notes": "Built from GarageBand Loops per uploader."
+    },
+    {
+      "id": "colored-mind",
+      "title": "Colored Mind",
+      "artist": "TAD",
+      "url": "https://opengameart.org/sites/default/files/Colored%20Mind_0.mp3",
+      "source_page": "https://opengameart.org/content/live-mixing-compilation",
+      "licence": "CC0",
+      "risk": "loop-licence",
+      "notes": "Built from GarageBand Loops per uploader."
+    },
+    {
+      "id": "completed",
+      "title": "Completed",
+      "artist": "TAD",
+      "url": "https://opengameart.org/sites/default/files/Completed_0.mp3",
+      "source_page": "https://opengameart.org/content/live-mixing-compilation",
+      "licence": "CC0",
+      "risk": "loop-licence",
+      "notes": "Built from GarageBand Loops per uploader."
+    },
+    {
+      "id": "solved",
+      "title": "Solved",
+      "artist": "TAD",
+      "url": "https://opengameart.org/sites/default/files/Solved_0.mp3",
+      "source_page": "https://opengameart.org/content/live-mixing-compilation",
+      "licence": "CC0",
+      "risk": "loop-licence",
+      "notes": "Built from GarageBand Loops per uploader."
+    },
+    {
+      "id": "motion",
+      "title": "Motion",
+      "artist": "TAD",
+      "url": "https://opengameart.org/sites/default/files/Motion_1.mp3",
+      "source_page": "https://opengameart.org/content/live-mixing-compilation",
+      "licence": "CC0",
+      "risk": "loop-licence",
+      "notes": "Built from GarageBand Loops per uploader."
+    },
+    {
+      "id": "sky-run",
+      "title": "Sky Run",
+      "artist": "TAD",
+      "url": "https://opengameart.org/sites/default/files/Sky%20Run_0.mp3",
+      "source_page": "https://opengameart.org/content/live-mixing-compilation",
+      "licence": "CC0",
+      "risk": "loop-licence",
+      "notes": "Built from GarageBand Loops per uploader."
+    },
+    {
+      "id": "free-run",
+      "title": "Free Run [8 bit(ish)]",
+      "artist": "TAD",
+      "url": "https://opengameart.org/sites/default/files/Project%202%20marioish_0.mp3",
+      "source_page": "https://opengameart.org/content/free-run-8-bitish",
+      "licence": "CC0",
+      "risk": "loop-licence,naming",
+      "notes": "Shipped filename referenced Nintendo; retitled here to the source page's own title. Built from GarageBand Loops per uploader."
+    },
+    {
+      "id": "problems",
+      "title": "Problems",
+      "artist": "Xephas",
+      "url": "https://opengameart.org/sites/default/files/Problems_0.ogg",
+      "source_page": "https://opengameart.org/content/problems",
+      "licence": "CC0",
+      "risk": "loop-licence-undisclosed",
+      "notes": "File metadata shows MAGIX Music Maker JAM loop-pack origin, undisclosed on the page."
+    },
+    {
+      "id": "vaporwave",
+      "title": "Vaporwave",
+      "artist": "Dizzy Crow",
+      "url": "https://opengameart.org/sites/default/files/Vaporwave_0.ogg",
+      "source_page": "https://opengameart.org/content/trance-trap-electronic-237",
+      "licence": "CC0",
+      "risk": "derivative",
+      "notes": "Uploader states it is based on a remix by FieryNugget. Dizzy Crow can only dedicate his own contribution."
+    }
+  ]
+}
