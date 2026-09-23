@@ -10,9 +10,34 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2214%22 fill=%22%23060607%22/><text x=%2250%22 y=%2268%22 font-size=%2258%22 font-family=%22monospace%22 font-weight=%22700%22 text-anchor=%22middle%22 fill=%22%23690000%22>DD</text></svg>">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--red:#690000;--red-soft:#a83232}
+:root{--red:#690000;--red-soft:#a83232;--purple:#3a1750}
 html{background:#0a0a0a}
-body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;background:#0a0a0a;color:#fff;min-height:100vh;padding:1.25rem 1rem 2rem}
+body{position:relative;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;background:#0a0a0a;color:#fff;min-height:100vh;padding:1.25rem 1rem 2rem}
+
+/* Shared background theme: a whisper of purple + faint analogue grain.
+   Pure CSS, fixed to the viewport, identical on mobile and desktop.
+   Reusable as-is on future pages — copy this block + the two vars above. */
+body::before{
+  content:'';
+  position:fixed;
+  inset:0;
+  z-index:-2;
+  pointer-events:none;
+  background:
+    radial-gradient(ellipse at 12% 8%, rgba(58,23,80,.35), transparent 55%),
+    radial-gradient(ellipse at 88% 92%, rgba(58,23,80,.28), transparent 55%);
+}
+body::after{
+  content:'';
+  position:fixed;
+  inset:0;
+  z-index:-1;
+  pointer-events:none;
+  opacity:.05;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat:repeat;
+}
+
 .container{max-width:1100px;margin:0 auto}
 .topbar{margin-bottom:1.5rem}
 .topbar a{color:var(--red-soft);text-decoration:none;font-size:.9rem;font-weight:600}
@@ -21,7 +46,7 @@ header{text-align:center;margin:1rem 0 2.5rem}
 h1{font-size:2.5rem;font-weight:700;color:var(--red-soft);margin-bottom:.5rem}
 .tagline{font-size:1rem;color:#999;letter-spacing:.05em}
 .instruments{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;align-items:stretch;margin-bottom:3rem}
-.card{display:flex;flex-direction:column;border:2px solid var(--red);border-radius:8px;padding:1.75rem;background:#1a1a1a;transition:background .2s ease,box-shadow .2s ease}
+.card{display:flex;flex-direction:column;border:2px solid var(--red);border-radius:8px;padding:1.75rem;background:#1a1a1a;transition:background .2s ease,box-shadow .2s ease,opacity .2s ease}
 .card:hover{background:#222;box-shadow:0 0 20px rgba(105,0,0,.35)}
 .card-icon{font-size:3rem;margin-bottom:1rem}
 .card h2{font-size:1.5rem;margin-bottom:.5rem;color:var(--red-soft)}
@@ -41,15 +66,52 @@ footer a:hover{text-decoration:underline}
 @media (max-width:900px){.instruments{grid-template-columns:1fr;max-width:520px;margin-left:auto;margin-right:auto}}
 @media (max-width:768px){h1{font-size:2rem}.card{padding:1.5rem}}
 
-.wip-head{text-align:center;margin:1rem 0 1.5rem}
-.wip-head h2{font-size:1.6rem;color:var(--red-soft);margin-bottom:.35rem}
-.wip-head p{color:#999;font-size:.9rem;letter-spacing:.03em}
-.wip{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;align-items:stretch;margin-bottom:3rem}
+.wip-head, .soon-head{text-align:center;margin:1rem 0 1.5rem}
+.wip-head h2, .soon-head h2{font-size:1.6rem;color:var(--red-soft);margin-bottom:.35rem}
+.wip-head p, .soon-head p{color:#999;font-size:.9rem;letter-spacing:.03em}
+.wip, .soon{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;align-items:stretch;margin-bottom:3rem}
 .wip .card{border-style:dashed;border-color:rgba(105,0,0,.55);background:#141414;position:relative}
 .wip .card:hover{border-color:var(--red-soft)}
 .wip-badge{position:absolute;top:1rem;right:1rem;background:var(--red);color:#f2e4e6;font-size:.65rem;font-weight:700;letter-spacing:.08em;padding:.2rem .5rem;border-radius:3px}
 .wip .note{color:#8a8a8a;font-size:.8rem;margin:-1rem 0 1.25rem;line-height:1.5}
 @media (max-width:900px){.wip{grid-template-columns:1fr;max-width:520px;margin-left:auto;margin-right:auto}}
+
+/* CircuitStomp: hero of the WIP row */
+.wip .card--hero{
+  grid-column:1/-1;
+  border-style:solid;
+  border-width:2px;
+  border-color:var(--red-soft);
+  background:#1c1414;
+  box-shadow:0 0 24px rgba(105,0,0,.4);
+  padding:2.25rem;
+}
+.wip .card--hero .card-icon{font-size:4rem}
+.wip .card--hero h2{font-size:2rem}
+.wip .card--hero p{font-size:1.05rem}
+.wip .card--hero:hover{box-shadow:0 0 30px rgba(105,0,0,.55)}
+
+/* ThroatTapper: deliberately underplayed — still works, just not promoted */
+.wip .card--dim{opacity:.5;border-color:rgba(105,0,0,.25);background:#101010}
+.wip .card--dim .card-icon{font-size:2.1rem}
+.wip .card--dim h2{font-size:1.1rem}
+.wip .card--dim p{font-size:.85rem;margin-bottom:1rem}
+.wip .card--dim .btn{padding:.5rem 1rem;font-size:.8rem}
+.wip .card--dim:hover{opacity:.75;box-shadow:none}
+
+/* Coming Soon: Contact Sheet leads (fully live), teasers trail (inert) */
+.soon .card--teaser{
+  opacity:.16;
+  border-style:dotted;
+  border-color:#444;
+  background:#0d0d0d;
+  cursor:not-allowed;
+  pointer-events:none;
+  position:relative;
+}
+.soon .card--teaser .card-icon{filter:grayscale(1)}
+.soon-badge{position:absolute;top:1rem;right:1rem;background:#2a2a2a;color:#999;font-size:.6rem;font-weight:700;letter-spacing:.08em;padding:.2rem .5rem;border-radius:3px}
+@media (max-width:900px){.soon{grid-template-columns:1fr;max-width:520px;margin-left:auto;margin-right:auto}}
 </style>
 </head>
 <body>
@@ -57,7 +119,7 @@ footer a:hover{text-decoration:underline}
 <div class="topbar"><a href="/">&larr; Home</a></div>
 
 <header>
-<h1>Darkroom Labs</h1>
+<h1>Dre DarkLabs</h1>
 <p class="tagline">EXPERIMENTAL INSTRUMENTS</p>
 </header>
 
@@ -98,14 +160,6 @@ footer a:hover{text-decoration:underline}
 <p>Run MeowSynth and MonkeyBeat side by side on one page (stacked on phones). Play the meows over your own beat.</p>
 <a class="btn" href="/darklabs/both/">Open Both</a>
 </section>
-
-<!-- Contact Sheet -->
-<section class="card" id="contact-sheet">
-<div class="card-icon">&#x1F39E;&#xFE0F;</div>
-<h2>Contact Sheet</h2>
-<p>A small pipeline that pulls new clips and stills off a VR headset's gallery, renames them cleanly, and gets them ready to publish &mdash; unlisted on YouTube until you say otherwise, stills backed up to your own cloud storage.</p>
-<a class="btn" href="https://dredarkroom.github.io/contact-sheet/">Open Contact Sheet</a>
-</section>
 </main>
 
 <section class="wip-head">
@@ -114,16 +168,7 @@ footer a:hover{text-decoration:underline}
 </section>
 
 <section class="wip">
-<section class="card" id="throattapper">
-<span class="wip-badge">WIP</span>
-<div class="card-icon">&#x1F3A4;</div>
-<h2>ThroatTapper</h2>
-<p>Percussion made from throat flicks and taps. Four tap articulations on keys 1&ndash;4, plus a chromatic tonal hum across the QWERTY middle row.</p>
-<p class="note">Press <strong>DROP MODE</strong> to switch it on first. Styling pass still to come.</p>
-<a class="btn" href="/darklabs/throattapper/">Open ThroatTapper</a>
-</section>
-
-<section class="card" id="circuitstomp">
+<section class="card card--hero" id="circuitstomp">
 <span class="wip-badge">WIP</span>
 <div class="card-icon">&#x1F916;</div>
 <h2>CircuitStomp</h2>
@@ -135,15 +180,51 @@ footer a:hover{text-decoration:underline}
 <span class="wip-badge">WIP</span>
 <div class="card-icon">&#x1F4FB;</div>
 <h2>Darklabs Radio</h2>
-<p>A looping CC0 radio station with a TTS presenter reading idents between tracks, plus an embeddable widget any game can drop in with one script tag.</p>
+<p>A cleared-for-use radio station with a TTS presenter reading idents between tracks &mdash; built to be hosted or broadcast, with room to adapt to other environments later on.</p>
 <p class="note">Presenter voice is placeholder browser TTS until real voice pops exist. No shared live stream yet &mdash; each listener's browser plays its own loop.</p>
 <a class="btn" href="/darklabs/radio/">Open Darklabs Radio</a>
+</section>
+
+<section class="card card--dim" id="throattapper">
+<span class="wip-badge">WIP</span>
+<div class="card-icon">&#x1F3A4;</div>
+<h2>ThroatTapper</h2>
+<p>Percussion made from throat flicks and taps. Four tap articulations on keys 1&ndash;4, plus a chromatic tonal hum across the QWERTY middle row.</p>
+<a class="btn" href="/darklabs/throattapper/">Open ThroatTapper</a>
+</section>
+</section>
+
+<section class="soon-head">
+<h2>Coming Soon</h2>
+<p>CONTACT SHEET IS LIVE &mdash; MORE ON THE WAY</p>
+</section>
+
+<section class="soon">
+<section class="card" id="contact-sheet">
+<div class="card-icon">&#x1F39E;&#xFE0F;</div>
+<h2>Contact Sheet</h2>
+<p>A small pipeline that pulls new clips and stills off a VR headset's gallery, renames them cleanly, and gets them ready to publish &mdash; unlisted on YouTube until you say otherwise, stills backed up to your own cloud storage.</p>
+<a class="btn" href="https://dredarkroom.github.io/contact-sheet/">Open Contact Sheet</a>
+</section>
+
+<section class="card card--teaser" aria-disabled="true">
+<span class="soon-badge">SOON</span>
+<div class="card-icon">&#x1F442;</div>
+<h2>Earshot</h2>
+<p>A future audition tool for sorting and rating new material. Not live yet.</p>
+</section>
+
+<section class="card card--teaser" aria-disabled="true">
+<span class="soon-badge">SOON</span>
+<div class="card-icon">&#x1F4E6;</div>
+<h2>Crate Capture</h2>
+<p>A future tool for sourcing and tracking audio finds. Not live yet.</p>
 </section>
 </section>
 
 
 <footer>
-<p>Part of <a href="https://github.com/DreDarkroom/darklabs">Dre Darkroom</a> &mdash; MIT licensed</p>
+<p>Part of <a href="https://github.com/DreDarkroom/darklabs">Dre Darkroom</a></p>
 </footer>
 </div>
 </body>
