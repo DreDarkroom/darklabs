@@ -83,8 +83,9 @@
   .controls{
     display:flex;
     align-items:center;
-    gap:14px;
+    gap:12px;
     margin-top:18px;
+    flex-wrap:wrap;
   }
   button{
     font-family:inherit;
@@ -100,6 +101,20 @@
   button:active{transform:translateY(1px);}
   button:focus-visible, a:focus-visible{outline:2px solid var(--red);outline-offset:2px;}
   #playBtn{min-width:90px;}
+
+  .volume-group{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    flex:1;
+    min-width:120px;
+  }
+  #muteBtn{
+    padding:8px 10px;
+    font-size:15px;
+    line-height:1;
+    min-width:auto;
+  }
 
   input[type=range]{
     flex:1;
@@ -118,15 +133,6 @@
   .playlist li:last-child{border-bottom:none;}
   .playlist li.playing{color:var(--red);}
   .pl-artist{color:var(--text-dim);font-size:11px;}
-  .risk-tag{
-    font-size:10px;
-    color:var(--text-dim);
-    border:1px solid var(--line);
-    padding:1px 5px;
-    border-radius:2px;
-    white-space:nowrap;
-    align-self:center;
-  }
 
   .section-label{
     color:var(--text-dim);
@@ -135,15 +141,33 @@
     margin:0 0 10px;
   }
 
-  .embed-box{
-    background:#000;
-    border:1px solid var(--line);
-    padding:12px;
-    font-size:11px;
+  .tips{
+    margin:0 0 20px;
+    font-size:12px;
     color:var(--text-dim);
-    overflow-x:auto;
-    white-space:pre;
-    margin-top:10px;
+  }
+  .tips summary{
+    cursor:pointer;
+    list-style:none;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    user-select:none;
+  }
+  .tips summary::-webkit-details-marker{display:none;}
+  .tips summary::before{
+    content:'+';
+    display:inline-block;
+    width:14px;
+    text-align:center;
+    color:var(--red-dim);
+  }
+  .tips[open] summary::before{content:'\2212';}
+  .tips:hover summary::before{color:var(--red);}
+  .tips ul{
+    margin:10px 0 0;
+    padding-left:18px;
+    line-height:1.7;
   }
 
   footer{
@@ -180,7 +204,7 @@
 </pre>
 
   <h1>Darklabs Radio</h1>
-  <p class="tagline">CC0 tracks, looping forever. No script, no build step, no presenter yet &mdash; just TTS and good taste.</p>
+  <p class="tagline">Looping forever. No script, no build step, no presenter yet &mdash; just TTS and good taste.</p>
 
   <div class="panel">
     <div class="now-playing">
@@ -195,32 +219,29 @@
     <div class="controls">
       <button id="playBtn">Play</button>
       <button id="skipBtn">Skip &rarr;</button>
-      <input type="range" id="volume" min="0" max="1" step="0.01" value="0.8" aria-label="Volume">
+      <div class="volume-group">
+        <button id="muteBtn" aria-label="Mute">&#128266;</button>
+        <input type="range" id="volume" min="0" max="1" step="0.01" value="0.8" aria-label="Volume">
+      </div>
     </div>
   </div>
+
+  <details class="tips">
+    <summary>tips</summary>
+    <ul>
+      <li>Skip jumps to a random next track &mdash; it won't repeat until the whole playlist's played.</li>
+      <li>Playback keeps going if you switch tabs or lock your phone.</li>
+      <li>The presenter voice depends on your browser and device &mdash; expect it to sound different on each.</li>
+    </ul>
+  </details>
 
   <div class="panel">
     <p class="section-label">PLAYLIST</p>
     <ul class="playlist" id="playlist"></ul>
   </div>
 
-  <div class="panel">
-    <p class="section-label">EMBED THIS RADIO IN YOUR OWN GAME</p>
-    <p style="color:var(--text-dim);font-size:12px;margin:0 0 4px;">
-      Drop the widget script in and call one function. Works in any web-capable
-      game shell (itch.io pages, Godot's HTML export with an overlay, Electron, etc).
-    </p>
-    <div class="embed-box">&lt;script src="https://dredarkroom.github.io/darklabs/radio/radio-widget.js"&gt;&lt;/script&gt;
-&lt;script&gt;
-  DarklabsRadio.mount(document.getElementById('radio-slot'));
-&lt;/script&gt;</div>
-  </div>
-
   <footer>
-    All tracks CC0-licensed via OpenGameArt.org, credited on hover/in the playlist.<br>
-    Manifest and source pages: <a href="manifest.json">manifest.json</a> &middot;
-    <a href="PIPELINE.md">add a track</a><br>
-    Dre Darklabs, an experimental project. Not affiliated with any game.
+    Dre Darklabs
   </footer>
 
 </div>
@@ -232,6 +253,7 @@
   const audio = document.getElementById('player');
   const playBtn = document.getElementById('playBtn');
   const skipBtn = document.getElementById('skipBtn');
+  const muteBtn = document.getElementById('muteBtn');
   const volume = document.getElementById('volume');
   const npTitle = document.getElementById('npTitle');
   const npArtist = document.getElementById('npArtist');
@@ -275,14 +297,7 @@
       const t = tracks[trackIdx];
       const li = document.createElement('li');
       if(posIdx === idx) li.classList.add('playing');
-      const left = document.createElement('div');
-      left.innerHTML = '<div>'+escapeHtml(t.title)+'</div><div class="pl-artist">'+escapeHtml(t.artist)+'</div>';
-      const tag = document.createElement('div');
-      tag.className = 'risk-tag';
-      tag.textContent = t.risk === 'none' ? 'CC0' : 'CC0*';
-      tag.title = t.notes || '';
-      li.appendChild(left);
-      li.appendChild(tag);
+      li.innerHTML = '<div>'+escapeHtml(t.title)+'</div><div class="pl-artist">'+escapeHtml(t.artist)+'</div>';
       playlistEl.appendChild(li);
     });
   }
@@ -311,7 +326,7 @@
     const t = currentTrack();
     npTitle.textContent = t.title;
     npArtist.textContent = t.artist;
-    npStatus.textContent = 'CC0 \u00b7 via OpenGameArt';
+    npStatus.textContent = 'on air';
     audio.src = t.url;
     audio.load();
     idented = false;
@@ -322,7 +337,7 @@
       speak(ident, ()=>{
         npStatus.textContent = 'loading track\u2026';
         audio.play().then(()=>{
-          npStatus.textContent = 'CC0 \u00b7 via OpenGameArt';
+          npStatus.textContent = 'on air';
         }).catch(err=>{
           npStatus.textContent = 'playback blocked: ' + (err && err.message ? err.message : err);
         });
@@ -339,7 +354,7 @@
   let failCount = 0;
 
   audio.addEventListener('ended', ()=>{ failCount = 0; next(true); });
-  audio.addEventListener('playing', ()=>{ failCount = 0; npStatus.textContent = 'CC0 \u00b7 via OpenGameArt'; });
+  audio.addEventListener('playing', ()=>{ failCount = 0; npStatus.textContent = 'on air'; });
   audio.addEventListener('error', ()=>{
     failCount++;
     if(failCount >= tracks.length){
@@ -374,7 +389,24 @@
     next(playing);
   });
 
-  volume.addEventListener('input', ()=>{ audio.volume = parseFloat(volume.value); });
+  muteBtn.addEventListener('click', ()=>{
+    audio.muted = !audio.muted;
+    muteBtn.textContent = audio.muted ? '\u{1F507}' : '\u{1F50A}';
+    muteBtn.setAttribute('aria-label', audio.muted ? 'Unmute' : 'Mute');
+  });
+
+  volume.addEventListener('input', ()=>{
+    audio.volume = parseFloat(volume.value);
+    if(audio.volume === 0){
+      audio.muted = true;
+      muteBtn.textContent = '\u{1F507}';
+      muteBtn.setAttribute('aria-label', 'Unmute');
+    }else if(audio.muted){
+      audio.muted = false;
+      muteBtn.textContent = '\u{1F50A}';
+      muteBtn.setAttribute('aria-label', 'Mute');
+    }
+  });
   audio.volume = parseFloat(volume.value);
 
   order = shuffle(tracks.map((_,i)=>i));
