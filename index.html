@@ -39,6 +39,16 @@ footer a{color:#ff1744;text-decoration:none}
 footer a:hover{text-decoration:underline}
 @media (max-width:900px){.instruments{grid-template-columns:1fr;max-width:520px;margin-left:auto;margin-right:auto}}
 @media (max-width:768px){h1{font-size:2rem}.card{padding:1.5rem}}
+
+.wip-head{text-align:center;margin:1rem 0 1.5rem}
+.wip-head h2{font-size:1.6rem;color:#ff1744;margin-bottom:.35rem}
+.wip-head p{color:#999;font-size:.9rem;letter-spacing:.03em}
+.wip{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;align-items:stretch;margin-bottom:3rem}
+.wip .card{border-style:dashed;border-color:#7a2233;background:#141414;position:relative}
+.wip .card:hover{border-color:#ff1744}
+.wip-badge{position:absolute;top:1rem;right:1rem;background:#7a2233;color:#fff;font-size:.65rem;font-weight:700;letter-spacing:.08em;padding:.2rem .5rem;border-radius:3px}
+.wip .note{color:#8a8a8a;font-size:.8rem;margin:-1rem 0 1.25rem;line-height:1.5}
+@media (max-width:900px){.wip{grid-template-columns:1fr;max-width:520px;margin-left:auto;margin-right:auto}}
 </style>
 </head>
 <body>
@@ -96,6 +106,33 @@ footer a:hover{text-decoration:underline}
 <a class="btn" href="https://dredarkroom.github.io/contact-sheet/">Open Contact Sheet</a>
 </section>
 </main>
+
+<section class="wip-head">
+<h2>WIP Ideas</h2>
+<p>PROTOTYPES IN PROGRESS &mdash; ROUGH EDGES EXPECTED</p>
+</section>
+
+<section class="wip">
+<!-- ThroatTapper -->
+<section class="card" id="throattapper">
+<span class="wip-badge">WIP</span>
+<div class="card-icon">&#x1F3A4;</div>
+<h2>ThroatTapper</h2>
+<p>Percussion made from throat flicks and taps. Four tap articulations on keys 1&ndash;4, plus a chromatic tonal hum across the QWERTY middle row.</p>
+<p class="note">Press <strong>DROP MODE</strong> to switch it on first. Styling pass still to come.</p>
+<a class="btn" href="/darklabs/throattapper/">Open ThroatTapper</a>
+</section>
+
+<!-- CircuitStomp -->
+<section class="card" id="circuitstomp">
+<span class="wip-badge">WIP</span>
+<div class="card-icon">&#x1F916;</div>
+<h2>CircuitStomp</h2>
+<p>A drum &amp; bass machine built entirely from synthesised robot voices &mdash; no samples anywhere. Sequencer with pitch and chance per step, live playing, MIDI in and out, and exports of stems, MIDI and a ready-made Reaper project. Includes 11 lessons and a printable guide.</p>
+<a class="btn" href="/darklabs/circuitstomp/">Open CircuitStomp</a>
+</section>
+</section>
+
 
 <footer>
 <p>Part of <a href="https://github.com/DreDarkroom/darklabs">Dre Darkroom</a> &mdash; MIT licensed</p>
