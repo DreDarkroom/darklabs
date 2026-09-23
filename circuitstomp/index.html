@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta name="darkreader-lock">
+<title>CircuitStomp</title>
+<meta name="description" content="A browser drum &amp; bass machine built from synthesised robot voices. Sequence, play live, send MIDI, and export stems, MIDI and a ready-made Reaper project. No samples, no libraries, no sign-up.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🤖</text></svg>">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<a class="labs-link" href="../">&larr; Darkroom Labs</a>
+
+<main>
+  <header class="head">
+    <pre class="robot" id="robot" aria-hidden="true">
+   .-[ ]-.
+  |[o] [o]|   CIRCUITSTOMP
+  |  ===  |
+  '-.___.-'</pre>
+    <h1 class="title">CircuitStomp<span class="blink">_</span></h1>
+    <p class="tagline">a drum &amp; bass machine built entirely from synthesised robot voices</p>
+    <canvas class="scope" id="scope" width="760" height="36" aria-hidden="true"></canvas>
+  </header>
+
+  <section class="start" id="startScreen">
+    <button id="startBtn" class="start-btn">click / tap to boot the robot</button>
+    <p class="hint">(browsers block audio until you interact once &mdash; one click and it's live)</p>
+    <p class="hint">iPhone: if you hear nothing, check the side silent switch</p>
+  </section>
+
+  <!-- ============ THE INSTRUMENT ============ -->
+  <section class="panel" id="panel" hidden>
+
+    <div class="row transport" id="transport">
+      <button id="playBtn" class="btn primary" title="Play / stop (Space)">&#9654; Run</button>
+      <button id="recBtn" class="btn" title="Record hits into the pattern (R)">&#9679; Rec</button>
+      <label class="inline">BPM <input type="number" id="bpm" min="60" max="220" value="174"></label>
+      <button id="tapBtn" class="btn small" title="Tap tempo (T)">Tap</button>
+      <label class="inline grow">Swing <input type="range" id="swing" min="0" max="100" value="0"></label>
+      <label class="inline check"><input type="checkbox" id="clickChk"> Click</label>
+    </div>
+
+    <div class="row patterns">
+      <h2 class="section-label">pattern <span class="dim">&mdash; keys 1&ndash;8</span></h2>
+      <div class="pat-row">
+        <div class="pat-btns" id="patBtns"></div>
+        <div class="pat-tools">
+          <button id="copyPat" class="btn small">Copy</button>
+          <button id="pastePat" class="btn small">Paste</button>
+          <button id="clearPat" class="btn small">Clear</button>
+        </div>
+      </div>
+      <div class="song-row">
+        <label class="inline check"><input type="checkbox" id="songChk"> Song mode</label>
+        <input type="text" id="chainInput" value="A" maxlength="96" spellcheck="false" placeholder="A A B A" aria-label="Pattern chain">
+        <span class="dim" id="chainInfo"></span>
+      </div>
+      <div class="brain-row">
+        <span class="dim">Robot brain</span>
+        <select id="brainStyle" aria-label="Generator style">
+          <option value="twostep">two-step</option>
+          <option value="jungle">jungle / amen-style</option>
+          <option value="halftime">halftime</option>
+          <option value="neuro">neuro roller</option>
+          <option value="chaos">glitch chaos</option>
+        </select>
+        <button id="brainBtn" class="btn small" title="Write a new pattern into the current slot">Generate</button>
+        <button id="mutateBtn" class="btn small" title="Change a few steps, keep the groove">Mutate</button>
+      </div>
+    </div>
+
+    <div class="row">
+      <h2 class="section-label">sequencer
+        <span class="dim">&mdash; paint:</span>
+        <span class="paint" role="radiogroup" aria-label="Paint mode">
+          <button class="chip on" data-paint="vel" role="radio" aria-checked="true">velocity</button>
+          <button class="chip" data-paint="pitch" role="radio" aria-checked="false">pitch lock</button>
+          <button class="chip" data-paint="chance" role="radio" aria-checked="false">chance</button>
+        </span>
+        <span class="paint-val" id="paintVal"></span>
+      </h2>
+      <p class="dim small-note" id="paintHelp">tap a step: full &rarr; medium &rarr; soft &rarr; off (right-click clears)</p>
+      <div class="seq" id="seq"></div>
+    </div>
+
+    <div class="row">
+      <h2 class="section-label">robot units <span class="dim">&mdash; keys A S D F G H J K &middot; tap a name to edit it</span></h2>
+      <div class="pads" id="pads"></div>
+    </div>
+
+    <div class="row">
+      <h2 class="section-label">robot keys <span class="dim">&mdash; the selected unit, pitched up the scale</span></h2>
+      <div class="keys-tools">
+        <button id="keysMode" class="btn small" title="Map the computer keyboard to the keys below">Keys mode: off</button>
+        <span class="oct-group">
+          <span class="dim">Octave</span>
+          <button id="octDown" class="oct-btn" title="Octave down (Z in keys mode)">&minus;</button>
+          <span id="octLabel">0</span>
+          <button id="octUp" class="oct-btn" title="Octave up (X in keys mode)">+</button>
+        </span>
+      </div>
+      <div class="keyboard" id="keyboard"></div>
+    </div>
+
+    <div class="row editor">
+      <h2 class="section-label">unit editor <span class="dim" id="unitTitle"></span></h2>
+      <div class="ed-top">
+        <input type="text" id="unitName" maxlength="20" spellcheck="false" aria-label="Unit name">
+        <label class="btn small file-btn">Load recording<input type="file" id="fileInput" accept="audio/*,.wav,.mp3,.m4a,.aac,.ogg,.flac"></label>
+        <button id="synthBtn" class="btn small" title="Go back to this unit's robot synth voice">Use synth</button>
+        <button id="resetUnit" class="btn small">Reset unit</button>
+        <button id="auditionBtn" class="btn small">Play</button>
+      </div>
+      <canvas id="wave" height="70"></canvas>
+      <p class="dim small-note" id="unitInfo"></p>
+      <div class="ed-grid">
+        <div class="knob-group"><label for="uGain">Gain</label><input type="range" id="uGain" min="0" max="100"></div>
+        <div class="knob-group"><label for="uPitch">Pitch <span id="uPitchVal">0</span> st</label><input type="range" id="uPitch" min="-24" max="24" step="1"></div>
+        <div class="knob-group"><label for="uDecay">Decay</label><input type="range" id="uDecay" min="0" max="100"></div>
+        <div class="knob-group"><label for="uTone">Tone</label><input type="range" id="uTone" min="0" max="100"></div>
+        <div class="knob-group"><label for="uGrit">Grit</label><input type="range" id="uGrit" min="0" max="100"></div>
+        <div class="knob-group"><label for="uRobot">Robotize</label><input type="range" id="uRobot" min="0" max="100"></div>
+        <div class="knob-group"><label for="uPan">Pan</label><input type="range" id="uPan" min="-100" max="100"></div>
+        <div class="knob-group"><label for="uVerb">Reverb send</label><input type="range" id="uVerb" min="0" max="100"></div>
+        <div class="knob-group"><label for="uDelay">Delay send</label><input type="range" id="uDelay" min="0" max="100"></div>
+        <div class="knob-group sample-only"><label for="uStart">Start</label><input type="range" id="uStart" min="0" max="1000"></div>
+        <div class="knob-group sample-only"><label for="uEnd">End</label><input type="range" id="uEnd" min="0" max="1000"></div>
+        <div class="knob-group">
+          <label for="uGroup">Choke group</label>
+          <select id="uGroup"><option value="0">none</option><option value="1">1 (hats)</option><option value="2">2</option><option value="3">3</option></select>
+        </div>
+      </div>
+      <div class="ed-flags">
+        <label class="inline check sample-only"><input type="checkbox" id="uReverse"> Reverse</label>
+        <label class="inline check"><input type="checkbox" id="uMute"> Mute</label>
+        <label class="inline check"><input type="checkbox" id="uSolo"> Solo</label>
+      </div>
+    </div>
+
+    <div class="row controls">
+      <div class="knob-group"><label for="filterKnob">Filter</label><input type="range" id="filterKnob" min="200" max="16000" step="1"></div>
+      <div class="knob-group"><label for="reverbKnob">Reverb</label><input type="range" id="reverbKnob" min="0" max="100"></div>
+      <div class="knob-group"><label for="delayKnob">Delay <span class="dim">(dotted 1/8)</span></label><input type="range" id="delayKnob" min="0" max="100"></div>
+      <div class="knob-group"><label for="volumeKnob">Volume</label><input type="range" id="volumeKnob" min="0" max="100"></div>
+      <div class="knob-group check-group"><label class="inline check"><input type="checkbox" id="limiterChk"> Glue limiter</label></div>
+    </div>
+
+    <p class="status" id="status" role="status"></p>
+  </section>
+
+  <!-- ============ SLIM DRAWERS ============ -->
+  <div class="drawers" id="drawers" hidden>
+
+    <details class="drawer" id="exportDrawer">
+      <summary><span class="d-name">Export</span><span class="d-sub">WAV, stems, MIDI and a Reaper project</span></summary>
+      <div class="d-body">
+        <div class="ex-grid">
+          <label class="field">Prefix<input type="text" id="exPrefix" maxlength="12" spellcheck="false"></label>
+          <label class="field">Sound type<input type="text" id="exType" maxlength="24" spellcheck="false"></label>
+          <label class="field">Source<input type="text" id="exSrc" maxlength="16" spellcheck="false"></label>
+          <label class="field">Version<input type="number" id="exVer" min="1" max="99"></label>
+          <label class="field">Sample rate<select id="exRate"><option value="44100">44.1 kHz</option><option value="48000">48 kHz</option></select></label>
+          <label class="field">Bit depth<select id="exBits"><option value="16">16-bit</option><option value="24">24-bit</option></select></label>
+          <label class="field">Loop repeats<select id="exRepeat"><option value="1">1&times;</option><option value="2">2&times;</option><option value="4">4&times;</option></select></label>
+        </div>
+        <div class="ex-flags">
+          <label class="inline check"><input type="checkbox" id="exNorm"> Normalise mix to &minus;1 dBFS</label>
+          <label class="inline check"><input type="checkbox" id="exWrap"> Seamless loop (fold tail to start)</label>
+          <label class="inline check"><input type="checkbox" id="exWet"> Stems include their reverb/delay</label>
+        </div>
+        <p class="dim small-note" id="exName"></p>
+        <div class="ex-btns">
+          <button id="reaperBtn" class="btn primary" title="Every unit as its own WAV, all the same length, plus MIDI and a .RPP that opens with the tracks lined up">Reaper pack (.zip)</button>
+          <button id="bounceBtn" class="btn">Mix (.wav)</button>
+          <button id="midiExportBtn" class="btn">MIDI (.mid)</button>
+          <button id="shotBtn" class="btn">Unit one-shot (.wav)</button>
+          <button id="bundleBtn" class="btn">One-shot kit (.zip)</button>
+        </div>
+        <p class="dim small-note">Stems are rendered before the master filter and limiter, so they sum back to the mix without the glue. Chance steps are rolled once per export, so the mix, stems and MIDI always match each other.</p>
+        <p class="status" id="exStatus" role="status"></p>
+      </div>
+    </details>
+
+    <details class="drawer" id="midiDrawer">
+      <summary><span class="d-name">MIDI</span><span class="d-sub">play it from a controller, drive hardware or a DAW</span></summary>
+      <div class="d-body">
+        <p class="dim small-note" id="midiSupport"></p>
+        <div class="midi-grid">
+          <button id="midiEnable" class="btn small">Enable MIDI</button>
+          <label class="field">Input<select id="midiIn"><option value="">all inputs</option></select></label>
+          <label class="field">Output<select id="midiOut"><option value="">off</option></select></label>
+          <label class="field">Drum channel<select id="midiCh"></select></label>
+          <label class="field">Note map<select id="midiMap"></select></label>
+          <label class="inline check"><input type="checkbox" id="midiClock"> Send clock + start/stop</label>
+        </div>
+        <p class="dim small-note"><b>General MIDI kit</b> map (default): kick 36/35, snare 38/40/37, hats 42/44/46, floor toms 43/41/45 &rarr; SERVO, ride 51/59/53 &rarr; CLANK, crashes 49/57/52/55 &rarr; BITZAP, mid/high toms 48/47/50 &rarr; VOXBOT, clap 39 &rarr; NEURO. So an electronic kit plays the robots straight away. <b>Darkroom Labs 36&ndash;43</b> matches MonkeyBeat. Out: units go out on the drum channel using the chosen map; the NEURO bass goes out on channel 2 as real notes, including its pitch locks, so you can drive a synth with it. Clock is 24 pulses per quarter note.</p>
+        <p class="status" id="midiStatus" role="status"></p>
+      </div>
+    </details>
+
+    <details class="drawer" id="learnDrawer">
+      <summary><span class="d-name">Learn</span><span class="d-sub">a short course in beats, sound, arrangement and playing live</span></summary>
+      <div class="d-body learn">
+        <p>Eleven short lessons. Each one has a <b>Try it</b> button that loads an example into pattern <b>H</b>, so your own work in A&ndash;G is never touched. Read, press play, change one thing, listen again. That loop is the whole skill.</p>
+
+        <details class="lesson"><summary>1 &middot; Tempo, bars and the grid</summary>
+          <p>Music is organised around a steady pulse, the <b>beat</b>. <b>BPM</b> is how many beats happen per minute. Four beats make a <b>bar</b> in almost all dance music (that is &ldquo;4/4&rdquo;). This sequencer splits one bar into <b>16 steps</b>, so each step is a sixteenth note and every fourth step lands on a beat. The slightly brighter columns mark those beats.</p>
+          <p>Drum &amp; bass lives around <b>170&ndash;175 BPM</b>. House is around 120&ndash;128, hip-hop 85&ndash;95, dubstep 140. Halve 174 and you get 87 &mdash; which is why D&amp;B can feel fast and laid-back at the same time.</p>
+          <p><b>Try:</b> load the example, press Run, then drag BPM from 174 down to 87 and back.</p>
+          <button class="btn small try" data-ex="pulse">Try it</button>
+        </details>
+
+        <details class="lesson"><summary>2 &middot; The backbone: kick and snare</summary>
+          <p>Most genres are recognised by where the kick and snare sit. D&amp;B's classic <b>two-step</b> puts the snare on beats 2 and 4 (steps 5 and 13) and a kick on step 1 with a second kick pushed late, around step 11. That late kick is what makes it &ldquo;roll&rdquo; instead of march.</p>
+          <p><b>Try:</b> move the second kick one step either side and listen to how much the feel changes.</p>
+          <button class="btn small try" data-ex="twostep">Try it</button>
+        </details>
+
+        <details class="lesson"><summary>3 &middot; Hats, velocity and groove</summary>
+          <p>Hi-hats carry the speed. Not every hit should be the same volume: <b>velocity</b> (how hard a note is played) is what makes a pattern sound performed rather than typed. Tap a step repeatedly to cycle full, medium and soft. Soft &ldquo;ghost&rdquo; notes between loud ones create groove.</p>
+          <p><b>Swing</b> delays every second sixteenth a little. Small amounts (10&ndash;25) loosen a groove; big amounts turn it into a shuffle.</p>
+          <button class="btn small try" data-ex="groove">Try it</button>
+        </details>
+
+        <details class="lesson"><summary>4 &middot; Syncopation and breakbeats</summary>
+          <p><b>Syncopation</b> means putting accents where the ear does not expect them &mdash; off the beat. Jungle and D&amp;B grew out of chopping up sampled funk drum breaks and rearranging the hits, which produces busy, syncopated kick and snare patterns with ghost snares everywhere.</p>
+          <p>The example is an original amen-style pattern made from robot voices. Use <b>Robot brain &rarr; jungle</b> to generate more, then <b>Mutate</b> to vary them.</p>
+          <button class="btn small try" data-ex="jungle">Try it</button>
+        </details>
+
+        <details class="lesson"><summary>5 &middot; Sound design: shaping a hit</summary>
+          <p>Every sound has an <b>envelope</b>: how fast it starts (attack) and how long it lasts (<b>Decay</b>). <b>Pitch</b> moves it up or down in semitones; 12 semitones is an octave. <b>Tone</b> is a low-pass filter: it removes high frequencies, making things darker. <b>Grit</b> is distortion: it adds harmonics and makes things louder and rougher. <b>Robotize</b> is a ring modulator, the classic sci-fi robot-voice effect: it multiplies the sound by a tone, creating metallic sidebands.</p>
+          <p><b>Try:</b> select the SNARE, turn Decay right down, Grit up, and Robotize to half. Then use <b>pitch lock</b> paint mode to give single steps their own pitch.</p>
+          <button class="btn small try" data-ex="design">Try it</button>
+        </details>
+
+        <details class="lesson"><summary>6 &middot; Space: pan, reverb and delay</summary>
+          <p><b>Pan</b> places a sound left or right. Keep kick, snare and bass in the middle; spread the percussion. <b>Reverb</b> simulates a room; <b>delay</b> repeats the sound in time with the tempo (here a dotted eighth, a D&amp;B favourite). These are <b>send</b> effects: each unit sends a chosen amount into one shared effect, which keeps the mix coherent and saves processing.</p>
+          <p>Rule of thumb: the lower the sound, the less reverb. Reverb on a kick or bass turns the low end to mud.</p>
+          <button class="btn small try" data-ex="space">Try it</button>
+        </details>
+
+        <details class="lesson"><summary>7 &middot; Bass and notes</summary>
+          <p>The <b>NEURO</b> unit is a &ldquo;reese&rdquo;-style bass: two slightly detuned saw waves beating against each other, with a sub sine underneath. It is tuned to A. Use <b>pitch lock</b> to write a bassline: 0 = A, +3 = C, +5 = D, +7 = E. Those are notes of A minor, a safe home key.</p>
+          <p>Leave space between kick and bass: if they hit at the same moment they fight for the same low frequencies.</p>
+          <button class="btn small try" data-ex="bassline">Try it</button>
+        </details>
+
+        <details class="lesson"><summary>8 &middot; Arrangement: patterns into songs</summary>
+          <p>Dance music is built in <b>phrases</b> of 8, 16 or 32 bars. Something should change at every phrase boundary: a new sound comes in, one drops out, or a fill leads into the next section. A typical D&amp;B track: intro (drums thin), build, <b>drop</b> (everything), breakdown (drums out), second drop, outro for DJs to mix out of.</p>
+          <p>Write short patterns in A&ndash;H, then type a chain such as <b>A A A B A A A C</b> and switch on <b>Song mode</b>. Each letter is one bar.</p>
+          <button class="btn small try" data-ex="song">Try it (loads a chain)</button>
+        </details>
+
+        <details class="lesson"><summary>9 &middot; Playing it live</summary>
+          <p>This is an instrument, not only a sequencer. Hit units with keys <b>A S D F G H J K</b> over a running pattern. Press <b>Rec</b> and your hits are written in, snapped to the nearest step (<b>quantised</b>). Turn on <b>Keys mode</b> and play the selected unit chromatically like a keyboard.</p>
+          <p>Performance moves that work: mute and solo units to build tension; switch patterns on the beat with 1&ndash;8; sweep the master <b>Filter</b> down before a drop and open it on the one.</p>
+          <p><b>With a real kit or pad:</b> plug an electronic kit or pad controller in over USB and open the <b>MIDI</b> drawer. The default <b>General MIDI kit</b> note map means your kick pedal plays KICK, snare plays SNARE, hats play HAT, and toms and cymbals play the robot voices. Turn on <b>Click</b>, play along, then press <b>Rec</b>. Expect a little delay (latency) from any browser: wired headphones and a computer, rather than Bluetooth, keep it tight.</p>
+          <button class="btn small try" data-ex="live">Try it (sparse pattern to play over)</button>
+        </details>
+
+        <details class="lesson"><summary>10 &middot; Levels and a clean mix</summary>
+          <p><b>Gain staging</b> means keeping levels sensible at every stage so nothing distorts by accident. Digital audio clips hard at 0 dBFS. Leave headroom: aim for the mix to peak around &minus;6 dBFS before any limiter, and export at &minus;1 dBFS. The <b>Glue limiter</b> catches peaks; it is a safety net, not a volume knob.</p>
+          <p>Mix quietly, check on phone speakers and on headphones, and compare against a track you love at the same loudness.</p>
+          <button class="btn small try" data-ex="twostep">Reload the two-step to practise on</button>
+        </details>
+
+        <details class="lesson"><summary>11 &middot; Into a DAW (Reaper and friends)</summary>
+          <p>A <b>DAW</b> is where tracks get finished. Open <b>Export</b> and press <b>Reaper pack</b>: you get every unit as its own WAV <b>stem</b>, all exactly the same length and starting at zero, a mix, a MIDI file, a manifest, and a <b>.RPP</b> project that opens in Reaper with each stem on its own named track. Unzip the whole folder first, then open the .RPP.</p>
+          <p>In other DAWs (Ableton, FL Studio, Logic, Bitwig) drag all stems in at bar 1 and set the project tempo to the one in the manifest. The step-by-step version is in the PDF guide below.</p>
+        </details>
+      </div>
+    </details>
+
+    <details class="drawer" id="promoDrawer">
+      <summary><span class="d-name">Watch</span><span class="d-sub">35-second promo, presented by CS-01 &middot; runs live on the engine</span></summary>
+      <div class="d-body">
+        <div class="promo-wrap">
+          <canvas id="promoCanvas" width="1280" height="720" aria-label="CircuitStomp promo animation"></canvas>
+          <button id="promoPlay" class="promo-play">&#9654; play promo</button>
+        </div>
+        <div class="promo-tools">
+          <button id="promoRec" class="btn small" title="Plays the promo and records it to a video file">Record promo to video (.webm)</button>
+          <span class="dim small-note">rendered live in your browser from the same robot voices you are playing &mdash; nothing pre-recorded</span>
+        </div>
+        <p class="status" id="promoStatus" role="status"></p>
+      </div>
+    </details>
+
+    <details class="drawer" id="guideDrawer">
+      <summary><span class="d-name">Guide</span><span class="d-sub">printable PDF: controls, shortcuts and the Reaper workflow</span></summary>
+      <div class="d-body">
+        <p>An 8-page PDF covering every control, the keyboard shortcuts, the export files and a step-by-step for getting a Reaper pack into Reaper (and other DAWs).</p>
+        <p><a class="btn small" id="guideLink" href="circuitstomp-guide.pdf" download>Download the guide (PDF)</a></p>
+      </div>
+    </details>
+
+    <details class="drawer" id="saveDrawer">
+      <summary><span class="d-name">Save &amp; share</span><span class="d-sub">project files and share links</span></summary>
+      <div class="d-body">
+        <p class="dim small-note">Everything autosaves in this browser. Use these to move a project to another device or send a beat to someone.</p>
+        <div class="ex-btns">
+          <button id="shareBtn" class="btn small">Copy share link</button>
+          <button id="saveProjBtn" class="btn small">Save project (.json)</button>
+          <label class="btn small file-btn">Open project<input type="file" id="openProj" accept=".json,application/json"></label>
+          <button id="wipeBtn" class="btn small danger">Start fresh</button>
+        </div>
+        <p class="dim small-note">Share links carry patterns, tempo and unit settings, not loaded recordings. Project files carry recordings too.</p>
+        <p class="status" id="saveStatus" role="status"></p>
+      </div>
+    </details>
+
+    <details class="drawer">
+      <summary><span class="d-name">Keys</span><span class="d-sub">keyboard shortcuts</span></summary>
+      <div class="d-body">
+        <table class="keys-table">
+          <tr><td>Space</td><td>run / stop</td></tr>
+          <tr><td>R</td><td>record on / off</td></tr>
+          <tr><td>T</td><td>tap tempo</td></tr>
+          <tr><td>1&ndash;8</td><td>select pattern A&ndash;H</td></tr>
+          <tr><td>A S D F G H J K</td><td>hit units 1&ndash;8</td></tr>
+          <tr><td>Keys mode on</td><td>A W S E D F T G Y H U J K O L P ; ' play the selected unit chromatically, Z / X octave</td></tr>
+          <tr><td>Right-click a step</td><td>clear it</td></tr>
+        </table>
+      </div>
+    </details>
+  </div>
+
+  <div class="mini" id="mini" hidden aria-label="Mini transport">
+    <button id="miniPlay" class="btn small primary">&#9654;</button>
+    <span id="miniInfo">A &middot; 174</span>
+    <span class="mini-steps" id="miniSteps"></span>
+  </div>
+
+  <footer>
+    <p>part of <b>Darkroom Labs</b> &mdash; every sound is synthesised live with the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API" target="_blank" rel="noopener">Web Audio API</a>. no samples, no libraries, no build step, no tracking.</p>
+    <p class="mark" aria-hidden="true">dd&middot;rk</p>
+  </footer>
+</main>
+
+<script src="app.js"></script>
+<script src="promo.js"></script>
+</body>
+</html>
