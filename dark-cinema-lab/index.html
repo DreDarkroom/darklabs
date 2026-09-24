@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Dark Cinema Lab</title>
+
+    <!-- Tailwind CSS v4 CDN -->
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+
+    <!-- React & ReactDOM Standalone -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+
+    <!-- Babel for in-browser JSX parsing -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <style>
+        /* Custom Styles for full app experience */
+        html, body { margin: 0; padding: 0; height: 100%; overscroll-behavior-y: none; }
+        #root { height: 100%; display: flex; flex-direction: column; background-color: #0a0a0a; color: #f5f5f5; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Time-Lapse Masonry */
+        .masonry-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            grid-auto-flow: dense;
+        }
+        .masonry-item { background: #171717; border-radius: 0.75rem; overflow: hidden; position: relative; }
+        .masonry-item:nth-child(2n) { grid-row: span 2; }
+        .masonry-item:nth-child(3n) { grid-column: span 2; }
+    </style>
+</head>
+<body class="bg-neutral-950 text-neutral-50 antialiased selection:bg-neutral-700">
+
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        // --- Mock Data ---
+        const CINEMA_VIDEOS = [
+            { id: '1', title: 'The Art of Shadows', thumb: 'https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&q=80&w=600&h=400', duration: '14:20' },
+            { id: '2', title: 'Neon Nights in Tokyo', thumb: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&q=80&w=600&h=400', duration: '08:45' },
+            { id: '3', title: 'Cinematic Soundscapes', thumb: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?auto=format&fit=crop&q=80&w=600&h=400', duration: '22:10' },
+            { id: '4', title: 'Lens Flares & Anomalies', thumb: 'https://images.unsplash.com/photo-1517404215738-15263e9f9178?auto=format&fit=crop&q=80&w=600&h=400', duration: '05:30' },
+        ];
+
+        const MASONRY_ITEMS = [
+            'https://images.unsplash.com/photo-1478720568477-152d9b164e26?auto=format&fit=crop&q=80&w=400',
+            'https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&q=80&w=400',
+            'https://images.unsplash.com/photo-1440404653325-ab127d49abc1?auto=format&fit=crop&q=80&w=600',
+            'https://images.unsplash.com/photo-1518134346374-184f9d21cea2?auto=format&fit=crop&q=80&w=400',
+            'https://images.unsplash.com/photo-1535016120720-40c746a51d4b?auto=format&fit=crop&q=80&w=600',
+            'https://images.unsplash.com/photo-1604928141064-207cea6f571f?auto=format&fit=crop&q=80&w=400'
+        ];
+
+        // --- View 1: Cinema Hub ---
+        const CinemaHub = () => {
+            const [activeVideo, setActiveVideo] = useState(CINEMA_VIDEOS[0]);
+            const [isPlaying, setIsPlaying] = useState(false);
+
+            return (
+                <div class="flex flex-col h-full bg-neutral-950 pb-20">
+                    {/* Main Player Area */}
+                    <div class="relative w-full aspect-video bg-black flex flex-col items-center justify-center border-b border-neutral-800">
+                        <img src={activeVideo.thumb} class={`absolute inset-0 w-full h-full object-cover opacity-50 ${isPlaying ? 'hidden' : 'block'}`} />
+                        {isPlaying ? (
+                            <div class="text-neutral-500 font-mono text-sm">[Video Stream Simulated]</div>
+                        ) : (
+                            <button onClick={() => setIsPlaying(true)} class="z-10 bg-white/10 p-4 rounded-full backdrop-blur-sm border border-white/20 hover:bg-white/20 transition">
+                                <i class="ph-fill ph-play text-3xl text-white"></i>
+                            </button>
+                        )}
+
+                        {/* Custom Mock Transport */}
+                        <div class="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/80 to-transparent flex items-center gap-4">
+                            <button onClick={() => setIsPlaying(!isPlaying)} class="text-white hover:text-neutral-300">
+                                <i class={`ph-fill ${isPlaying ? 'ph-pause' : 'ph-play'} text-xl`}></i>
+                            </button>
+                            <div class="flex-1 h-1 bg-neutral-600 rounded-full overflow-hidden">
+                                <div class="h-full bg-white w-1/3"></div>
+                            </div>
+                            <span class="text-xs font-mono text-neutral-300">{activeVideo.duration}</span>
+                        </div>
+                    </div>
+
+                    {/* Meta Info */}
+                    <div class="p-4 border-b border-neutral-800">
+                        <h2 class="text-xl font-bold tracking-tight">{activeVideo.title}</h2>
+                        <p class="text-neutral-400 text-sm mt-1">Dre Darkroom • 1.2M views</p>
+                    </div>
+
+                    {/* Scrollable Gallery */}
+                    <div class="flex-1 overflow-y-auto p-4 hide-scrollbar">
+                        <h3 class="text-sm font-semibold text-neutral-500 uppercase tracking-wider mb-3">Up Next</h3>
+                        <div class="flex flex-col gap-4">
+                            {CINEMA_VIDEOS.map(vid => (
+                                <div key={vid.id}
+                                     onClick={() => { setActiveVideo(vid); setIsPlaying(false); }}
+                                     class={`flex gap-3 cursor-pointer p-2 rounded-lg transition ${activeVideo.id === vid.id ? 'bg-neutral-800' : 'hover:bg-neutral-900'}`}>
+                                    <div class="relative w-32 shrink-0 aspect-video rounded overflow-hidden">
+                                        <img src={vid.thumb} class="w-full h-full object-cover" />
+                                        <div class="absolute bottom-1 right-1 bg-black/80 text-[10px] font-mono px-1 rounded">{vid.duration}</div>
+                                    </div>
+                                    <div class="flex flex-col justify-center">
+                                        <div class="text-sm font-medium line-clamp-2 leading-tight">{vid.title}</div>
+                                        <div class="text-xs text-neutral-500 mt-1">Dre Darkroom</div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // --- View 2: Stylus Precision Lab ---
+        const StylusLab = () => {
+            const [pointerInfo, setPointerInfo] = useState({ type: 'waiting...', pressure: 0, hit: false });
+            const [targetPos, setTargetPos] = useState({ x: 50, y: 50 });
+            const containerRef = useRef(null);
+
+            const moveTarget = () => {
+                setTargetPos({ x: 10 + Math.random() * 80, y: 10 + Math.random() * 80 });
+            };
+
+            const handlePointerDown = (e) => {
+                const rect = containerRef.current.getBoundingClientRect();
+                const xPct = ((e.clientX - rect.left) / rect.width) * 100;
+                const yPct = ((e.clientY - rect.top) / rect.height) * 100;
+
+                const isPen = e.pointerType === 'pen';
+                const hitRadius = isPen ? 15 : 25; // Smaller hit zone for pen
+
+                const dist = Math.sqrt(Math.pow(xPct - targetPos.x, 2) + Math.pow(yPct - targetPos.y, 2));
+                const isHit = dist < hitRadius;
+
+                setPointerInfo({ type: e.pointerType, pressure: e.pressure || (isPen?0.5:1), hit: isHit });
+
+                if(isHit) {
+                    setTimeout(moveTarget, 300);
+                }
+            };
+
+            const handlePointerMove = (e) => {
+                if(e.buttons > 0) {
+                   setPointerInfo(prev => ({ ...prev, pressure: e.pressure }));
+                }
+            };
+
+            return (
+                <div class="flex flex-col h-full bg-neutral-950 p-6 pb-24">
+                    <header class="mb-6">
+                        <h1 class="text-2xl font-bold tracking-tight">Stylus Precision</h1>
+                        <p class="text-neutral-400 text-sm mt-1">Tap the target. Pens require higher accuracy.</p>
+                    </header>
+
+                    {/* Stats Panel */}
+                    <div class="grid grid-cols-3 gap-2 mb-4">
+                        <div class="bg-neutral-900 p-3 rounded-lg border border-neutral-800">
+                            <div class="text-[10px] text-neutral-500 uppercase tracking-widest">Input</div>
+                            <div class="text-sm font-mono mt-1 text-emerald-400">{pointerInfo.type}</div>
+                        </div>
+                        <div class="bg-neutral-900 p-3 rounded-lg border border-neutral-800">
+                            <div class="text-[10px] text-neutral-500 uppercase tracking-widest">Pressure</div>
+                            <div class="text-sm font-mono mt-1">{(pointerInfo.pressure * 100).toFixed(0)}%</div>
+                        </div>
+                        <div class="bg-neutral-900 p-3 rounded-lg border border-neutral-800">
+                            <div class="text-[10px] text-neutral-500 uppercase tracking-widest">Status</div>
+                            <div class={`text-sm font-mono mt-1 ${pointerInfo.hit ? 'text-green-400' : 'text-red-400'}`}>
+                                {pointerInfo.hit ? 'HIT' : 'MISS'}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Interactive Arena */}
+                    <div
+                        ref={containerRef}
+                        onPointerDown={handlePointerDown}
+                        onPointerMove={handlePointerMove}
+                        style={{ touchAction: 'none' }}
+                        class="flex-1 bg-neutral-900 border border-neutral-800 rounded-xl relative overflow-hidden"
+                    >
+                        <div class="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_white_1px,_transparent_1px)] [background-size:20px_20px]"></div>
+
+                        {/* Target */}
+                        <div
+                            class={`absolute rounded-full -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ${pointerInfo.hit ? 'bg-emerald-500 scale-150 opacity-0' : 'bg-red-500 scale-100 opacity-100'}`}
+                            style={{
+                                left: `${targetPos.x}%`,
+                                top: `${targetPos.y}%`,
+                                width: pointerInfo.type === 'pen' ? '30px' : '50px',
+                                height: pointerInfo.type === 'pen' ? '30px' : '50px',
+                                boxShadow: `0 0 ${pointerInfo.pressure * 30}px currentColor`
+                            }}
+                        >
+                            <div class="absolute inset-2 border border-black/50 rounded-full"></div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // --- View 3: Generative Visualizer ---
+        const Visualizer = () => {
+            const canvasRef = useRef(null);
+
+            useEffect(() => {
+                const canvas = canvasRef.current;
+                const ctx = canvas.getContext('2d');
+                let animationFrameId;
+
+                // Set sizes
+                const resize = () => {
+                    canvas.width = canvas.parentElement.clientWidth;
+                    canvas.height = canvas.parentElement.clientHeight;
+                };
+                window.addEventListener('resize', resize);
+                resize();
+
+                let particles = [];
+                let pointer = { x: canvas.width/2, y: canvas.height/2, pressure: 0.5 };
+
+                const handlePointerMove = (e) => {
+                    const rect = canvas.getBoundingClientRect();
+                    pointer.x = e.clientX - rect.left;
+                    pointer.y = e.clientY - rect.top;
+                    pointer.pressure = e.pressure || 0.5;
+
+                    // Add particles on move
+                    for(let i=0; i < (e.pressure > 0.1 ? 3 : 1); i++){
+                         particles.push({
+                            x: pointer.x + (Math.random() - 0.5) * 20,
+                            y: pointer.y + (Math.random() - 0.5) * 20,
+                            vx: (Math.random() - 0.5) * 4,
+                            vy: (Math.random() - 0.5) * 4,
+                            life: 1,
+                            color: `hsl(${Math.random() * 60 + 200}, 100%, 60%)`
+                        });
+                    }
+                };
+                canvas.addEventListener('pointermove', handlePointerMove);
+
+                const render = () => {
+                    ctx.fillStyle = 'rgba(10, 10, 10, 0.2)'; // trailing effect
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                    // Auto gen if no interaction
+                    if(particles.length < 50) {
+                        particles.push({
+                            x: canvas.width/2 + Math.cos(Date.now()*0.002) * 100,
+                            y: canvas.height/2 + Math.sin(Date.now()*0.003) * 100,
+                            vx: (Math.random() - 0.5) * 2,
+                            vy: (Math.random() - 0.5) * 2,
+                            life: 1,
+                            color: `hsl(${Math.random() * 60 + 280}, 100%, 50%)`
+                        });
+                    }
+
+                    particles = particles.filter(p => p.life > 0.01);
+                    particles.forEach(p => {
+                        p.x += p.vx;
+                        p.y += p.vy;
+                        p.life -= 0.02;
+
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, p.life * 4, 0, Math.PI * 2);
+                        ctx.fillStyle = p.color;
+                        ctx.globalAlpha = p.life;
+                        ctx.fill();
+                    });
+                    ctx.globalAlpha = 1;
+
+                    animationFrameId = requestAnimationFrame(render);
+                };
+                render();
+
+                return () => {
+                    window.removeEventListener('resize', resize);
+                    canvas.removeEventListener('pointermove', handlePointerMove);
+                    cancelAnimationFrame(animationFrameId);
+                };
+            }, []);
+
+            return (
+                <div class="h-full bg-neutral-950 relative overflow-hidden flex flex-col pb-20">
+                    <div class="absolute top-6 left-6 z-10 pointer-events-none">
+                        <h1 class="text-xl font-bold tracking-tight mix-blend-difference text-white">GenViz Canvas</h1>
+                        <p class="text-xs font-mono text-white/50 mix-blend-difference">Draw to generate particles</p>
+                    </div>
+                    <div class="flex-1 w-full" style={{ touchAction: 'none' }}>
+                        <canvas ref={canvasRef} class="w-full h-full block touch-none"></canvas>
+                    </div>
+                </div>
+            );
+        };
+
+        // --- View 4: Time-Lapse Showcase ---
+        const TimeLapse = () => {
+            return (
+                <div class="h-full bg-neutral-950 p-4 pb-24 overflow-y-auto hide-scrollbar @container">
+                    <header class="mb-8 mt-4 px-2">
+                        <h1 class="text-2xl font-bold tracking-tight">Darkroom Archives</h1>
+                        <p class="text-neutral-400 text-sm mt-1">Cinematic stills and time-lapses.</p>
+                    </header>
+
+                    {/* Advanced Container Query Layout */}
+                    <div class="grid gap-4 @md:grid-cols-2 @xl:grid-cols-3 masonry-grid">
+                        {MASONRY_ITEMS.map((src, i) => (
+                            <div key={i} class="masonry-item group cursor-pointer">
+                                <img src={src} class="w-full h-full object-cover transition duration-700 group-hover:scale-105 group-hover:opacity-80" />
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
+                                    <span class="text-xs font-mono tracking-widest">DRK-RM_0{i+1}</span>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            );
+        };
+
+        // --- Main App Shell ---
+        const App = () => {
+            const [currentView, setCurrentView] = useState('cinema');
+
+            const views = {
+                'cinema': <CinemaHub />,
+                'stylus': <StylusLab />,
+                'visualizer': <Visualizer />,
+                'timelapse': <TimeLapse />
+            };
+
+            const navItems = [
+                { id: 'cinema', icon: 'ph-film-strip', label: 'Cinema' },
+                { id: 'stylus', icon: 'ph-pen-nib', label: 'Stylus' },
+                { id: 'visualizer', icon: 'ph-aperture', label: 'GenViz' },
+                { id: 'timelapse', icon: 'ph-squares-four', label: 'Bento' }
+            ];
+
+            return (
+                <div class="h-full w-full max-w-md mx-auto relative bg-neutral-950 border-x border-neutral-900 shadow-2xl overflow-hidden flex flex-col">
+                    {/* Active View Container */}
+                    <main class="flex-1 overflow-hidden relative">
+                        {views[currentView]}
+                    </main>
+
+                    {/* Bottom Navigation */}
+                    <nav class="absolute bottom-0 left-0 right-0 h-20 bg-neutral-900/90 backdrop-blur-md border-t border-neutral-800 flex items-center justify-around px-2 pb-safe z-50">
+                        {navItems.map(item => (
+                            <button
+                                key={item.id}
+                                onClick={() => setCurrentView(item.id)}
+                                class={`flex flex-col items-center justify-center w-16 h-14 rounded-xl transition-all duration-300 ${currentView === item.id ? 'text-white bg-white/10 scale-105' : 'text-neutral-500 hover:text-neutral-300'}`}
+                            >
+                                <i class={`${currentView === item.id ? 'ph-fill' : 'ph'} ${item.icon} text-2xl mb-1`}></i>
+                                <span class="text-[10px] font-medium tracking-wide">{item.label}</span>
+                            </button>
+                        ))}
+                    </nav>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
