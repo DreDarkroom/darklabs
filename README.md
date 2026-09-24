@@ -36,8 +36,13 @@ Audio API, live at **[dredarkroom.github.io/darklabs](https://dredarkroom.github
   headset clips and stills, renames them, and preps them for publishing.
 - **Safelight // Slow Future** — preview: a futuristic turntable homepage
   that runs on analogue time. Playable, scratchable record with synthesised
-  vinyl crackle and a crate of release sleeves. Side A is Safelight, side B
-  is SquidgySqueegee.
+  vinyl crackle and a crate of mix sleeves. Side A is Safelight (calm,
+  melodic, strings), side B is SquidgySqueegee (bouncy, electroswing).
+- **Dre Darkroom // Obscura** — preview: an experimental take on the Dre
+  Darkroom homepage. Camera obscura hero (drop a timelapse at
+  `obscura/hero.mp4` and it replaces the drawn scene), four developer trays,
+  a crimson safelight switch, a print-developing timing game, two micro games
+  (Silver Rush, Light Dash) and a roll of 24 hidden frames to find.
 - **Earshot** and **Crate Capture** — not live yet, placeholders on the hub
   for now.
 
