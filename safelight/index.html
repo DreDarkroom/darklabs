@@ -1,0 +1,900 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta name="darkreader-lock">
+<title>Safelight // Slow Future</title>
+<meta name="description" content="Safelight // Slow Future — transmissions from 2133, played back at 33⅓. A Darkroom Labs deck by Safelight and SquidgySqueegee.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2248%22 fill=%22%230e0b0a%22/><circle cx=%2250%22 cy=%2250%22 r=%2218%22 fill=%22%23f2a541%22/><circle cx=%2250%22 cy=%2250%22 r=%223%22 fill=%22%230e0b0a%22/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800;900&family=Syncopate:wght@400;700&family=Hanken+Grotesk:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+  /* One deliberate world: a darkroom lit by an amber safelight. Single theme. */
+  :root {
+    color-scheme: dark;
+    --ink: #0e0b0a;         /* room black */
+    --lacquer: #17120f;     /* vinyl / surfaces */
+    --lacquer-2: #211a16;
+    --safelight: #f2a541;   /* amber safelight */
+    --oxblood: #8c2a1c;     /* red glow */
+    --oxblood-deep: #4a150f;
+    --paper: #efe3cf;       /* fixed fibre paper */
+    --muted: #a8978a;
+    --line: rgba(239, 227, 207, 0.12);
+    --level: 0;
+    --display: "Big Shoulders Display", "Oswald", "Arial Narrow", Impact, sans-serif;
+    --body: "Hanken Grotesk", "Helvetica Neue", Arial, sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+    --future: "Syncopate", "Eurostile", "Michroma", "Arial Black", sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background:
+      radial-gradient(60rem 40rem at 88% -10%, rgba(140, 42, 28, 0.35), transparent 60%),
+      radial-gradient(40rem 30rem at -10% 110%, rgba(242, 165, 65, 0.07), transparent 60%),
+      var(--ink);
+    background-attachment: fixed;
+    color: var(--paper);
+    font: 400 17px/1.6 var(--body);
+    overflow-x: clip;
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection { background: var(--safelight); color: var(--ink); }
+  a { color: inherit; }
+  :focus-visible { outline: 2px solid var(--safelight); outline-offset: 3px; border-radius: 4px; }
+
+  /* ---------- film grain + dust ---------- */
+  .grain {
+    position: fixed; inset: -50%; z-index: 90; pointer-events: none; opacity: .09;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 .92 0 0 0 0 .8 0 0 0 1.4 -.25'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    animation: grain 0.8s steps(6) infinite;
+  }
+  @keyframes grain {
+    0% { transform: translate(0, 0); } 20% { transform: translate(-3%, 2%); } 40% { transform: translate(2%, -4%); }
+    60% { transform: translate(-4%, -1%); } 80% { transform: translate(3%, 3%); } 100% { transform: translate(0, 0); }
+  }
+  #fx { position: fixed; inset: 0; z-index: 95; pointer-events: none; }
+
+  /* ---------- custom stylus cursor (fine pointers only) ---------- */
+  .cursor-dot, .cursor-ring { position: fixed; left: 0; top: 0; z-index: 100; pointer-events: none; display: none; }
+  @media (pointer: fine) {
+    body.has-cursor, body.has-cursor a, body.has-cursor button { cursor: none; }
+    body.has-cursor .cursor-dot, body.has-cursor .cursor-ring { display: block; }
+  }
+  .cursor-dot { width: 6px; height: 6px; margin: -3px 0 0 -3px; border-radius: 50%; background: var(--safelight); box-shadow: 0 0 12px var(--safelight); }
+  .cursor-ring {
+    width: 38px; height: 38px; margin: -19px 0 0 -19px; border-radius: 50%;
+    border: 1px solid rgba(242, 165, 65, .55);
+    display: none; place-items: center;
+    transition: width .25s, height .25s, margin .25s, background .25s, border-color .25s;
+  }
+  body.has-cursor .cursor-ring { display: grid; }
+  .cursor-ring span { font: 500 9px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--ink); opacity: 0; transition: opacity .2s; }
+  .cursor-ring.is-active { width: 74px; height: 74px; margin: -37px 0 0 -37px; background: var(--safelight); border-color: var(--safelight); mix-blend-mode: normal; }
+  .cursor-ring.is-active span { opacity: 1; }
+
+  /* ---------- layout shell ---------- */
+  .wrap { max-width: 1180px; margin: 0 auto; padding-inline: clamp(16px, 4vw, 40px); }
+
+  header.top {
+    position: sticky; top: env(safe-area-inset-top, 0px); z-index: 50;
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    background: rgba(14, 11, 10, .72); border-bottom: 1px solid var(--line);
+  }
+  header.top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 14px; flex-wrap: wrap; }
+  .brand { font: 700 15px/1 var(--future); letter-spacing: .08em; text-transform: uppercase; text-decoration: none; display: flex; align-items: center; gap: 10px; }
+  .brand i { width: 10px; height: 10px; border-radius: 50%; background: var(--safelight); box-shadow: 0 0 calc(8px + 20px * var(--level)) var(--safelight); }
+  nav.tracklist { display: flex; gap: clamp(10px, 2.4vw, 28px); flex-wrap: wrap; }
+  nav.tracklist a { text-decoration: none; font: 500 12px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); display: flex; gap: 6px; padding-block: 6px; transition: color .2s; }
+  nav.tracklist a b { color: var(--safelight); font-weight: 500; }
+  nav.tracklist a:hover { color: var(--paper); }
+
+  .eyebrow { font: 500 12px/1.4 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--safelight); margin: 0; }
+  h2 { font: 900 clamp(44px, 7vw, 88px)/.9 var(--display); text-transform: uppercase; letter-spacing: -.005em; margin: 10px 0 0; text-wrap: balance; }
+  section { padding-block: clamp(64px, 10vw, 120px); }
+  .section-head { display: flex; justify-content: space-between; align-items: end; gap: 24px; flex-wrap: wrap; margin-bottom: clamp(32px, 5vw, 56px); }
+  .section-head p { max-width: 40ch; color: var(--muted); margin: 0; }
+
+  /* ---------- hero / deck ---------- */
+  .hero { padding-block: clamp(36px, 6vw, 72px) clamp(56px, 8vw, 96px); }
+  .hero .wrap { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: clamp(32px, 5vw, 64px); align-items: center; }
+  .wordmark {
+    font: 700 clamp(50px, 8.2vw, 112px)/.92 var(--future); text-transform: uppercase; margin: 18px 0 24px; letter-spacing: -.02em;
+    display: flex; flex-direction: column;
+  }
+  .wordmark span { display: block; }
+  .wordmark span:nth-child(1) { -webkit-text-stroke: 1.5px var(--paper); color: transparent; }
+  .wordmark span:nth-child(2) {
+    color: var(--safelight);
+    text-shadow: 0 0 calc(18px + 60px * var(--level)) rgba(242, 165, 65, calc(.25 + .5 * var(--level)));
+  }
+  .wordmark small {
+    display: flex; align-items: center; gap: 14px; margin-top: 16px;
+    font: 400 clamp(11px, 1.1vw, 14px)/1 var(--future); letter-spacing: .42em; color: var(--paper);
+  }
+  .wordmark small::before { content: ""; width: 42px; height: 1px; background: var(--safelight); flex: none; }
+  .topbar-back { font: 500 12px/1 var(--mono); letter-spacing: .08em; color: var(--muted); text-decoration: none; }
+  .topbar-back:hover { color: var(--paper); }
+
+  /* futuristic overlay: HUD ring around the platter + faint scanlines on the deck */
+  .hud {
+    position: absolute; inset: -4.5%; border-radius: 50%; pointer-events: none;
+    background: repeating-conic-gradient(rgba(242, 165, 65, .55) 0 .6deg, transparent .6deg 6deg);
+    -webkit-mask: radial-gradient(circle, transparent 66%, #000 66.4% 68.5%, transparent 69%);
+            mask: radial-gradient(circle, transparent 66%, #000 66.4% 68.5%, transparent 69%);
+    animation: spin 90s linear infinite reverse;
+    opacity: .5;
+  }
+  body.playing .hud { opacity: .9; }
+  .plinth::after {
+    content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+    background: repeating-linear-gradient(0deg, rgba(242, 165, 65, .035) 0 1px, transparent 1px 4px);
+  }
+  .telemetry {
+    position: absolute; right: 4%; bottom: 5%; text-align: right;
+    font: 400 9px/1.6 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--muted);
+  }
+  .telemetry b { color: var(--safelight); font-weight: 500; }
+  .lede { font-size: clamp(18px, 1.6vw, 21px); max-width: 34ch; margin: 0 0 28px; color: var(--paper); }
+  .lede em { color: var(--safelight); font-style: italic; }
+  .cta-row { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
+  .btn {
+    font: 600 15px/1 var(--body); letter-spacing: .01em; border-radius: 999px; padding: 16px 24px;
+    border: 1px solid var(--line); background: transparent; color: var(--paper); text-decoration: none;
+    display: inline-flex; align-items: center; gap: 10px; transition: background .2s, color .2s, border-color .2s, transform .2s;
+  }
+  .btn:hover { border-color: var(--paper); }
+  .btn.primary { background: var(--safelight); color: var(--ink); border-color: var(--safelight); }
+  .btn.primary:hover { background: var(--paper); border-color: var(--paper); }
+  .btn .ico { width: 10px; height: 10px; border-radius: 50%; background: currentColor; }
+  body.playing .btn.primary .ico { border-radius: 1px; }
+  .hint { font: 400 12px/1.5 var(--mono); color: var(--muted); margin: 18px 0 0; letter-spacing: .02em; }
+
+  .deck { display: flex; flex-direction: column; gap: 14px; }
+  .plinth {
+    position: relative; width: 100%; aspect-ratio: 1.12 / 1; max-width: 100%;
+    border-radius: 18px;
+    background:
+      linear-gradient(145deg, rgba(255,255,255,.06), transparent 40%),
+      repeating-linear-gradient(90deg, rgba(255,255,255,.012) 0 2px, transparent 2px 5px),
+      linear-gradient(180deg, #2a221d, #1a1411);
+    box-shadow: 0 40px 80px -30px rgba(0,0,0,.8), inset 0 1px 0 rgba(255,255,255,.08), inset 0 -2px 0 rgba(0,0,0,.5);
+  }
+  .platter {
+    position: absolute; left: 5%; top: 50%; width: 78%; aspect-ratio: 1; transform: translateY(-50%);
+    border-radius: 50%;
+    background: repeating-conic-gradient(from 0deg, #3a3330 0 2deg, #2c2623 2deg 4deg);
+    box-shadow: 0 0 0 2px #0b0908, 0 16px 30px rgba(0,0,0,.6);
+  }
+  #vinyl { position: absolute; inset: 1.5%; width: 97%; height: 97%; border-radius: 50%; touch-action: none; will-change: transform; }
+  .sheen {
+    position: absolute; inset: 1.5%; border-radius: 50%; pointer-events: none; mix-blend-mode: screen;
+    background: conic-gradient(from var(--sheen, 30deg),
+      transparent 0deg, rgba(255, 228, 196, .13) 14deg, transparent 40deg,
+      transparent 180deg, rgba(255, 228, 196, .09) 194deg, transparent 220deg);
+    -webkit-mask: radial-gradient(circle, transparent 34%, #000 35%);
+            mask: radial-gradient(circle, transparent 34%, #000 35%);
+  }
+  .spindle { position: absolute; left: 50%; top: 50%; width: 2.4%; aspect-ratio: 1; transform: translate(-50%, -50%); border-radius: 50%; background: radial-gradient(circle at 35% 35%, #eee, #777 60%, #333); pointer-events: none; }
+  .arm {
+    position: absolute; right: 7%; top: 6%; width: 3.4%; height: 74%;
+    transform-origin: 50% 4%; transform: rotate(0deg);
+    transition: transform 1.1s cubic-bezier(.5, 0, .25, 1);
+    pointer-events: none; filter: drop-shadow(6px 10px 6px rgba(0,0,0,.55));
+  }
+  body.playing .arm { transform: rotate(23deg); }
+  .arm .pivot { position: absolute; left: 50%; top: 4%; width: 260%; aspect-ratio: 1; transform: translate(-50%, -50%); border-radius: 50%; background: radial-gradient(circle at 35% 35%, #d9d4ce, #6b6560 70%); }
+  .arm .weight { position: absolute; left: 50%; top: -6%; width: 190%; height: 7%; transform: translateX(-50%); border-radius: 4px; background: linear-gradient(90deg, #555, #bbb, #555); }
+  .arm .stem { position: absolute; left: 50%; top: 4%; bottom: 8%; width: 36%; transform: translateX(-50%); border-radius: 4px; background: linear-gradient(90deg, #8a847e, #f1ece6, #8a847e); }
+  .arm .head { position: absolute; left: -40%; bottom: 0; width: 180%; height: 10%; border-radius: 3px 3px 6px 6px; background: linear-gradient(90deg, #1c1917, #3d3733); transform: rotate(-18deg); transform-origin: 50% 0; }
+  .arm .head::after { content: ""; position: absolute; left: 30%; bottom: -12%; width: 40%; height: 22%; background: var(--safelight); border-radius: 2px; }
+  .plinth .led { position: absolute; left: 4%; bottom: 5%; display: flex; gap: 8px; align-items: center; font: 500 10px/1 var(--mono); letter-spacing: .14em; color: var(--muted); text-transform: uppercase; }
+  .plinth .led::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: #3a2a22; }
+  body.playing .plinth .led::before { background: var(--safelight); box-shadow: 0 0 10px var(--safelight); }
+
+  .readout {
+    display: grid; grid-template-columns: auto auto minmax(0, 1fr) minmax(90px, 160px); gap: 16px; align-items: center;
+    padding: 14px 16px; border: 1px solid var(--line); border-radius: 12px; background: rgba(23, 18, 15, .7);
+    font: 400 12px/1.3 var(--mono); color: var(--muted); letter-spacing: .04em;
+  }
+  .rpm { display: flex; border: 1px solid var(--line); border-radius: 999px; padding: 3px; }
+  .rpm button { font: 500 12px/1 var(--mono); color: var(--muted); background: transparent; border: 0; border-radius: 999px; padding: 7px 11px; }
+  .rpm button[aria-pressed="true"] { background: var(--paper); color: var(--ink); }
+  .readout strong { color: var(--paper); font-weight: 500; display: block; font-variant-numeric: tabular-nums; }
+  .readout .np { min-width: 0; }
+  .readout .np strong { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #eq { width: 100%; height: 34px; display: block; }
+
+  /* ---------- works: record crates ---------- */
+  .crate { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(28px, 4vw, 48px) clamp(20px, 3vw, 36px); list-style: none; margin: 0; padding: 0; }
+  .record { all: unset; display: block; cursor: pointer; width: 100%; }
+  .sleeve-wrap { position: relative; padding-right: 16%; }
+  .disc { position: absolute; top: 2%; left: 2%; width: 80%; aspect-ratio: 1; transition: transform .6s cubic-bezier(.2, .8, .2, 1); }
+  .disc-face {
+    width: 100%; height: 100%; border-radius: 50%;
+    background:
+      radial-gradient(circle, #0e0b0a 0 2.2%, var(--label, var(--safelight)) 2.5% 16%, #0b0908 16.5% 17.2%, transparent 17.4%),
+      conic-gradient(from 20deg, transparent 0 30deg, rgba(255,230,200,.08) 45deg, transparent 70deg, transparent 200deg, rgba(255,230,200,.06) 215deg, transparent 240deg),
+      repeating-radial-gradient(circle, #161210 0 1px, #1f1a17 1.4px 2.6px);
+    box-shadow: 0 0 0 1px #070605, 0 10px 24px rgba(0,0,0,.6);
+    animation: spin 1.8s linear infinite paused;
+  }
+  .sleeve {
+    position: relative; aspect-ratio: 1; border-radius: 3px; overflow: hidden; color: var(--sleeve-ink, var(--paper));
+    box-shadow: 0 24px 40px -18px rgba(0,0,0,.85), inset 0 0 0 1px rgba(255,255,255,.06);
+    transition: transform .6s cubic-bezier(.2, .8, .2, 1);
+  }
+  .sleeve::after { /* worn cardboard + ring wear */
+    content: ""; position: absolute; inset: 0; pointer-events: none;
+    background:
+      radial-gradient(circle at 50% 50%, transparent 38%, rgba(0,0,0,.14) 39%, transparent 41%),
+      linear-gradient(135deg, rgba(255,255,255,.07), transparent 30%, transparent 70%, rgba(0,0,0,.25));
+  }
+  .sleeve .cat { position: absolute; top: 12px; left: 14px; font: 500 11px/1 var(--mono); letter-spacing: .12em; }
+  .sleeve .ttl { position: absolute; left: 14px; right: 14px; bottom: 12px; font: 900 clamp(26px, 3vw, 38px)/.88 var(--display); text-transform: uppercase; text-wrap: balance; }
+  .record:hover .disc, .record:focus-visible .disc, .record.cued .disc { transform: translateX(22%); }
+  .record:hover .disc-face, .record:focus-visible .disc-face, .record.cued .disc-face { animation-play-state: running; }
+  .record:hover .sleeve { transform: translateY(-4px) rotate(-1deg); }
+  .record:focus-visible { outline: none; }
+  .record:focus-visible .sleeve { outline: 2px solid var(--safelight); outline-offset: 4px; }
+  .meta { margin-top: 18px; display: flex; justify-content: space-between; gap: 12px; align-items: baseline; padding-right: 16%; }
+  .meta h3 { font: 600 17px/1.25 var(--body); margin: 0; }
+  .meta p { margin: 2px 0 0; color: var(--muted); font-size: 14px; }
+  .meta .yr { font: 400 12px/1 var(--mono); color: var(--muted); }
+  .record.cued .meta h3::before { content: "▶ "; color: var(--safelight); font-size: .8em; }
+
+  .art-1 { --sleeve-ink: var(--paper); background: radial-gradient(circle at 50% 56%, var(--safelight) 0 21%, transparent 21.5%), repeating-linear-gradient(0deg, #6b1d17 0 7px, #561611 7px 14px); }
+  .art-2 { --sleeve-ink: var(--ink); background: linear-gradient(transparent 62%, var(--paper) 62%), repeating-linear-gradient(135deg, var(--paper) 0 14px, #17120f 14px 17px); }
+  .art-2 .ttl { color: var(--ink); }
+  .art-3 { --sleeve-ink: var(--paper); background-color: #0e0b0a;
+    background-image: linear-gradient(90deg, #0e0b0a 4px, transparent 4px), linear-gradient(#0e0b0a 4px, transparent 4px), linear-gradient(160deg, #7a6d63, #2a231f 70%);
+    background-size: 25% 20%, 25% 20%, 100% 100%; }
+  .art-4 { --sleeve-ink: var(--safelight); background: repeating-radial-gradient(circle at 28% 72%, var(--safelight) 0 2px, transparent 2px 15px), #0e0b0a; }
+  .art-5 { --sleeve-ink: var(--paper); background: radial-gradient(rgba(239, 227, 207, .8) 1.3px, transparent 1.8px) 0 0 / 9px 9px, linear-gradient(200deg, #8c2a1c, #2a0c08); }
+  .art-6 { --sleeve-ink: var(--ink); background: linear-gradient(var(--paper) 0 48%, var(--safelight) 48% 57%, #17120f 57%); }
+  .art-6 .ttl { color: var(--paper); }
+
+  /* ---------- liner notes ---------- */
+  .notes { border-top: 1px solid var(--line); }
+  .notes-grid { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: clamp(32px, 6vw, 88px); }
+  .notes-copy p { max-width: 62ch; margin: 0 0 1.1em; color: #ddd0bb; }
+  .notes-copy p:first-child::first-letter { font: 900 4.4em/.8 var(--display); float: left; margin: .06em .1em 0 0; color: var(--safelight); }
+  .services { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 28px; padding: 0; list-style: none; }
+  .services li { font: 500 12px/1 var(--mono); letter-spacing: .06em; text-transform: uppercase; border: 1px solid var(--line); border-radius: 999px; padding: 10px 14px; color: var(--paper); }
+  .credits { margin: 0; border-top: 1px solid var(--line); }
+  .credits div { display: grid; grid-template-columns: 11ch minmax(0, 1fr); gap: 16px; padding-block: 13px; border-bottom: 1px solid var(--line); }
+  .credits dt { font: 400 11px/1.9 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+  .credits dd { margin: 0; font-size: 15px; }
+  .credits-label { font: 500 12px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin: 0 0 14px; }
+
+  /* ---------- booking ---------- */
+  .booking { border-top: 1px solid var(--line); }
+  .booking-card {
+    display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 32px; align-items: end;
+  }
+  .booking h2 { font-size: clamp(56px, 10vw, 140px); }
+  .booking h2 span { color: var(--safelight); }
+  .mail { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 22px; }
+  .mail code { font: 500 clamp(16px, 1.8vw, 20px)/1.3 var(--mono); color: var(--paper); user-select: all; word-break: break-all; }
+  .copy { font: 500 12px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; background: transparent; color: var(--safelight); border: 1px solid rgba(242, 165, 65, .4); border-radius: 999px; padding: 9px 13px; }
+  .copy:hover { background: rgba(242, 165, 65, .12); }
+  .socials { display: flex; gap: 18px; flex-wrap: wrap; margin: 0; padding: 0; list-style: none; }
+  .socials a { font: 500 13px/1 var(--mono); letter-spacing: .06em; color: var(--muted); text-decoration: none; border-bottom: 1px solid var(--line); padding-bottom: 5px; }
+  .socials a:hover { color: var(--paper); border-color: var(--safelight); }
+  .booking-side p { color: var(--muted); margin: 0 0 20px; max-width: 38ch; }
+
+  footer { border-top: 1px solid var(--line); padding-block: 28px calc(96px + env(safe-area-inset-bottom, 0px)); font: 400 12px/1.5 var(--mono); color: var(--muted); letter-spacing: .04em; }
+  footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+
+  /* ---------- mini player ---------- */
+  .mini {
+    position: fixed; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); z-index: 60;
+    display: flex; align-items: center; gap: 12px; padding: 8px 8px 8px 10px; border-radius: 999px;
+    background: rgba(23, 18, 15, .88); border: 1px solid var(--line); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    box-shadow: 0 18px 40px -12px rgba(0,0,0,.7); max-width: calc(100% - 32px);
+  }
+  .mini-disc { width: 34px; height: 34px; flex: none; border-radius: 50%; background: radial-gradient(circle, #0e0b0a 0 6%, var(--label, var(--safelight)) 7% 30%, #0b0908 31% 33%, transparent 34%), repeating-radial-gradient(circle, #161210 0 1px, #262019 1.4px 2.4px); animation: spin 1.8s linear infinite paused; }
+  body.playing .mini-disc { animation-play-state: running; }
+  .mini-txt { font: 400 11px/1.35 var(--mono); color: var(--muted); letter-spacing: .04em; min-width: 0; }
+  .mini-txt strong { display: block; color: var(--paper); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 22ch; }
+  .mini button { flex: none; width: 38px; height: 38px; border-radius: 50%; border: 0; background: var(--safelight); color: var(--ink); display: grid; place-items: center; }
+  .mini button svg { width: 14px; height: 14px; }
+  .mini .i-pause { display: none; }
+  body.playing .mini .i-play { display: none; }
+  body.playing .mini .i-pause { display: block; }
+
+  .toast { position: fixed; left: 50%; bottom: calc(80px + env(safe-area-inset-bottom, 0px)); transform: translate(-50%, 20px); opacity: 0; z-index: 70; background: var(--paper); color: var(--ink); font: 500 13px/1 var(--mono); padding: 12px 16px; border-radius: 999px; transition: .3s; pointer-events: none; }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ---------- responsive ---------- */
+  @media (max-width: 960px) {
+    .hero .wrap { grid-template-columns: minmax(0, 1fr); }
+    .crate { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .notes-grid, .booking-card { grid-template-columns: minmax(0, 1fr); }
+  }
+  @media (max-width: 560px) {
+    .crate { grid-template-columns: minmax(0, 1fr); }
+    .readout { grid-template-columns: auto minmax(0, 1fr); }
+    .readout .bpm { display: none; }
+    #eq { grid-column: 1 / -1; }
+    nav.tracklist a span { display: none; }
+    .mini-txt strong { max-width: 14ch; }
+    .telemetry { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .grain { animation: none; }
+    .disc, .sleeve, .arm { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="grain" aria-hidden="true"></div>
+<canvas id="fx" aria-hidden="true"></canvas>
+<div class="cursor-dot" aria-hidden="true"></div>
+<div class="cursor-ring" aria-hidden="true"><span></span></div>
+
+<header class="top">
+  <div class="wrap">
+    <div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap">
+      <a class="topbar-back" href="/darklabs/">&larr; Darklabs</a>
+      <a class="brand" href="#deck"><i></i>Safelight</a>
+    </div>
+    <nav class="tracklist" aria-label="Tracklist">
+      <a href="#deck"><b>A1</b><span>The deck</span></a>
+      <a href="#works"><b>A2</b><span>Works</span></a>
+      <a href="#notes"><b>B1</b><span>Liner notes</span></a>
+      <a href="#booking"><b>B2</b><span>Booking</span></a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero" id="deck">
+    <div class="wrap">
+      <div>
+        <p class="eyebrow">Transmission 2133 · Received at 33⅓ · Darkroom Labs</p>
+        <h1 class="wordmark" aria-label="Safelight, slow future"><span>Safe</span><span>light</span><small>Slow&nbsp;Future</small></h1>
+        <p class="lede">The future learned to slow down. Warm, dusty records beamed back from a century that still spins vinyl — <em>mixed by Safelight, developed in the dark</em>.</p>
+        <div class="cta-row">
+          <button class="btn primary" id="play" data-cursor="play"><span class="ico"></span><span class="lbl">Drop the needle</span></button>
+          <button class="btn" id="flip" data-cursor="flip" aria-pressed="false">Flip to side B</button>
+          <a class="btn" href="#works">Dig the crates</a>
+        </div>
+        <p class="hint">Sound on. Grab the record to scratch it. Side B belongs to SquidgySqueegee.</p>
+      </div>
+
+      <div class="deck">
+        <div class="plinth">
+          <div class="platter">
+            <div class="hud"></div>
+            <canvas id="vinyl" data-cursor="scratch" aria-label="Spinning record. Drag to scratch." role="img"></canvas>
+            <div class="sheen"></div>
+            <div class="spindle"></div>
+          </div>
+          <div class="arm" aria-hidden="true"><div class="weight"></div><div class="stem"></div><div class="pivot"></div><div class="head"></div></div>
+          <div class="led">Needle</div>
+          <div class="telemetry" aria-hidden="true">Signal <b>analogue</b><br>λ <b>589 nm</b> sodium<br>Side <b id="sideTag">A · Safelight</b></div>
+        </div>
+        <div class="readout">
+          <div class="rpm" role="group" aria-label="Speed">
+            <button id="rpm33" aria-pressed="true">33⅓</button>
+            <button id="rpm45" aria-pressed="false">45</button>
+          </div>
+          <div class="bpm">BPM<strong id="bpm">78</strong></div>
+          <div class="np">Now on deck<strong id="np">DRK-001 · Safelight</strong></div>
+          <canvas id="eq" aria-hidden="true"></canvas>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="works">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Side A · Track 2</p>
+          <h2>From the crates</h2>
+        </div>
+        <p>Every release ships with its own sleeve, shot and printed by hand. Click a record to cue it on the deck.</p>
+      </div>
+      <ul class="crate" id="crate"></ul>
+    </div>
+  </section>
+
+  <section class="notes" id="notes">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Side B · Track 1</p>
+          <h2>Liner notes</h2>
+        </div>
+      </div>
+      <div class="notes-grid">
+        <div class="notes-copy">
+          <p>I came up between two rooms with the lights off. One had a sampler and a pair of cracked monitors; the other had a safelight, three trays and a timer that ticked louder than any metronome. Both taught the same thing: nothing good comes out fast.</p>
+          <p>dredarkroom is where those rooms meet. I produce and mix hip-hop, soul and ambient records that keep their dust on, then shoot and hand-print the artwork on fibre paper so the sleeve feels like the sound. Labels and artists bring me in for full releases, single cuts, remixes, and sound for gallery walls.</p>
+          <p>Behind the decks I answer to two names. <strong>Safelight</strong> plays the long, amber-lit sets: 33⅓, low end first, no hurry. <strong>SquidgySqueegee</strong> is the B-side, named for the rubber blade that wipes a wet print: faster, stickier, smeared at the edges.</p>
+          <p>If your record needs grain, room tone and a little patience, put it on my deck.</p>
+          <ul class="services">
+            <li>Beat production</li><li>Mixing</li><li>Remixes</li><li>Exhibition sound</li><li>Sleeve photography</li><li>Art direction</li>
+          </ul>
+        </div>
+        <div>
+          <p class="credits-label">Credits</p>
+          <dl class="credits">
+            <div><dt>Side A</dt><dd><strong>Safelight</strong> — slow, warm sets under a sodium lamp</dd></div>
+            <div><dt>Side B</dt><dd><strong>SquidgySqueegee</strong> — wetter, weirder breaks, wiped across the print</dd></div>
+            <div><dt>Recorded</dt><dd>A closet studio, safelight on</dd></div>
+            <div><dt>Decks</dt><dd>Technics SL-1200MK2</dd></div>
+            <div><dt>Sampler</dt><dd>Akai MPC 2000XL</dd></div>
+            <div><dt>Keys</dt><dd>Rhodes Mk I, borrowed and never returned</dd></div>
+            <div><dt>Camera</dt><dd>Pentax K1000, 50mm f/2</dd></div>
+            <div><dt>Film</dt><dd>Ilford HP5+ pushed to 1600</dd></div>
+            <div><dt>Developer</dt><dd>D-76 1+1 · 11 min @ 20 °C</dd></div>
+          </dl>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="booking" id="booking">
+    <div class="wrap">
+      <p class="eyebrow">Side B · Track 2</p>
+      <div class="booking-card">
+        <h2>Book the <span>room</span></h2>
+        <div class="booking-side">
+          <p>Releases, remixes, sleeve shoots and installs. Tell me the record, the deadline and what it should smell like.</p>
+          <div class="mail">
+            <code id="email">hello@dredarkroom.com</code>
+            <button class="copy" id="copy" data-cursor="copy">Copy</button>
+          </div>
+          <ul class="socials">
+            <li><a href="https://bandcamp.com" target="_blank" rel="noopener">Bandcamp</a></li>
+            <li><a href="https://soundcloud.com" target="_blank" rel="noopener">SoundCloud</a></li>
+            <li><a href="https://instagram.com" target="_blank" rel="noopener">Instagram</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>℗ 2026 Safelight &amp; SquidgySqueegee · Part of <a href="/darklabs/">Darkroom Labs</a></span>
+    <span>End of transmission — flip for side B</span>
+  </div>
+</footer>
+
+<div class="mini" aria-label="Player">
+  <div class="mini-disc"></div>
+  <div class="mini-txt">Now on deck<strong id="miniNp">Safelight</strong></div>
+  <button id="miniPlay" aria-label="Play or pause" data-cursor="play">
+    <svg class="i-play" viewBox="0 0 14 14"><path d="M3 1.5v11l9.5-5.5z" fill="currentColor"/></svg>
+    <svg class="i-pause" viewBox="0 0 14 14"><rect x="2.5" y="1.5" width="3.2" height="11" fill="currentColor"/><rect x="8.3" y="1.5" width="3.2" height="11" fill="currentColor"/></svg>
+  </button>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(() => {
+  const $ = s => document.querySelector(s);
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const finePointer = matchMedia('(pointer: fine)').matches;
+  const root = document.documentElement;
+
+  /* ================= releases ================= */
+  const TRACKS = [
+    { cat: 'DRK-001', title: 'Safelight', role: 'EP · Production & mix', year: 2026, art: 1, label: '#f2a541', transpose: 0, bpm: 78 },
+    { cat: 'DRK-002', title: 'Fixer Bath', role: 'Beat tape', year: 2025, art: 2, label: '#efe3cf', transpose: -2, bpm: 72 },
+    { cat: 'DRK-003', title: 'Contact Sheet Vol. 1', role: 'Photo book + ambient score', year: 2025, art: 3, label: '#9c8c80', transpose: 3, bpm: 68 },
+    { cat: 'DRK-004', title: 'Push Two Stops', role: 'Remix', year: 2024, art: 4, label: '#f2a541', transpose: 5, bpm: 88 },
+    { cat: 'DRK-005', title: 'Grain & Groove', role: 'Exhibition sound design', year: 2024, art: 5, label: '#8c2a1c', transpose: -4, bpm: 84 },
+    { cat: 'DRK-006', title: 'Stop Bath Sessions', role: 'Live set · field recordings', year: 2023, art: 6, label: '#efe3cf', transpose: 1, bpm: 80 },
+  ];
+  let current = 0, sideB = false;
+
+  const crate = $('#crate');
+  crate.innerHTML = TRACKS.map((t, i) => `
+    <li>
+      <button class="record${i === 0 ? ' cued' : ''}" data-i="${i}" data-cursor="cue" style="--label:${t.label}" aria-label="Cue ${t.title} on the deck">
+        <div class="sleeve-wrap">
+          <div class="disc"><div class="disc-face"></div></div>
+          <div class="sleeve art-${t.art}"><span class="cat">${t.cat}</span><span class="ttl">${t.title}</span></div>
+        </div>
+        <div class="meta"><div><h3>${t.title}</h3><p>${t.role}</p></div><span class="yr">${t.year}</span></div>
+      </button>
+    </li>`).join('');
+
+  /* ================= the hero record (canvas) ================= */
+  const vinyl = $('#vinyl');
+  function drawRecord() {
+    const dpr = Math.min(devicePixelRatio || 1, 2);
+    const s = Math.round(vinyl.clientWidth * dpr);
+    if (!s) return;
+    vinyl.width = vinyl.height = s;
+    const g = vinyl.getContext('2d'), r = s / 2, t = TRACKS[current];
+    g.translate(r, r);
+    const base = g.createRadialGradient(0, 0, r * .3, 0, 0, r);
+    base.addColorStop(0, '#15110f'); base.addColorStop(1, '#0a0807');
+    g.fillStyle = base; g.beginPath(); g.arc(0, 0, r, 0, Math.PI * 2); g.fill();
+
+    // grooves, with silent gaps between "songs"
+    const gaps = [.48, .6, .72, .84];
+    const step = Math.max(1.1, s / 700);
+    for (let rad = r * .36; rad < r * .965; rad += step) {
+      const rel = rad / r;
+      if (gaps.some(gp => Math.abs(rel - gp) < .006)) continue;
+      g.strokeStyle = `rgba(255,235,215,${.025 + Math.random() * .05})`;
+      g.lineWidth = step * .45;
+      g.beginPath(); g.arc(0, 0, rad, 0, Math.PI * 2); g.stroke();
+    }
+    // lead-in rim
+    g.strokeStyle = 'rgba(255,235,215,.12)'; g.lineWidth = step * 2;
+    g.beginPath(); g.arc(0, 0, r * .985, 0, Math.PI * 2); g.stroke();
+
+    // centre label
+    g.fillStyle = t.label; g.beginPath(); g.arc(0, 0, r * .33, 0, Math.PI * 2); g.fill();
+    g.strokeStyle = 'rgba(0,0,0,.25)'; g.lineWidth = r * .004;
+    g.beginPath(); g.arc(0, 0, r * .3, 0, Math.PI * 2); g.stroke();
+    const ink = ['#efe3cf', '#9c8c80'].includes(t.label) ? '#0e0b0a' : (t.label === '#8c2a1c' ? '#efe3cf' : '#0e0b0a');
+    g.fillStyle = ink; g.textAlign = 'center'; g.textBaseline = 'middle';
+    const alias = sideB ? 'SQUIDGYSQUEEGEE' : 'SAFELIGHT';
+    g.font = `700 ${r * (sideB ? .052 : .085)}px Syncopate, "Arial Black", sans-serif`;
+    g.fillText(alias, 0, -r * .15);
+    g.font = `500 ${r * .042}px "JetBrains Mono", monospace`;
+    g.fillText(t.title.toUpperCase(), 0, r * .12);
+    g.fillText(`${t.cat} · SIDE ${sideB ? 'B' : 'A'}`, 0, r * .19);
+    g.font = `500 ${r * .036}px "JetBrains Mono", monospace`;
+    g.fillText('33⅓ RPM · STEREO', 0, -r * .235);
+    // a small printed arrow so the spin reads
+    g.beginPath(); g.moveTo(r * .2, 0); g.lineTo(r * .24, -r * .02); g.lineTo(r * .24, r * .02); g.fill();
+  }
+  document.fonts.ready.then(drawRecord);
+  addEventListener('resize', () => { clearTimeout(drawRecord.t); drawRecord.t = setTimeout(drawRecord, 150); });
+
+  /* ================= audio engine (all synthesized, no files) ================= */
+  const A = { ctx: null, rate: 1, transpose: 0, bpm: 78 };
+  const mtof = m => 440 * Math.pow(2, (m - 69) / 12);
+
+  function noiseBuffer(ctx, sec) {
+    const n = ctx.sampleRate * sec, b = ctx.createBuffer(1, n, ctx.sampleRate), d = b.getChannelData(0);
+    for (let i = 0; i < n; i++) d[i] = Math.random() * 2 - 1;
+    return b;
+  }
+  function crackleBuffer(ctx, sec) {
+    const n = ctx.sampleRate * sec, b = ctx.createBuffer(1, n, ctx.sampleRate), d = b.getChannelData(0);
+    for (let i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * .01;     // surface hiss
+    for (let p = 0; p < sec * 42; p++) {                                  // pops & ticks
+      const i = (Math.random() * n) | 0, amp = Math.random() ** 3 * .85 + .04, len = 3 + (Math.random() * 38 | 0);
+      for (let k = 0; k < len && i + k < n; k++) d[i + k] += amp * (Math.random() * 2 - 1) * Math.exp(-k / (len * .3));
+    }
+    return b;
+  }
+
+  function audioInit() {
+    if (A.ctx) { A.ctx.resume(); return; }
+    const ctx = A.ctx = new (window.AudioContext || window.webkitAudioContext)();
+    A.master = ctx.createGain(); A.master.gain.value = .85;
+    const comp = ctx.createDynamicsCompressor(); comp.threshold.value = -14; comp.ratio.value = 4;
+    A.analyser = ctx.createAnalyser(); A.analyser.fftSize = 256; A.analyser.smoothingTimeConstant = .78;
+    A.master.connect(comp); comp.connect(A.analyser); A.analyser.connect(ctx.destination);
+
+    A.music = ctx.createGain(); A.music.gain.value = 0;
+    A.tone = ctx.createBiquadFilter(); A.tone.type = 'lowpass'; A.tone.frequency.value = 3000; A.tone.Q.value = .6;
+    A.music.connect(A.tone); A.tone.connect(A.master);
+
+    // tape/vinyl wow: a slow LFO wobbling every oscillator's pitch
+    A.lfo = ctx.createOscillator(); A.lfo.frequency.value = .5;
+    A.wow = ctx.createGain(); A.wow.gain.value = 6; A.lfo.connect(A.wow); A.lfo.start();
+
+    A.noise = noiseBuffer(ctx, 2);
+
+    A.crackle = ctx.createGain(); A.crackle.gain.value = 0;
+    const cr = ctx.createBufferSource(); cr.buffer = crackleBuffer(ctx, 7); cr.loop = true;
+    const hp = ctx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 700;
+    cr.connect(hp); hp.connect(A.crackle); A.crackle.connect(A.master); cr.start();
+
+    A.scratch = ctx.createGain(); A.scratch.gain.value = 0;
+    A.scratchBP = ctx.createBiquadFilter(); A.scratchBP.type = 'bandpass'; A.scratchBP.Q.value = 3;
+    const sn = ctx.createBufferSource(); sn.buffer = A.noise; sn.loop = true;
+    sn.connect(A.scratchBP); A.scratchBP.connect(A.scratch); A.scratch.connect(A.master); sn.start();
+  }
+
+  function env(t, peak, attack, decay) {
+    const g = A.ctx.createGain();
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(peak, t + attack);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + attack + decay);
+    return g;
+  }
+  function osc(type, f, t, dur, out, detune = 0) {
+    const o = A.ctx.createOscillator(); o.type = type; o.frequency.value = f; o.detune.value = detune;
+    A.wow.connect(o.detune); o.connect(out); o.start(t); o.stop(t + dur + .05);
+  }
+  function keys(t, midi, vel = 1) {                 // Rhodes-ish electric piano
+    const f = mtof(midi + A.transpose) * A.rate;
+    const body = env(t, .07 * vel, .012, 2.2); body.connect(A.music);
+    osc('sine', f, t, 2.3, body, -4); osc('triangle', f, t, 2.3, body, 5);
+    const tine = env(t, .018 * vel, .004, .35); tine.connect(A.music);
+    osc('sine', f * 4, t, .4, tine);
+  }
+  function bass(t, midi) {
+    const f = mtof(midi + A.transpose) * A.rate;
+    const g = env(t, .28, .01, .75); g.connect(A.music); osc('sine', f, t, .8, g);
+    const bite = env(t, .05, .01, .3); bite.connect(A.music); osc('triangle', f, t, .8, bite);
+  }
+  function kick(t) {
+    const o = A.ctx.createOscillator(), g = env(t, .9, .003, .38);
+    o.frequency.setValueAtTime(130 * A.rate, t); o.frequency.exponentialRampToValueAtTime(42 * A.rate, t + .13);
+    o.connect(g); g.connect(A.music); o.start(t); o.stop(t + .45);
+  }
+  function hit(t, type, freq, q, peak, decay) {
+    const s = A.ctx.createBufferSource(); s.buffer = A.noise; s.playbackRate.value = A.rate;
+    const f = A.ctx.createBiquadFilter(); f.type = type; f.frequency.value = freq * A.rate; f.Q.value = q;
+    const g = env(t, peak, .002, decay);
+    s.connect(f); f.connect(g); g.connect(A.music); s.start(t, Math.random()); s.stop(t + decay + .05);
+  }
+  const snare = t => { hit(t, 'bandpass', 1900, .8, .35, .18); osc('triangle', 190 * A.rate, t, .1, (() => { const g = env(t, .12, .002, .08); g.connect(A.music); return g; })()); };
+  const hat = (t, open) => hit(t, 'highpass', 7500, .7, open ? .07 : .045, open ? .22 : .04);
+
+  // Dm9 – G13 – Cmaj9 – Am7 : a classic, dusty ii–V–I–vi
+  const PROG = [
+    { root: 38, chord: [53, 57, 60, 64] },
+    { root: 43, chord: [53, 59, 64, 65] },
+    { root: 36, chord: [52, 55, 59, 62] },
+    { root: 45, chord: [55, 60, 64, 67] },
+  ];
+
+  // TODO(human): design the groove. Each lane is 16 sixteenth-notes (one bar).
+  // 'x' = hit, 'o' = accent/open (hat only), '.' = rest. SWING delays every off-16th.
+  const GROOVE = {
+    kick:  'x.........x..x..',
+    snare: '....x.......x...',
+    hat:   'x.x.x.x.x.x.x.xo',
+    keys:  'x.........x.....',
+    bass:  'x......x..x.....',
+  };
+  const SWING = 0.18;   // 0 = straight, ~0.33 = heavy MPC shuffle (fraction of a 16th)
+
+  function playStep(s, t) {
+    const bar = PROG[(s >> 4) % PROG.length], i = s % 16;
+    if (GROOVE.kick[i] === 'x') kick(t);
+    if (GROOVE.snare[i] === 'x') snare(t);
+    if (GROOVE.hat[i] !== '.') hat(t, GROOVE.hat[i] === 'o');
+    if (GROOVE.keys[i] === 'x') bar.chord.forEach((m, k) => keys(t + k * .012, m, i === 0 ? 1 : .6));
+    if (GROOVE.bass[i] === 'x') bass(t, i === 0 ? bar.root : bar.root + (i === 7 ? 7 : 12));
+    if (i % 4 === 0) pulse = 1;
+  }
+
+  let playing = false, stepIx = 0, nextTime = 0, timer = null, pulse = 0;
+  const stepDur = () => 60 / (A.bpm * A.rate) / 4;
+  function scheduler() {
+    while (nextTime < A.ctx.currentTime + .12) {
+      playStep(stepIx, nextTime + (stepIx % 2 ? SWING * stepDur() : 0));
+      nextTime += stepDur(); stepIx = (stepIx + 1) % (16 * PROG.length);
+    }
+  }
+
+  function needleDrop() {
+    if (!A.ctx) return;
+    const t = A.ctx.currentTime;
+    const o = A.ctx.createOscillator(), g = env(t, .5, .002, .14);
+    o.frequency.setValueAtTime(90, t); o.frequency.exponentialRampToValueAtTime(40, t + .1);
+    o.connect(g); g.connect(A.master); o.start(t); o.stop(t + .2);
+    const s = A.ctx.createBufferSource(); s.buffer = A.noise;
+    const f = A.ctx.createBiquadFilter(); f.type = 'bandpass'; f.frequency.value = 2500;
+    const g2 = env(t, .25, .002, .09); s.connect(f); f.connect(g2); g2.connect(A.master); s.start(t); s.stop(t + .15);
+  }
+  function tick() {
+    if (!A.ctx || A.ctx.state !== 'running') return;
+    const t = A.ctx.currentTime, s = A.ctx.createBufferSource(); s.buffer = A.noise;
+    const f = A.ctx.createBiquadFilter(); f.type = 'highpass'; f.frequency.value = 3000;
+    const g = env(t, .06, .001, .025); s.connect(f); f.connect(g); g.connect(A.master); s.start(t, Math.random()); s.stop(t + .05);
+  }
+
+  function start() {
+    audioInit();
+    if (playing) return;
+    playing = true; document.body.classList.add('playing');
+    $('#play .lbl').textContent = 'Lift the needle';
+    const t = A.ctx.currentTime;
+    A.tone.frequency.cancelScheduledValues(t); A.tone.frequency.setTargetAtTime(3000, t, .1);
+    A.crackle.gain.setTargetAtTime(.32, t + .9, .1);
+    setTimeout(needleDrop, reduced ? 0 : 950);          // lands when the arm does
+    A.music.gain.setTargetAtTime(1, t + 1.1, .15);
+    stepIx = 0; nextTime = t + (reduced ? .1 : 1.15);
+    timer = setInterval(scheduler, 25);
+  }
+  function stop() {
+    if (!playing) return;
+    playing = false; document.body.classList.remove('playing');
+    $('#play .lbl').textContent = 'Drop the needle';
+    const t = A.ctx.currentTime;
+    A.tone.frequency.setTargetAtTime(180, t, .35);      // power-down sag
+    A.music.gain.setTargetAtTime(0, t, .3);
+    A.crackle.gain.setTargetAtTime(0, t, .2);
+    clearInterval(timer);
+  }
+  const toggle = () => playing ? stop() : start();
+  $('#play').addEventListener('click', toggle);
+  $('#miniPlay').addEventListener('click', toggle);
+
+  function setRate(r) {
+    A.rate = r;
+    $('#rpm33').setAttribute('aria-pressed', r === 1);
+    $('#rpm45').setAttribute('aria-pressed', r !== 1);
+    $('#bpm').textContent = Math.round(A.bpm * r);
+    root.style.setProperty('--spin', `${1.8 / r}s`);
+    tick();
+  }
+  $('#rpm33').addEventListener('click', () => setRate(1));
+  $('#rpm45').addEventListener('click', () => setRate(45 / 33.333));
+
+  function cue(i) {
+    current = i; const t = TRACKS[i];
+    A.transpose = t.transpose + (sideB ? -5 : 0); A.bpm = t.bpm + (sideB ? 14 : 0);
+    document.querySelectorAll('.record').forEach(b => b.classList.toggle('cued', +b.dataset.i === i));
+    $('#np').textContent = `${t.cat} · ${t.title}`;
+    $('#miniNp').textContent = t.title;
+    $('#bpm').textContent = Math.round(A.bpm * A.rate);
+    root.style.setProperty('--label', t.label);
+    drawRecord();
+    if (playing) needleDrop(); else start();
+  }
+  // Side B = SquidgySqueegee: same record, pitched down a fourth and pushed faster
+  $('#flip').addEventListener('click', () => {
+    sideB = !sideB; const t = TRACKS[current];
+    A.transpose = t.transpose + (sideB ? -5 : 0);
+    A.bpm = t.bpm + (sideB ? 14 : 0);
+    $('#flip').textContent = sideB ? 'Flip to side A' : 'Flip to side B';
+    $('#flip').setAttribute('aria-pressed', sideB);
+    $('#sideTag').textContent = sideB ? 'B · SquidgySqueegee' : 'A · Safelight';
+    $('#bpm').textContent = Math.round(A.bpm * A.rate);
+    angle += 180; drawRecord();
+    if (playing) needleDrop(); else tick();
+  });
+  crate.addEventListener('click', e => { const b = e.target.closest('.record'); if (b) cue(+b.dataset.i); });
+  crate.addEventListener('pointerover', e => { const b = e.target.closest('.record'); if (b && !b.contains(e.relatedTarget)) tick(); });
+
+  /* ================= record spin + scratching ================= */
+  let angle = 0, speed = 0, dragging = false, lastA = 0, lastMove = 0, last = performance.now();
+  const centerOf = el => { const r = el.getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; };
+  const ptrAngle = e => { const [cx, cy] = centerOf(vinyl); return Math.atan2(e.clientY - cy, e.clientX - cx) * 180 / Math.PI; };
+
+  vinyl.addEventListener('pointerdown', e => {
+    audioInit(); dragging = true; lastA = ptrAngle(e); lastMove = performance.now();
+    vinyl.setPointerCapture(e.pointerId);
+    if (playing) A.music.gain.setTargetAtTime(.2, A.ctx.currentTime, .03);
+  });
+  vinyl.addEventListener('pointermove', e => {
+    if (!dragging) return;
+    const a = ptrAngle(e), now = performance.now();
+    let d = a - lastA; if (d > 180) d -= 360; if (d < -180) d += 360;
+    const vel = d / Math.max(1, now - lastMove) * 1000;       // deg/s
+    angle += d; lastA = a; lastMove = now; speed = vel;
+    const t = A.ctx.currentTime, v = Math.min(Math.abs(vel), 2400);
+    A.scratchBP.frequency.setTargetAtTime(250 + v * 1.4 * (vel < 0 ? .7 : 1), t, .015);
+    A.scratch.gain.setTargetAtTime(Math.min(v / 1400, .7), t, .015);
+  });
+  const release = () => {
+    if (!dragging) return; dragging = false;
+    const t = A.ctx.currentTime;
+    A.scratch.gain.setTargetAtTime(0, t, .03);
+    if (playing) A.music.gain.setTargetAtTime(1, t, .08);
+  };
+  vinyl.addEventListener('pointerup', release);
+  vinyl.addEventListener('pointercancel', release);
+
+  /* ================= eq + level ================= */
+  const eq = $('#eq'), eg = eq.getContext('2d');
+  const freq = new Uint8Array(128);
+  function drawEq(level) {
+    const dpr = Math.min(devicePixelRatio || 1, 2), w = eq.clientWidth * dpr, h = eq.clientHeight * dpr;
+    if (eq.width !== w) { eq.width = w; eq.height = h; }
+    eg.clearRect(0, 0, w, h);
+    const bars = 18, bw = w / bars;
+    for (let i = 0; i < bars; i++) {
+      let v = A.analyser && playing ? freq[2 + i * 3] / 255 : .05 + .03 * Math.sin(performance.now() / 600 + i);
+      const bh = Math.max(2 * dpr, v * h);
+      eg.fillStyle = i / bars < .7 ? '#f2a541' : '#8c2a1c';
+      eg.globalAlpha = .35 + v * .65;
+      eg.fillRect(i * bw + bw * .18, h - bh, bw * .64, bh);
+    }
+    eg.globalAlpha = 1;
+  }
+
+  /* ================= cursor + ripples ================= */
+  const dot = $('.cursor-dot'), ring = $('.cursor-ring'), ringLabel = ring.querySelector('span');
+  let mx = innerWidth / 2, my = innerHeight / 2, rx = mx, ry = my, travelled = 0, lx = mx, ly = my;
+  if (finePointer) document.body.classList.add('has-cursor');
+  const fx = $('#fx'), fg = fx.getContext('2d'), ripples = [];
+  const sizeFx = () => { const d = Math.min(devicePixelRatio || 1, 2); fx.width = innerWidth * d; fx.height = innerHeight * d; fg.setTransform(d, 0, 0, d, 0, 0); };
+  sizeFx(); addEventListener('resize', sizeFx);
+
+  addEventListener('pointermove', e => {
+    mx = e.clientX; my = e.clientY;
+    dot.style.transform = `translate(${mx}px, ${my}px)`;
+    travelled += Math.hypot(mx - lx, my - ly); lx = mx; ly = my;
+    if (playing && !reduced && travelled > 70) { travelled = 0; ripples.push({ x: mx, y: my, r: 4, life: 1, w: 1 }); }
+    // sheen follows the light source (your cursor)
+    const [cx, cy] = centerOf(vinyl);
+    root.style.setProperty('--sheen', `${Math.atan2(my - cy, mx - cx) * 180 / Math.PI + 90}deg`);
+  }, { passive: true });
+  addEventListener('pointerdown', e => { if (!reduced) ripples.push({ x: e.clientX, y: e.clientY, r: 6, life: 1, w: 2 }); });
+
+  document.addEventListener('pointerover', e => {
+    const el = e.target.closest('[data-cursor]');
+    ring.classList.toggle('is-active', !!el);
+    ringLabel.textContent = el ? (el.dataset.cursor === 'play' ? (playing ? 'lift' : 'drop') : el.dataset.cursor) : '';
+  });
+
+  /* ================= main loop ================= */
+  function frame(now) {
+    const dt = Math.min(.05, (now - last) / 1000); last = now;
+
+    // platter physics: spins up/down like a real direct-drive
+    if (!dragging) {
+      const target = playing ? 200 * A.rate : 0;          // 33⅓ rpm = 200°/s
+      speed += (target - speed) * Math.min(1, dt * (playing ? 2.4 : 1.2));
+      angle += speed * dt;
+    } else if (A.ctx && now - lastMove > 70) {
+      A.scratch.gain.setTargetAtTime(0, A.ctx.currentTime, .02);
+    }
+    vinyl.style.transform = `rotate(${angle % 360}deg)`;
+
+    // level → safelight glow
+    let level = 0;
+    if (A.analyser) {
+      A.analyser.getByteFrequencyData(freq);
+      for (let i = 1; i < 10; i++) level += freq[i];
+      level = Math.min(1, level / (9 * 255) * 1.3);
+    }
+    pulse *= .9;
+    root.style.setProperty('--level', (playing ? level * .8 + pulse * .2 : 0).toFixed(3));
+    drawEq(level);
+
+    // cursor ring eases behind the dot
+    const k = reduced ? 1 : .18;
+    rx += (mx - rx) * k; ry += (my - ry) * k;
+    ring.style.transform = `translate(${rx}px, ${ry}px)`;
+
+    // sound-wave ripples
+    fg.clearRect(0, 0, innerWidth, innerHeight);
+    for (let i = ripples.length - 1; i >= 0; i--) {
+      const p = ripples[i];
+      p.r += (60 + level * 160) * dt; p.life -= dt * 1.1;
+      if (p.life <= 0) { ripples.splice(i, 1); continue; }
+      fg.strokeStyle = `rgba(242,165,65,${p.life * .45})`; fg.lineWidth = p.w;
+      fg.beginPath(); fg.arc(p.x, p.y, p.r, 0, Math.PI * 2); fg.stroke();
+    }
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+
+  /* ================= copy email ================= */
+  const toast = msg => { const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove('show'), 1800); };
+  $('#copy').addEventListener('click', () => {
+    const text = $('#email').textContent;
+    const fallback = () => { const r = document.createRange(); r.selectNodeContents($('#email')); const s = getSelection(); s.removeAllRanges(); s.addRange(r); toast('Selected — press Ctrl+C to copy'); };
+    try { navigator.clipboard.writeText(text).then(() => toast('Email copied'), fallback); } catch { fallback(); }
+    tick();
+  });
+
+  // the mini disc speed follows 33/45
+  const style = document.createElement('style');
+  style.textContent = '.mini-disc,.disc-face{animation-duration:var(--spin,1.8s)}';
+  document.head.appendChild(style);
+})();
+</script>
+</body>
+</html>

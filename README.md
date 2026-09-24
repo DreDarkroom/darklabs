@@ -34,6 +34,10 @@ Audio API, live at **[dredarkroom.github.io/darklabs](https://dredarkroom.github
 
 - **Contact Sheet** — live now, its own repo: a pipeline that pulls VR
   headset clips and stills, renames them, and preps them for publishing.
+- **Safelight // Slow Future** — preview: a futuristic turntable homepage
+  that runs on analogue time. Playable, scratchable record with synthesised
+  vinyl crackle and a crate of release sleeves. Side A is Safelight, side B
+  is SquidgySqueegee.
 - **Earshot** and **Crate Capture** — not live yet, placeholders on the hub
   for now.
 

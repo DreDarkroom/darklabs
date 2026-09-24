@@ -112,6 +112,16 @@ footer a:hover{text-decoration:underline}
 .soon .card--teaser .card-icon{filter:grayscale(1)}
 .soon-badge{position:absolute;top:1rem;right:1rem;background:#2a2a2a;color:#999;font-size:.6rem;font-weight:700;letter-spacing:.08em;padding:.2rem .5rem;border-radius:3px}
 @media (max-width:900px){.soon{grid-template-columns:1fr;max-width:520px;margin-left:auto;margin-right:auto}}
+
+/* Safelight // Slow Future: previewable, lit by its own amber safelight */
+.soon .card--safelight{position:relative;border-color:#8a5a1e;background:radial-gradient(ellipse at 85% 0%,rgba(242,165,65,.14),transparent 60%),repeating-linear-gradient(0deg,rgba(242,165,65,.03) 0 1px,transparent 1px 4px),#15110e}
+.soon .card--safelight:hover{box-shadow:0 0 24px rgba(242,165,65,.22)}
+.soon .card--safelight h2{color:#f2a541;text-transform:uppercase;letter-spacing:.16em;font-size:1.2rem}
+.soon .card--safelight h2 span{display:block;color:#efe3cf;font-size:.7rem;letter-spacing:.42em;font-weight:500;margin-top:.35rem}
+.soon .card--safelight .btn{background:#f2a541;color:#0e0b0a}
+.soon .card--safelight .btn:hover{background:#efe3cf;color:#0e0b0a}
+.soon .card--safelight .note{color:#a8978a;font-size:.8rem;margin:-1rem 0 1.25rem;line-height:1.5;font-family:ui-monospace,Consolas,monospace;letter-spacing:.04em}
+.preview-badge{position:absolute;top:1rem;right:1rem;background:#f2a541;color:#0e0b0a;font-size:.6rem;font-weight:700;letter-spacing:.08em;padding:.2rem .5rem;border-radius:3px}
 </style>
 </head>
 <body>
@@ -196,7 +206,7 @@ footer a:hover{text-decoration:underline}
 
 <section class="soon-head">
 <h2>Coming Soon</h2>
-<p>CONTACT SHEET IS LIVE &mdash; MORE ON THE WAY</p>
+<p>CONTACT SHEET IS LIVE &middot; SAFELIGHT IN PREVIEW &mdash; MORE ON THE WAY</p>
 </section>
 
 <section class="soon">
@@ -205,6 +215,15 @@ footer a:hover{text-decoration:underline}
 <h2>Contact Sheet</h2>
 <p>A small pipeline that pulls new clips and stills off a VR headset's gallery, renames them cleanly, and gets them ready to publish &mdash; unlisted on YouTube until you say otherwise, stills backed up to your own cloud storage.</p>
 <a class="btn" href="https://dredarkroom.github.io/contact-sheet/">Open Contact Sheet</a>
+</section>
+
+<section class="card card--safelight" id="safelight">
+<span class="preview-badge">PREVIEW</span>
+<div class="card-icon">&#x1F4BF;</div>
+<h2>Safelight<span>// Slow Future</span></h2>
+<p>A transmission from 2133, played back at 33&#8531;. A turntable you can play and scratch, synthesised vinyl crackle, and a crate of hand-printed sleeves. Side A is Safelight; flip it and SquidgySqueegee takes over side B.</p>
+<p class="note">&lambda; 589 nm &middot; sound on &middot; releases are placeholders for now</p>
+<a class="btn" href="/darklabs/safelight/">Tune in to Safelight</a>
 </section>
 
 <section class="card card--teaser" aria-disabled="true">
