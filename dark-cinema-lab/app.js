@@ -3,43 +3,92 @@ import { Film, PenTool, Activity, Camera, Play, Pause, SkipForward, SkipBack, Ma
 
 // --- Views ---
 
-const MOCK_VIDEOS = [
+// Dre Darkroom Playlist Config
+const PLAYLIST = [
   {
-    id: 'jNQXAC9IVRw', // Valid YouTube ID (Me at the zoo - first youtube video)
+    id: 'demo-mp4',
+    title: 'Cinematic Sample (Native)',
+    description: 'Open access time-lapse MP4 playback.',
+    type: 'mp4',
+    source: 'https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
+    duration: '00:15',
+    thumbnail: 'https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?auto=format&fit=crop&w=400&q=80'
+  },
+  {
+    id: 'jNQXAC9IVRw',
     title: 'Dre Darkroom: The Process',
+    description: 'A look into the darkroom process.',
+    type: 'youtube',
+    source: 'jNQXAC9IVRw',
     duration: '00:19',
     thumbnail: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=400&q=80'
   },
   {
     id: 'dQw4w9WgXcQ',
     title: 'Cinematography in the Dark',
+    description: 'Exploring low light capabilities.',
+    type: 'youtube',
+    source: 'dQw4w9WgXcQ',
     duration: '03:32',
     thumbnail: 'https://images.unsplash.com/photo-1531366936337-77b12f71050c?auto=format&fit=crop&w=400&q=80'
   },
   {
     id: 'tgbNymZ7vqY',
     title: 'Analog Soundscapes',
+    description: 'Capturing the essence of analog audio.',
+    type: 'youtube',
+    source: 'tgbNymZ7vqY',
     duration: '05:42',
     thumbnail: 'https://images.unsplash.com/photo-1555448248-2571daf6344b?auto=format&fit=crop&w=400&q=80'
   }
 ];
 
 const CinemaHub = () => {
-  const [activeVideo, setActiveVideo] = useState(MOCK_VIDEOS[0]);
+  const [activeVideo, setActiveVideo] = useState(PLAYLIST[0]);
   const [isPlaying, setIsPlaying] = useState(false);
+  const videoRef = useRef(null);
+
+  const togglePlay = () => {
+    if (activeVideo.type === 'mp4' && videoRef.current) {
+      if (isPlaying) {
+        videoRef.current.pause();
+      } else {
+        videoRef.current.play();
+      }
+    }
+    setIsPlaying(!isPlaying);
+  };
+
+  // Reset playing state when video changes
+  useEffect(() => {
+    setIsPlaying(activeVideo.type === 'mp4'); // Auto-play mp4 on switch if desired, or set to true for default
+  }, [activeVideo]);
+
 
   return (
     <div className="h-full flex flex-col bg-neutral-950">
       {/* Cinematic Player Area */}
       <div className="w-full bg-black aspect-video relative shadow-2xl shadow-black group">
-        <iframe
-          className="w-full h-full absolute top-0 left-0"
-          src={`https://www.youtube-nocookie.com/embed/${activeVideo.id}?autoplay=0&modestbranding=1&rel=0&controls=0`}
-          title={activeVideo.title}
-          frameBorder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-        ></iframe>
+        {activeVideo.type === 'youtube' ? (
+          <iframe
+            className="w-full h-full absolute top-0 left-0"
+            src={`https://www.youtube-nocookie.com/embed/${activeVideo.source}?autoplay=0&modestbranding=1&rel=0&controls=0`}
+            title={activeVideo.title}
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          ></iframe>
+        ) : (
+          <video
+            ref={videoRef}
+            className="w-full h-full absolute top-0 left-0 object-contain"
+            src={activeVideo.source}
+            title={activeVideo.title}
+            playsInline
+            loop
+            autoPlay
+          ></video>
+        )}
 
         {/* Mock Custom Controls Overlay */}
         <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/90 to-transparent p-4 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end pointer-events-none">
@@ -50,7 +99,7 @@ const CinemaHub = () => {
 
            <div className="flex justify-between items-center pointer-events-auto">
               <div className="flex items-center space-x-4">
-                 <button className="text-white hover:text-neutral-300 transition" onClick={() => setIsPlaying(!isPlaying)}>
+                 <button className="text-white hover:text-neutral-300 transition" onClick={togglePlay}>
                     {isPlaying ? <Pause size={20} fill="currentColor" /> : <Play size={20} fill="currentColor" />}
                  </button>
                  <button className="text-white hover:text-neutral-300 transition">
@@ -86,14 +135,19 @@ const CinemaHub = () => {
       <div className="flex-1 overflow-y-auto p-4">
         <h3 className="text-sm font-semibold tracking-wider text-neutral-500 uppercase mb-4">Up Next</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {MOCK_VIDEOS.map((video) => (
+          {PLAYLIST.map((video) => (
             <div
               key={video.id}
               onClick={() => setActiveVideo(video)}
               className={`group flex items-center bg-neutral-900 rounded-xl overflow-hidden cursor-pointer border transition-colors ${activeVideo.id === video.id ? 'border-neutral-500' : 'border-neutral-800 hover:border-neutral-600'}`}
             >
               <div className="w-1/3 aspect-video relative bg-neutral-800">
-                 <img src={video.thumbnail} alt={video.title} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" />
+                 <img
+                    src={video.thumbnail}
+                    alt={video.title}
+                    className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"
+                    onError={(e) => { e.target.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><rect width="100%" height="100%" fill="%23171717"/></svg>'; }}
+                 />
               </div>
               <div className="w-2/3 p-3">
                 <h4 className="text-sm font-medium text-neutral-200 line-clamp-2">{video.title}</h4>
@@ -331,10 +385,10 @@ const Visualizer = () => {
 };
 
 const MOCK_TIMELAPSE = [
-  { id: 1, title: 'Night City', type: 'landscape', img: 'https://images.unsplash.com/photo-1517594422361-5e18aece0158?auto=format&fit=crop&w=800&q=80' },
+  { id: 1, title: 'Night City', type: 'landscape', img: 'https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?auto=format&fit=crop&w=800&q=80' },
   { id: 2, title: 'Star Trails', type: 'portrait', img: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=800&q=80' },
   { id: 3, title: 'Neon Pulse', type: 'square', img: 'https://images.unsplash.com/photo-1555448248-2571daf6344b?auto=format&fit=crop&w=800&q=80' },
-  { id: 4, title: 'Dawn Chorus', type: 'landscape', img: 'https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?auto=format&fit=crop&w=800&q=80' },
+  { id: 4, title: 'Dawn Chorus', type: 'landscape', img: 'https://images.unsplash.com/photo-1498804103079-a6351b050096?auto=format&fit=crop&w=800&q=80' },
   { id: 5, title: 'Aurora', type: 'portrait', img: 'https://images.unsplash.com/photo-1531366936337-77b12f71050c?auto=format&fit=crop&w=800&q=80' },
 ];
 
@@ -367,6 +421,7 @@ const TimeLapse = () => {
                     alt={item.title}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     loading="lazy"
+                    onError={(e) => { e.target.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><rect width="100%" height="100%" fill="%23171717"/></svg>'; }}
                  />
                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
                  <div className="absolute bottom-0 left-0 w-full p-4 transform translate-y-2 group-hover:translate-y-0 transition-transform">
