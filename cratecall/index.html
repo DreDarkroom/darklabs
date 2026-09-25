@@ -1,0 +1,668 @@
+<title>CrateCall</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@600;800&family=IBM+Plex+Mono:wght@400;500&family=DM+Sans:wght@400;500;700&display=swap">
+<style>
+:root{
+  --ink:#0e0b0c; --panel:#171213; --panel2:#1f191b; --line:#31282a;
+  --text:#f0e8e3; --muted:#a09591; --accent:#690000; --accent-soft:#2a0f0f;
+  --wave:#5b4c4f; --love:#e8b04a; --keep:#5fbf8f; --maybe:#8aa4d6; --drop:#c9665e;
+  --display:'Syne','Arial Black',system-ui,sans-serif;
+  --body:'DM Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,Consolas,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{background:var(--ink);color:var(--text)}
+body{margin:0;font:15px/1.5 var(--body);padding-inline:16px;padding-block:28px 130px}
+.wrap{max-width:860px;margin-inline:auto;position:relative}
+header{display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
+header h1{font:800 clamp(34px,7vw,56px)/1 var(--display);margin:0 0 10px;letter-spacing:-.02em;text-wrap:balance;color:var(--text);border-left:5px solid var(--accent);padding-left:14px}
+header p{margin:0;color:var(--muted);max-width:60ch}
+.menu-btn{flex:0 0 auto;width:40px;height:40px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--text);cursor:pointer;display:grid;place-items:center;margin-top:6px}
+.menu-btn svg{width:18px;height:18px;fill:currentColor}
+.modes{display:flex;gap:8px;margin:22px 0 4px}
+.mode{font:600 12px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;padding:10px 16px;border-radius:8px;border:1px solid var(--line);background:transparent;color:var(--muted);cursor:pointer}
+.mode[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
+.tally{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 18px}
+.chip{font:500 12px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;padding:9px 12px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--muted);cursor:pointer}
+.chip b{color:var(--text);font-weight:500;margin-left:6px}
+.chip[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent);color:var(--text)}
+.chip:focus-visible,button:focus-visible,textarea:focus-visible,input:focus-visible,.track:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
+.track{display:grid;grid-template-columns:52px 1fr;gap:6px 16px;padding:18px 0;border-top:1px solid var(--line)}
+.track:last-child{border-bottom:1px solid var(--line)}
+.track[hidden]{display:none}
+.play,.ext{width:52px;height:52px;border-radius:50%;border:0;background:var(--accent);color:#fff;display:grid;place-items:center;cursor:pointer;align-self:start;text-decoration:none;font:600 9px/1.25 var(--mono);text-align:center;letter-spacing:.02em}
+.play svg{width:20px;height:20px;fill:currentColor}
+.track.playing .play{background:var(--text);color:var(--ink)}
+.head{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px}
+.head h2{font:600 19px/1.2 var(--display);margin:0}
+.meta{font:400 12px/1.4 var(--mono);color:var(--muted);display:flex;flex-wrap:wrap;gap:4px 12px}
+.lic{color:var(--muted)} .lic.ok{color:var(--keep)} .lic.caution{color:var(--love)}
+.new-badge{display:inline-block;font:700 10px/1 var(--mono);letter-spacing:.06em;background:var(--accent);color:#fff;padding:4px 7px;border-radius:4px;margin-left:8px;vertical-align:middle;animation:pulse 1.8s ease-in-out 3}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.45}}
+.fresh-banner{max-width:860px;margin:0 auto 16px;padding:12px 14px;border-radius:8px;background:var(--accent-soft);border:1px solid var(--accent);font:500 13px var(--body);display:flex;justify-content:space-between;align-items:center;gap:12px;cursor:pointer}
+.fresh-banner button{background:none;border:0;color:var(--muted);font-size:16px;cursor:pointer}
+.src-list{margin:0;padding:0;list-style:none}
+.src-list li{padding:8px 0;border-bottom:1px solid var(--line);font-size:13px}
+.src-list a{color:var(--text)}
+.src-list .warn{color:var(--love);display:block;font-size:12px;margin-top:2px}
+.src-list .ok-tag{color:var(--keep);font-size:11px;text-transform:uppercase;letter-spacing:.05em;margin-left:6px}
+.wave{grid-column:2;position:relative;height:56px;margin-block:6px 4px;cursor:pointer;touch-action:manipulation}
+.wave canvas{width:100%;height:100%;display:block}
+.time{position:absolute;right:0;top:-18px;font:400 11px/1 var(--mono);color:var(--muted);font-variant-numeric:tabular-nums}
+.handle{position:absolute;top:0;bottom:0;width:10px;margin-left:-5px;cursor:ew-resize;touch-action:none}
+.handle::after{content:"";position:absolute;left:4px;top:0;bottom:0;width:2px;background:var(--accent)}
+.handle::before{content:"";position:absolute;left:0;top:-6px;width:10px;height:10px;border-radius:2px;background:var(--accent)}
+.controls{grid-column:2;display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center}
+.verdicts{display:flex;gap:6px;flex-wrap:wrap}
+.v{font:500 12px/1 var(--mono);letter-spacing:.05em;text-transform:uppercase;padding:9px 12px;border-radius:6px;border:1px solid var(--line);background:var(--panel);color:var(--text);cursor:pointer}
+.v[aria-pressed="true"][data-v="love"]{background:var(--love);border-color:var(--love);color:#1a1206}
+.v[aria-pressed="true"][data-v="keep"]{background:var(--keep);border-color:var(--keep);color:#07160e}
+.v[aria-pressed="true"][data-v="maybe"]{background:var(--maybe);border-color:var(--maybe);color:#0b1224}
+.v[aria-pressed="true"][data-v="drop"]{background:var(--drop);border-color:var(--drop);color:#1f0a08}
+.mini{font:500 11px/1 var(--mono);letter-spacing:.05em;text-transform:uppercase;padding:8px 10px;border-radius:6px;border:1px dashed var(--line);background:transparent;color:var(--muted);cursor:pointer}
+.mini[aria-pressed="true"]{border-style:solid;border-color:var(--accent);color:var(--text);background:var(--accent-soft)}
+.mini.push{margin-left:auto}
+.mini:disabled{opacity:.4;cursor:default}
+.note{grid-column:2;width:100%;min-height:42px;resize:vertical;background:var(--panel);border:1px solid var(--line);border-radius:6px;color:var(--text);font:14px/1.4 var(--body);padding:9px 11px}
+.note::placeholder{color:var(--muted)}
+.prov{grid-column:2;font-size:12px;color:var(--muted)}
+.prov summary{cursor:pointer;color:var(--muted);list-style:none}
+.prov summary::-webkit-details-marker{display:none}
+.prov summary::before{content:"Provenance ";}
+.prov summary::after{content:"▸";display:inline-block;margin-left:4px;transition:transform .15s}
+.prov[open] summary::after{transform:rotate(90deg)}
+.prov .body{padding:8px 0 2px;line-height:1.6}
+.prov a{color:var(--text)}
+.bar{position:fixed;left:0;right:0;bottom:0;padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px));background:var(--panel2);border-top:1px solid var(--line)}
+.bar .in{max-width:860px;margin-inline:auto;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.bar input{flex:1 1 160px;min-width:0;background:var(--ink);border:1px solid var(--line);border-radius:6px;color:var(--text);font:14px var(--body);padding:10px 11px}
+.bar .count{font:400 12px var(--mono);color:var(--muted)}
+.send,.suggest-open{font:700 14px var(--body);padding:11px 16px;border-radius:6px;border:0;background:var(--accent);color:#fff;cursor:pointer}
+.suggest-open{background:transparent;border:1px solid var(--line);color:var(--text)}
+.out{max-width:860px;margin:20px auto 0}
+.out textarea{width:100%;min-height:200px;background:var(--panel);border:1px solid var(--line);border-radius:6px;color:var(--text);font:13px/1.5 var(--mono);padding:12px}
+.out p{color:var(--muted);margin:0 0 8px;font-size:13px}
+.hint{color:var(--muted);font-size:13px;margin-top:18px;max-width:64ch}
+footer{margin-top:40px;text-align:center}
+footer a{color:var(--muted);font:400 11px var(--mono);text-decoration:none;letter-spacing:.08em;text-transform:uppercase;opacity:.55}
+footer a:hover{opacity:1}
+.sheet-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:opacity .15s;z-index:20}
+.sheet-backdrop.open{opacity:1;pointer-events:auto}
+.sheet{position:fixed;top:0;right:0;bottom:0;width:min(360px,86vw);background:var(--panel2);border-left:1px solid var(--line);transform:translateX(100%);transition:transform .2s;z-index:21;padding:22px;overflow-y:auto}
+.sheet.open{transform:translateX(0)}
+.sheet h3{font:700 13px var(--mono);text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:22px 0 10px}
+.sheet h3:first-child{margin-top:0}
+.sheet .kbd{display:flex;justify-content:space-between;gap:10px;font-size:13px;padding:6px 0;border-bottom:1px solid var(--line)}
+.sheet kbd{font:500 11px var(--mono);background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:2px 6px}
+.sheet .close{position:absolute;top:16px;right:16px;background:none;border:0;color:var(--muted);font-size:20px;cursor:pointer;line-height:1}
+.sheet p{color:var(--muted);font-size:13px;line-height:1.6}
+.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;z-index:30;padding:16px}
+.modal-backdrop.open{display:flex}
+.modal{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:22px;max-width:440px;width:100%}
+.modal h3{font:700 18px var(--display);margin:0 0 6px}
+.modal p{color:var(--muted);font-size:13px;margin:0 0 16px}
+.modal label{display:block;font:500 11px var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:12px 0 4px}
+.modal input,.modal textarea{width:100%;background:var(--ink);border:1px solid var(--line);border-radius:6px;color:var(--text);font:14px var(--body);padding:9px 11px}
+.modal textarea{min-height:64px;resize:vertical}
+.modal .row{display:flex;gap:10px;justify-content:flex-end;margin-top:18px}
+.modal .cancel{background:transparent;border:1px solid var(--line);color:var(--muted);border-radius:6px;padding:10px 14px;cursor:pointer}
+@media (max-width:520px){.track{grid-template-columns:44px 1fr}.play,.ext{width:44px;height:44px}}
+@media (prefers-reduced-motion:no-preference){.play,.v,.chip,.mini,.mode{transition:background .15s,color .15s,border-color .15s}}
+</style>
+
+<div class="wrap">
+  <header>
+    <div>
+      <h1>CrateCall</h1>
+      <p id="tagline">Music candidates for the VR game. Press play, choose a verdict, add a note if something stands out. Press <kbd>?</kbd> any time for shortcuts.</p>
+    </div>
+    <button class="menu-btn" id="menuBtn" type="button" aria-label="Open menu" aria-haspopup="true">
+      <svg viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </button>
+  </header>
+
+  <div class="modes" role="tablist" aria-label="Mode">
+    <button class="mode" id="modeMusic" type="button" role="tab" aria-pressed="true">Music</button>
+    <button class="mode" id="modeSfx" type="button" role="tab" aria-pressed="false">SFX</button>
+  </div>
+
+  <div class="fresh-banner" id="freshBanner" hidden></div>
+  <div class="tally" id="tally" role="group" aria-label="Filter by verdict"></div>
+  <ol id="list"></ol>
+
+  <p style="margin-top:22px">
+    <button class="suggest-open" id="suggestOpen" type="button">+ Suggest a track</button>
+  </p>
+
+  <div class="out" id="out" hidden>
+    <p>This is copied to your clipboard, and we've tried to open your mail app pre-filled &mdash; that doesn't always work in every browser, so if nothing opened, paste this into an email to <b id="mailAddr1">cratecall@dredarkroom.com</b> yourself, or send it to Dre on Discord.</p>
+    <textarea id="outText" readonly></textarea>
+  </div>
+  <p class="hint" id="hintText">Your choices are saved in this browser only, until you send them. Green means confirmed CC0 from the source page. Amber means CC0 but built from a commercial loop pack (fine to use, not something to claim as owned outright), or based on another artist's work — open Provenance on a track for the detail.</p>
+
+  <footer><a href="https://dredarkroom.com" target="_blank" rel="noopener">dredarkroom</a></footer>
+</div>
+
+<div class="bar">
+  <div class="in">
+    <input id="who" type="text" placeholder="Your name (for the feedback)" autocomplete="off" maxlength="40">
+    <span class="count" id="count">0 of 12 rated</span>
+    <button class="send" id="send" type="button">Send selections</button>
+  </div>
+</div>
+
+<div class="sheet-backdrop" id="sheetBackdrop"></div>
+<div class="sheet" id="sheet" role="dialog" aria-label="Menu">
+  <button class="close" id="sheetClose" type="button" aria-label="Close menu">&times;</button>
+  <h3>Keyboard shortcuts</h3>
+  <div class="kbd"><span>Play / pause focused track</span><kbd>Space</kbd></div>
+  <div class="kbd"><span>Move between tracks</span><kbd>&uarr; / &darr;</kbd></div>
+  <div class="kbd"><span>Seek 5s back / forward</span><kbd>&larr; / &rarr;</kbd></div>
+  <div class="kbd"><span>Verdict: Love / Keep / Maybe / Drop</span><kbd>L K M D</kbd></div>
+  <div class="kbd"><span>Switch Music / SFX mode</span><kbd>[ / ]</kbd></div>
+  <div class="kbd"><span>Toggle this help</span><kbd>?</kbd></div>
+  <h3>Loop &amp; export</h3>
+  <p>Turn on <b>Trim</b> under a music track to drag its loop start/end points on the waveform, then <b>Loop</b> to preview it. Export gives you the trimmed region as a lossless WAV (for further editing) or a 320kbps MP3 (for a quick share) &mdash; both are built right in your browser, nothing is uploaded.</p>
+  <h3>About</h3>
+  <p>CrateCall is DreDarkroom's audition tool for the VRUS game's audio pool &mdash; music and SFX candidates. Verdicts and notes are saved to your own browser; use Send selections to email your picks in. Tracks found since your last visit here are flagged NEW.</p>
+  <h3>CC0 sources worth checking</h3>
+  <ul class="src-list">
+    <li><a href="https://opengameart.org" target="_blank" rel="noopener">OpenGameArt.org</a><span class="ok-tag">reliable</span><span class="warn">Filter by licence &mdash; CC0 on the search page. Every track in this pool was checked on its own item page, not just the folder name.</span></li>
+    <li><a href="https://freesound.org" target="_blank" rel="noopener">Freesound.org</a><span class="ok-tag">reliable</span><span class="warn">Licence is set per sound, not per pack &mdash; check each file's own page.</span></li>
+    <li><a href="https://kenney.nl/assets" target="_blank" rel="noopener">Kenney.nl</a><span class="ok-tag">reliable</span><span class="warn">Kenney releases everything CC0 by policy &mdash; a safe default for game SFX.</span></li>
+    <li><a href="https://itch.io" target="_blank" rel="noopener">itch.io</a><span class="warn">Mixed licensing site-wide. Some asset packs are CC0, most aren't &mdash; always check the page, never assume from "free".</span></li>
+    <li><a href="https://pixabay.com" target="_blank" rel="noopener">Pixabay</a><span class="warn">Not CC0 since Jan 2019 &mdash; it's the Pixabay Content License now, which has its own terms. This is the mix-up that caught Hackerman's gun sounds; treat anything from here as licensed, not CC0.</span></li>
+  </ul>
+</div>
+
+<div class="modal-backdrop" id="suggestModal">
+  <div class="modal">
+    <h3>Suggest a track</h3>
+    <p>This opens your mail app with the details filled in &mdash; it sends to the team, nothing is posted here automatically.</p>
+    <label for="sgTitle">Title</label>
+    <input id="sgTitle" type="text" maxlength="120" placeholder="Track or SFX name">
+    <label for="sgUrl">Source URL</label>
+    <input id="sgUrl" type="text" maxlength="300" placeholder="Where you found it (OpenGameArt, Freesound...)">
+    <label for="sgLicence">Licence, as stated on the source page</label>
+    <input id="sgLicence" type="text" maxlength="120" placeholder="e.g. CC0">
+    <label for="sgNotes">Notes</label>
+    <textarea id="sgNotes" maxlength="400" placeholder="Anything else worth flagging"></textarea>
+    <div class="row">
+      <button class="cancel" id="sgCancel" type="button">Cancel</button>
+      <button class="send" id="sgSend" type="button">Prepare email</button>
+    </div>
+    <div id="sgOut" hidden>
+      <p style="margin-top:14px">Copied to your clipboard, and we've tried to open your mail app &mdash; if that didn't work, paste this into an email to <b>cratecall@dredarkroom.com</b>:</p>
+      <textarea id="sgOutText" readonly style="min-height:120px"></textarea>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/lamejs@1.2.1/lame.min.js"></script>
+<script>
+/* ---- analytics config -------------------------------------------------
+   Set GC_CODE to your GoatCounter site code (e.g. "dredarkroom") when hosting
+   this page yourself. Blank = no analytics (also the case on claude.ai pages,
+   which block outside scripts). Open the page once with #owner on the end of
+   the address to exclude your own device from the counts. */
+var GC_CODE = "";
+var MAILTO = "cratecall@dredarkroom.com";
+var TRACKS = [{"slug": "ld47", "title": "Drum and Bass (LD47)", "mode": "music", "dur": 96.0, "audioFile": "audio/ld47.mp3", "peaks": [0.72, 0.71, 0.71, 0.7, 0.7, 0.63, 0.71, 0.63, 0.77, 0.46, 0.82, 0.59, 0.7, 0.73, 0.72, 0.73, 0.74, 0.72, 0.88, 0.88, 0.91, 1.0, 0.82, 0.85, 0.79, 0.81, 0.85, 0.94, 0.84, 0.85, 0.79, 0.64, 0.92, 0.58, 0.83, 0.78, 0.83, 0.92, 0.97, 0.88, 0.71, 0.85, 0.87, 0.89, 0.61, 0.86, 0.84, 0.84, 0.84, 0.81, 0.79, 0.84, 0.76, 0.7, 0.8, 0.87, 0.9, 0.65, 0.82, 0.82, 0.8, 0.83, 1.0, 0.93, 0.83, 0.82, 0.7, 0.9, 0.6, 0.81, 0.73, 0.71, 0.72, 0.7, 0.7, 0.62, 0.71, 0.62, 0.77, 0.45, 0.81, 0.59, 0.7, 0.72, 0.72, 0.74, 0.74, 0.7, 0.74, 0.86, 0.79, 0.96, 0.76, 0.81, 0.84, 0.85, 0.83, 0.87, 0.89, 0.97, 0.8, 0.6, 0.89, 0.93, 0.95, 0.77, 0.78, 0.87, 0.91, 0.96, 0.92, 0.87, 0.73, 0.84, 0.76, 0.94, 0.87, 0.83, 0.78, 0.81, 0.85, 0.81, 0.68, 0.74, 0.83, 0.88, 0.89, 0.68, 0.78, 0.79, 0.78, 0.77, 0.87, 0.94, 1.0, 0.82, 0.5, 0.96, 0.61, 0.79], "author": "bertsz", "sourceUrl": "https://opengameart.org/content/drum-and-bass", "license": "CC0", "licenseRisk": "none", "licenseNote": "CC0 · bertsz · OpenGameArt", "datePublished": null, "dateFound": "2026-09-20"}, {"slug": "bassline2", "title": "Bassline 2", "mode": "music", "dur": 120.0, "audioFile": "audio/bassline2.mp3", "peaks": [0.8, 0.72, 0.78, 0.71, 0.81, 0.81, 0.79, 0.73, 0.78, 0.9, 0.89, 0.68, 0.75, 0.74, 0.7, 0.82, 0.66, 0.75, 0.72, 0.85, 0.86, 0.79, 0.58, 0.72, 0.7, 0.59, 0.73, 0.7, 0.67, 0.88, 0.9, 1.0, 0.7, 0.65, 0.53, 0.67, 0.89, 0.78, 0.6, 0.73, 0.63, 0.76, 0.9, 0.72, 0.64, 0.66, 0.59, 0.9, 0.74, 0.67, 0.76, 0.6, 0.77, 0.95, 0.87, 0.9, 0.9, 0.96, 0.81, 0.85, 0.97, 0.85, 0.85, 0.89, 0.97, 0.86, 0.82, 0.92, 0.94, 0.79, 0.9, 0.96, 0.88, 0.9, 0.9, 0.71, 0.68, 0.58, 0.68, 0.61, 0.7, 0.57, 0.65, 0.53, 0.69, 0.64, 0.66, 0.51, 0.64, 0.52, 0.61, 0.72, 0.68, 0.71, 0.73, 0.71, 0.84, 0.62, 0.67, 0.68, 0.62, 0.7, 0.61, 0.68, 0.64, 0.69, 0.67, 0.85, 0.62, 0.71, 0.64, 0.76, 0.71, 0.7, 0.61, 0.76, 0.66, 0.76, 0.86, 0.81, 0.78, 0.76, 0.78, 0.86, 0.75, 0.81, 0.82, 0.83, 0.75, 0.74, 0.81, 0.76, 0.73, 0.78, 0.64, 0.33, 0.3, 0.19, 0.25, 0.65], "author": "Spring Spring (Julie Damsgaard)", "sourceUrl": "https://opengameart.org/content/some-sorta-kinda-80s-sounding-theme-but-not-really", "license": "CC0", "licenseRisk": "none", "licenseNote": "CC0 · Spring Spring · OpenGameArt", "datePublished": null, "dateFound": "2026-09-20"}, {"slug": "bs-cork-720", "title": "BS Cork 720", "mode": "music", "dur": 72.9, "audioFile": "audio/bs-cork-720.mp3", "peaks": [0.0, 0.01, 0.02, 0.04, 0.1, 0.21, 0.34, 0.35, 0.16, 0.15, 0.12, 0.16, 0.15, 0.15, 0.13, 0.13, 0.17, 0.13, 0.12, 0.17, 0.15, 0.48, 0.95, 0.59, 0.72, 0.6, 0.27, 0.23, 0.55, 0.54, 0.18, 0.18, 0.6, 0.38, 0.56, 0.53, 0.54, 0.25, 0.53, 0.35, 0.54, 0.29, 0.48, 0.63, 0.32, 0.27, 0.44, 0.61, 0.46, 0.62, 0.65, 0.44, 0.31, 0.6, 0.58, 0.29, 0.3, 0.67, 0.56, 0.31, 0.3, 0.7, 0.36, 0.67, 0.67, 0.57, 0.33, 0.64, 0.46, 0.47, 0.41, 0.63, 0.64, 0.36, 0.36, 0.64, 0.68, 0.72, 0.5, 0.72, 0.68, 0.74, 0.96, 0.92, 0.68, 0.72, 1.0, 0.72, 0.68, 0.86, 0.97, 0.64, 0.81, 1.0, 0.82, 0.68, 0.9, 0.85, 0.8, 0.7, 0.91, 0.85, 0.65, 0.77, 0.91, 0.83, 0.83, 0.9, 0.79, 0.62, 0.81, 0.91, 0.9, 0.66, 0.77, 0.97, 0.63, 0.7, 0.94, 0.88, 0.66, 0.84, 0.96, 0.67, 0.66, 0.98, 0.93, 0.64, 0.65, 0.91, 0.8, 0.65, 0.78, 0.95, 0.82, 0.89, 0.94, 0.28, 0.0, 0.0], "author": "TAD", "sourceUrl": "https://opengameart.org/content/live-mixing-compilation", "license": "CC0", "licenseRisk": "loop", "licenseNote": "CC0 · TAD · built from GarageBand loops", "datePublished": null, "dateFound": "2026-09-20"}, {"slug": "colored-mind", "title": "Colored Mind", "mode": "music", "dur": 69.9, "audioFile": "audio/colored-mind.mp3", "peaks": [0.12, 0.11, 0.21, 0.14, 0.17, 0.15, 0.13, 0.17, 0.14, 0.19, 0.16, 0.09, 0.08, 0.14, 0.09, 0.22, 0.15, 0.14, 0.17, 0.13, 0.16, 0.18, 0.16, 0.16, 0.07, 0.45, 0.55, 0.52, 0.61, 0.66, 0.4, 0.51, 0.52, 0.4, 0.5, 0.55, 0.53, 0.36, 0.56, 0.55, 0.47, 0.61, 0.61, 0.39, 0.55, 0.47, 0.54, 0.63, 0.58, 0.47, 0.4, 0.7, 0.54, 0.5, 0.71, 0.64, 0.46, 0.78, 0.65, 0.53, 0.63, 0.7, 0.57, 0.86, 0.68, 0.7, 0.62, 0.76, 0.62, 0.46, 0.89, 0.74, 0.59, 0.79, 0.9, 0.57, 0.26, 0.77, 0.81, 0.71, 0.79, 0.85, 0.58, 0.76, 0.68, 0.59, 0.84, 0.75, 1.0, 0.94, 0.79, 0.85, 0.69, 0.77, 0.81, 0.6, 0.74, 0.75, 0.53, 0.82, 0.85, 1.0, 0.92, 0.69, 0.83, 0.78, 0.63, 0.78, 0.55, 0.73, 0.68, 0.46, 0.84, 0.85, 0.98, 0.87, 0.68, 0.69, 0.77, 0.55, 0.75, 0.69, 0.6, 0.68, 0.5, 0.84, 0.91, 0.98, 0.88, 0.38, 0.23, 0.25, 0.17, 0.06, 0.06, 0.05, 0.04, 0.04, 0.02, 0.01], "author": "TAD", "sourceUrl": "https://opengameart.org/content/live-mixing-compilation", "license": "CC0", "licenseRisk": "loop", "licenseNote": "CC0 · TAD · built from GarageBand loops", "datePublished": null, "dateFound": "2026-09-20"}, {"slug": "completed", "title": "Completed", "mode": "music", "dur": 146.3, "audioFile": "audio/completed.mp3", "peaks": [0.22, 0.2, 0.25, 0.26, 0.24, 0.2, 0.23, 0.24, 0.19, 0.25, 0.27, 0.23, 0.23, 0.29, 0.79, 0.73, 0.74, 0.58, 0.53, 0.66, 0.74, 0.69, 0.57, 0.73, 0.6, 0.51, 0.63, 0.72, 0.9, 0.67, 0.81, 0.88, 0.86, 0.83, 0.93, 0.97, 0.68, 0.82, 0.74, 0.96, 0.71, 1.0, 0.71, 0.94, 0.93, 0.98, 0.93, 0.81, 0.87, 0.95, 0.92, 0.89, 0.98, 0.97, 0.82, 0.85, 0.99, 0.26, 0.16, 0.15, 0.15, 0.16, 0.16, 0.15, 0.29, 0.4, 0.42, 0.38, 0.39, 0.38, 0.39, 0.4, 0.4, 0.43, 0.43, 0.39, 0.39, 0.4, 0.41, 0.43, 0.43, 0.42, 0.42, 0.41, 0.41, 0.42, 0.44, 0.41, 0.43, 0.42, 0.4, 0.43, 0.67, 0.83, 0.47, 0.09, 0.61, 0.81, 0.74, 0.85, 0.92, 0.82, 0.81, 0.9, 0.79, 0.79, 0.83, 0.91, 0.76, 0.88, 0.87, 0.84, 0.74, 0.86, 0.92, 0.76, 0.78, 0.86, 0.91, 0.76, 0.8, 0.89, 0.81, 0.82, 0.82, 0.74, 0.27, 0.22, 0.27, 0.24, 0.2, 0.25, 0.25, 0.24, 0.21, 0.28, 0.25, 0.22, 0.22, 0.23], "author": "TAD", "sourceUrl": "https://opengameart.org/content/live-mixing-compilation", "license": "CC0", "licenseRisk": "loop", "licenseNote": "CC0 · TAD · built from GarageBand loops", "datePublished": null, "dateFound": "2026-09-20"}, {"slug": "gbl-medley", "title": "GBL Medley", "mode": "music", "dur": 251.2, "audioFile": "audio/gbl-medley.mp3", "peaks": [0.05, 0.1, 0.31, 0.57, 0.58, 0.51, 0.56, 0.51, 0.52, 0.61, 0.63, 0.64, 0.63, 0.65, 0.77, 0.82, 0.72, 0.75, 0.72, 0.76, 0.78, 1.0, 0.4, 0.69, 0.73, 0.72, 0.7, 0.77, 0.69, 0.79, 0.67, 0.74, 0.82, 0.87, 0.89, 0.82, 0.91, 0.84, 0.89, 0.86, 0.9, 0.77, 0.53, 0.54, 0.52, 0.51, 0.67, 0.58, 0.69, 0.66, 0.72, 0.68, 0.76, 0.68, 0.7, 0.59, 0.33, 0.35, 0.37, 0.59, 0.84, 0.59, 0.63, 0.64, 0.72, 0.77, 0.76, 0.75, 0.78, 0.73, 0.64, 0.72, 0.74, 0.74, 0.73, 0.63, 0.66, 0.68, 0.78, 0.85, 0.82, 0.85, 0.8, 0.79, 0.85, 0.83, 0.88, 0.75, 0.18, 0.41, 0.46, 0.53, 0.59, 0.6, 0.47, 0.58, 0.76, 0.44, 0.36, 0.36, 0.41, 0.42, 0.39, 0.32, 0.39, 0.42, 0.51, 0.65, 0.63, 0.57, 0.66, 0.78, 0.84, 0.83, 0.85, 0.89, 0.87, 0.84, 0.79, 0.87, 0.8, 0.55, 0.54, 0.5, 0.57, 0.54, 0.58, 0.54, 0.54, 0.6, 0.51, 0.54, 0.54, 0.57, 0.51, 0.39, 0.39, 0.38, 0.6, 0.49], "author": "TAD", "sourceUrl": "https://opengameart.org/content/live-mixing-compilation", "license": "CC0", "licenseRisk": "loop", "licenseNote": "CC0 · TAD · built from GarageBand loops", "datePublished": null, "dateFound": "2026-09-20"}, {"slug": "motion", "title": "Motion", "mode": "music", "dur": 81.0, "audioFile": "audio/motion.mp3", "peaks": [0.13, 0.15, 0.13, 0.15, 0.17, 0.17, 0.17, 0.15, 0.12, 0.13, 0.14, 0.16, 0.18, 0.21, 0.25, 0.77, 0.41, 0.31, 0.19, 0.19, 0.17, 0.17, 0.2, 0.2, 0.19, 0.17, 0.17, 0.18, 0.19, 0.23, 0.75, 0.41, 0.32, 0.2, 0.2, 0.17, 0.17, 0.28, 0.22, 0.21, 0.17, 0.16, 0.17, 0.2, 0.22, 0.31, 0.46, 0.51, 0.51, 0.69, 0.39, 0.39, 0.38, 0.53, 0.5, 0.48, 0.52, 0.74, 0.8, 0.79, 0.56, 0.46, 0.52, 0.51, 0.59, 0.49, 0.44, 0.38, 0.48, 0.45, 0.44, 0.41, 0.61, 1.0, 0.87, 0.65, 0.44, 0.5, 0.5, 0.56, 0.49, 0.44, 0.43, 0.51, 0.46, 0.48, 0.43, 0.6, 0.68, 0.66, 0.57, 0.44, 0.5, 0.5, 0.56, 0.5, 0.45, 0.43, 0.5, 0.49, 0.48, 0.43, 0.59, 0.64, 0.67, 0.57, 0.21, 0.26, 0.27, 0.31, 0.31, 0.27, 0.27, 0.3, 0.26, 0.23, 0.21, 0.32, 0.36, 0.36, 0.39, 0.27, 0.29, 0.29, 0.32, 0.3, 0.27, 0.28, 0.35, 0.32, 0.25, 0.22, 0.33, 0.35, 0.35, 0.31, 0.01, 0.0, 0.0, 0.0], "author": "TAD", "sourceUrl": "https://opengameart.org/content/live-mixing-compilation", "license": "CC0", "licenseRisk": "loop", "licenseNote": "CC0 · TAD · built from GarageBand loops", "datePublished": null, "dateFound": "2026-09-20"}, {"slug": "problems", "title": "Problems", "mode": "music", "dur": 96.3, "audioFile": "audio/problems.mp3", "peaks": [0.9, 0.67, 0.82, 0.87, 0.71, 0.97, 0.77, 0.65, 0.96, 0.78, 0.79, 0.92, 0.81, 0.68, 0.85, 0.86, 0.76, 0.91, 0.82, 0.69, 0.89, 0.88, 0.79, 0.9, 0.85, 0.67, 0.96, 0.76, 0.86, 0.91, 0.69, 0.76, 0.94, 0.78, 0.97, 0.85, 0.72, 0.89, 0.87, 0.78, 1.0, 0.77, 0.81, 0.91, 0.86, 0.89, 0.91, 0.88, 0.76, 0.89, 0.97, 0.76, 0.92, 0.82, 0.73, 0.9, 0.86, 0.83, 0.94, 0.73, 0.69, 0.96, 0.72, 0.91, 0.87, 0.7, 0.9, 0.82, 0.75, 0.99, 0.81, 0.64, 0.92, 0.82, 0.77, 0.92, 0.75, 0.73, 0.86, 0.74, 0.47, 0.83, 0.69, 0.44, 0.78, 0.69, 0.6, 0.81, 0.59, 0.55, 0.82, 0.63, 0.75, 0.76, 0.62, 0.7, 0.8, 0.72, 0.85, 0.7, 0.62, 0.83, 0.73, 0.72, 0.84, 0.82, 0.77, 0.89, 0.87, 0.85, 0.92, 0.84, 0.73, 0.92, 0.93, 0.81, 0.91, 0.91, 0.69, 0.94, 0.86, 0.85, 0.92, 0.74, 0.76, 0.98, 0.8, 0.93, 0.87, 0.75, 0.86, 0.87, 0.71, 1.0, 0.75, 0.7, 0.92, 0.79, 0.79, 0.9], "author": "Xephas", "sourceUrl": "https://opengameart.org/content/problems", "license": "CC0", "licenseRisk": "loop", "licenseNote": "CC0 · Xephas · built from a commercial loop pack", "datePublished": null, "dateFound": "2026-09-20"}, {"slug": "project-2", "title": "Project 2", "mode": "music", "dur": 83.3, "audioFile": "audio/project-2.mp3", "peaks": [0.3, 0.27, 0.27, 0.28, 0.24, 0.29, 0.38, 0.31, 0.28, 0.33, 0.22, 0.26, 0.28, 0.42, 0.24, 0.31, 0.22, 0.26, 0.36, 0.32, 0.29, 0.24, 0.27, 0.25, 0.33, 0.35, 0.57, 0.58, 0.71, 0.53, 0.61, 0.56, 0.83, 0.71, 0.51, 0.68, 0.55, 0.65, 0.75, 0.57, 0.66, 0.49, 0.75, 0.65, 0.54, 0.71, 0.56, 0.67, 0.76, 0.53, 0.61, 0.58, 0.75, 0.73, 0.57, 0.69, 0.52, 0.63, 0.78, 0.7, 0.71, 0.54, 0.71, 0.72, 0.61, 0.84, 0.65, 0.66, 0.61, 0.78, 0.63, 0.58, 0.71, 0.61, 0.71, 0.71, 0.6, 0.68, 0.65, 0.85, 0.84, 0.76, 0.88, 0.79, 0.84, 0.99, 0.74, 0.85, 0.71, 0.87, 0.85, 0.83, 0.99, 0.92, 0.82, 0.92, 0.82, 0.76, 0.8, 0.9, 0.92, 0.77, 0.87, 0.74, 0.83, 0.92, 1.0, 0.91, 0.75, 0.89, 0.85, 0.91, 0.98, 0.8, 0.92, 0.73, 0.91, 0.85, 0.83, 0.97, 0.83, 0.8, 0.89, 0.91, 0.89, 0.81, 0.96, 0.96, 0.78, 0.8, 0.78, 0.84, 0.87, 0.87, 0.57, 0.03, 0.01, 0.0, 0.0, 0.0], "author": "TAD", "sourceUrl": "https://opengameart.org/content/free-run-8-bitish", "license": "CC0", "licenseRisk": "loop", "licenseNote": "CC0 · TAD · rename before ship (Nintendo-referencing title — original filename was \"Project 2 marioish.mp3\")", "datePublished": null, "dateFound": "2026-09-20"}, {"slug": "sky-run", "title": "Sky Run", "mode": "music", "dur": 163.2, "audioFile": "audio/sky-run.mp3", "peaks": [0.02, 0.02, 0.03, 0.04, 0.04, 0.07, 0.08, 0.12, 0.14, 0.22, 0.23, 0.25, 0.23, 0.22, 0.2, 0.26, 0.26, 0.26, 0.26, 0.27, 0.26, 0.22, 0.26, 0.23, 0.22, 0.37, 0.45, 0.37, 0.38, 0.38, 0.39, 0.42, 0.42, 0.34, 0.46, 0.38, 0.38, 0.38, 0.4, 0.42, 0.41, 0.38, 0.46, 0.42, 0.38, 0.48, 0.41, 0.42, 0.42, 0.44, 0.43, 0.18, 0.15, 0.43, 0.38, 0.3, 0.58, 0.44, 0.41, 0.5, 0.62, 0.43, 0.37, 0.64, 0.54, 0.43, 0.61, 0.47, 0.39, 0.82, 0.6, 0.55, 0.65, 0.48, 0.51, 0.61, 0.55, 0.5, 0.56, 0.61, 0.49, 0.58, 0.56, 0.58, 0.52, 0.71, 0.58, 0.48, 0.63, 0.38, 0.26, 0.52, 0.37, 0.25, 0.53, 0.41, 0.34, 0.48, 0.59, 0.38, 0.39, 0.71, 0.67, 0.7, 0.69, 0.7, 0.71, 0.93, 0.72, 0.64, 1.0, 0.8, 0.84, 0.96, 0.6, 0.66, 0.6, 0.76, 0.71, 0.78, 0.75, 0.81, 0.79, 0.86, 0.89, 0.84, 0.65, 0.34, 0.21, 0.47, 0.34, 0.21, 0.45, 0.43, 0.34, 0.42, 0.45, 0.3, 0.17, 0.07], "author": "TAD", "sourceUrl": "https://opengameart.org/content/live-mixing-compilation", "license": "CC0", "licenseRisk": "loop", "licenseNote": "CC0 · TAD · built from GarageBand loops", "datePublished": null, "dateFound": "2026-09-20"}, {"slug": "solved", "title": "Solved", "mode": "music", "dur": 142.8, "audioFile": "audio/solved.mp3", "peaks": [0.34, 0.06, 0.03, 0.01, 0.07, 0.1, 0.08, 0.04, 0.2, 0.04, 0.02, 0.05, 0.05, 0.12, 0.05, 0.06, 0.4, 0.08, 0.16, 0.11, 0.26, 0.12, 0.26, 0.24, 0.31, 0.07, 0.19, 0.16, 0.29, 0.14, 0.32, 0.43, 0.64, 0.44, 0.53, 0.47, 0.58, 0.45, 0.6, 0.53, 0.58, 0.44, 0.53, 0.48, 0.57, 0.46, 0.6, 0.54, 0.77, 0.62, 0.64, 0.64, 0.7, 0.62, 0.62, 0.7, 0.72, 0.61, 0.64, 0.65, 0.69, 0.62, 0.62, 0.65, 0.65, 0.54, 0.56, 0.58, 0.59, 0.54, 0.56, 0.63, 0.61, 0.54, 0.56, 0.59, 0.58, 0.54, 0.58, 0.91, 0.8, 0.62, 0.49, 0.79, 0.61, 0.56, 0.57, 0.52, 0.58, 0.51, 0.48, 0.79, 0.6, 0.56, 0.56, 0.57, 0.69, 0.59, 0.61, 0.9, 0.73, 0.69, 0.7, 0.66, 0.68, 0.59, 0.6, 0.89, 0.73, 0.69, 0.69, 0.82, 0.54, 0.42, 0.89, 0.87, 0.96, 0.53, 0.97, 0.74, 0.54, 0.43, 0.87, 0.89, 0.92, 0.6, 1.0, 0.42, 0.24, 0.26, 0.28, 0.27, 0.24, 0.31, 0.26, 0.17, 0.02, 0.0, 0.0, 0.0], "author": "TAD", "sourceUrl": "https://opengameart.org/content/live-mixing-compilation", "license": "CC0", "licenseRisk": "loop", "licenseNote": "CC0 · TAD · built from GarageBand loops", "datePublished": null, "dateFound": "2026-09-20"}, {"slug": "vaporwave", "title": "Vaporwave", "mode": "music", "dur": 157.4, "audioFile": "audio/vaporwave.mp3", "peaks": [0.26, 0.3, 0.18, 0.33, 0.15, 0.34, 0.15, 0.41, 0.38, 0.47, 0.39, 0.43, 0.42, 0.42, 0.38, 0.46, 0.47, 0.53, 0.43, 0.48, 0.46, 0.51, 0.47, 0.51, 0.48, 0.48, 0.48, 0.53, 0.47, 0.52, 0.73, 0.81, 0.82, 0.85, 0.94, 0.79, 0.94, 0.81, 0.96, 0.77, 0.94, 0.78, 0.95, 0.85, 0.87, 0.85, 0.9, 0.79, 0.81, 0.78, 0.85, 0.83, 0.83, 0.77, 0.86, 0.76, 0.83, 0.72, 0.89, 0.82, 0.85, 1.0, 0.46, 0.25, 0.26, 0.25, 0.28, 0.31, 0.21, 0.38, 0.36, 0.5, 0.38, 0.45, 0.38, 0.45, 0.38, 0.49, 0.47, 0.52, 0.47, 0.5, 0.48, 0.5, 0.48, 0.54, 0.47, 0.5, 0.5, 0.54, 0.53, 0.52, 0.73, 0.83, 0.82, 0.86, 0.89, 0.85, 0.83, 0.88, 0.93, 0.8, 0.9, 0.7, 0.94, 0.79, 0.92, 0.77, 0.96, 0.79, 0.79, 0.74, 0.82, 0.81, 0.81, 0.78, 0.87, 0.79, 0.82, 0.75, 0.88, 0.8, 0.89, 0.93, 0.68, 0.44, 0.42, 0.41, 0.43, 0.45, 0.42, 0.42, 0.26, 0.28, 0.19, 0.32, 0.15, 0.32, 0.12, 0.29], "author": "Dizzy Crow", "sourceUrl": "https://opengameart.org/content/trance-trap-electronic-237", "license": "CC0", "licenseRisk": "derivative", "licenseNote": "CC0 dedication by Dizzy Crow, but based on \"this great remix by FieryNugget\" per the uploader's own description", "datePublished": null, "dateFound": "2026-09-20"}, {"slug": "sfx-gunshots-kurt", "title": "Gunshots — .22 Pistol / .22 Magnum / Black Powder", "mode": "sfx", "dur": null, "audioFile": null, "peaks": null, "author": "kurt", "sourceUrl": "https://opengameart.org/content/gunshots", "license": "CC0", "licenseRisk": "none", "licenseNote": "CC0 · kurt · OpenGameArt — real firearm recordings, some echo present per creator's note", "datePublished": null, "dateFound": "2026-09-25", "category": "Gun"}, {"slug": "sfx-gunshot-sounds-tabasco", "title": "Gunshot Sounds — CZ-52 / Mosin Nagant / SKS / Shotgun", "mode": "sfx", "dur": null, "audioFile": null, "peaks": null, "author": "Tabasco", "sourceUrl": "https://opengameart.org/content/gunshot-sounds", "license": "CC0", "licenseRisk": "none", "licenseNote": "CC0 · Tabasco · OpenGameArt — creator notes recording levels aren't perfect but usable", "datePublished": null, "dateFound": "2026-09-25", "category": "Gun"}, {"slug": "sfx-gun-reload-springyspringo", "title": "Gun Reload Sounds — rifle reload + shotgun cock", "mode": "sfx", "dur": null, "audioFile": null, "peaks": null, "author": "SpringySpringo", "sourceUrl": "https://opengameart.org/content/gun-reload-sounds", "license": "CC0", "licenseRisk": "none", "licenseNote": "CC0 · SpringySpringo · OpenGameArt — 3 files: gun reload, assault rifle reload, shotgun cock", "datePublished": null, "dateFound": "2026-09-25", "category": "Gun"}, {"slug": "sfx-free-firearm-library", "title": "The Free Firearm Sound Library", "mode": "sfx", "dur": null, "audioFile": null, "peaks": null, "author": "Ben Jaszczak, Brian Nelson, Kevin Heras, Matthew Nanney", "sourceUrl": "https://opengameart.org/content/the-free-firearm-sound-library", "license": "CC0", "licenseRisk": "none", "licenseNote": "CC0, explicit — large pro library (194MB, raw + prepared): rifles, shotguns, pistols, revolvers, auto/semi-auto", "datePublished": "2014", "dateFound": "2026-09-25", "category": "Gun"}, {"slug": "sfx-100-cc0-sfx-rubberduck", "title": "100 CC0 SFX — doors, glass, metal, explosions & more", "mode": "sfx", "dur": null, "audioFile": null, "peaks": null, "author": "rubberduck", "sourceUrl": "https://opengameart.org/content/100-cc0-sfx", "license": "CC0", "licenseRisk": "none", "licenseNote": "CC0 · rubberduck · OpenGameArt — 100 general SFX: bells, doors, glass, metal, explosions, springs and more", "datePublished": null, "dateFound": "2026-09-25", "category": "Misc"}];
+var VERDICTS = [["love","Love"],["keep","Keep"],["maybe","Maybe"],["drop","Drop"]];
+var KEY = "crateCall.v1";
+var state = {v:{}, n:{}, who:"", filter:"all", mode:"music"};
+var owner = false;
+
+function safe(fn){ try { return fn(); } catch(e){ return null; } }
+safe(function(){ if (location.hash.indexOf("owner") > -1) { localStorage.setItem("skipgc","t"); localStorage.setItem("auditionOwner","1"); } });
+owner = safe(function(){ return localStorage.getItem("auditionOwner") === "1"; }) === true;
+safe(function(){ var s = JSON.parse(localStorage.getItem(KEY) || "null"); if (s) { state.v = s.v || {}; state.n = s.n || {}; state.who = s.who || ""; state.mode = s.mode || "music"; } });
+function save(){ safe(function(){ localStorage.setItem(KEY, JSON.stringify({v:state.v, n:state.n, who:state.who, mode:state.mode})); }); }
+
+if (GC_CODE && !owner) {
+  var gcs = document.createElement("script");
+  gcs.async = true; gcs.src = "https://gc.zgo.at/count.js";
+  gcs.setAttribute("data-goatcounter", "https://" + GC_CODE + ".goatcounter.com/count");
+  document.head.appendChild(gcs);
+}
+function track(name){
+  if (owner) return;
+  safe(function(){ if (window.goatcounter && window.goatcounter.count) window.goatcounter.count({path:name, title:name, event:true}); });
+}
+
+/* ---- downloads capability (loop export) -------------------------------- */
+var downloadsCap = null;
+safe(function(){
+  if (window.claude && window.claude.use) {
+    window.claude.use("downloads").then(function(d){ downloadsCap = d; }).catch(function(){});
+  }
+});
+async function offerFile(filename, blob){
+  if (downloadsCap) {
+    try { await downloadsCap.save({filename: filename, data: blob}); return true; }
+    catch (e) { /* fall through to classic download */ }
+  }
+  try {
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a"); a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 4000);
+    return true;
+  } catch (e) { return false; }
+}
+
+/* ---- audio decode + WAV/MP3 export ------------------------------------- */
+var _actx = null;
+function actx(){ if (!_actx) _actx = new (window.AudioContext || window.webkitAudioContext)(); return _actx; }
+async function decodeTrack(t){
+  if (t._buf) return t._buf;
+  var res = await fetch(t.audioFile);
+  var arr = await res.arrayBuffer();
+  var buf = await actx().decodeAudioData(arr);
+  t._buf = buf;
+  return buf;
+}
+function bufferToWav(buffer, s0, s1){
+  var numCh = buffer.numberOfChannels, sr = buffer.sampleRate;
+  var frames = s1 - s0, blockAlign = numCh*2, dataSize = frames*blockAlign;
+  var out = new ArrayBuffer(44 + dataSize), v = new DataView(out);
+  function ws(o,s){ for (var i=0;i<s.length;i++) v.setUint8(o+i, s.charCodeAt(i)); }
+  ws(0,"RIFF"); v.setUint32(4, 36+dataSize, true); ws(8,"WAVE");
+  ws(12,"fmt "); v.setUint32(16,16,true); v.setUint16(20,1,true); v.setUint16(22,numCh,true);
+  v.setUint32(24,sr,true); v.setUint32(28,sr*blockAlign,true); v.setUint16(32,blockAlign,true); v.setUint16(34,16,true);
+  ws(36,"data"); v.setUint32(40,dataSize,true);
+  var chans = []; for (var c=0;c<numCh;c++) chans.push(buffer.getChannelData(c));
+  var off = 44;
+  for (var i=0;i<frames;i++){
+    for (var c2=0;c2<numCh;c2++){
+      var s = chans[c2][s0+i]; s = Math.max(-1, Math.min(1, s));
+      v.setInt16(off, s<0 ? s*0x8000 : s*0x7FFF, true); off += 2;
+    }
+  }
+  return new Blob([out], {type:"audio/wav"});
+}
+function bufferToMp3(buffer, s0, s1){
+  if (!window.lamejs) throw new Error("mp3 encoder not loaded");
+  var numCh = Math.min(2, buffer.numberOfChannels), sr = buffer.sampleRate;
+  var enc = new lamejs.Mp3Encoder(numCh, sr, 320);
+  var chans = []; for (var c=0;c<numCh;c++) chans.push(buffer.getChannelData(c));
+  var block = 1152, chunks = [];
+  var l16 = new Int16Array(block), r16 = numCh>1 ? new Int16Array(block) : null;
+  for (var i=s0;i<s1;i+=block){
+    var len = Math.min(block, s1-i);
+    for (var j=0;j<len;j++){
+      var sL = chans[0][i+j]; l16[j] = Math.max(-32768, Math.min(32767, Math.round(sL*32767)));
+      if (r16) { var sR = chans[1][i+j]; r16[j] = Math.max(-32768, Math.min(32767, Math.round(sR*32767))); }
+    }
+    var lv = len===block ? l16 : l16.subarray(0,len);
+    var rv = r16 ? (len===block ? r16 : r16.subarray(0,len)) : null;
+    var chunk = rv ? enc.encodeBuffer(lv, rv) : enc.encodeBuffer(lv);
+    if (chunk && chunk.length) chunks.push(chunk);
+  }
+  var end = enc.flush(); if (end && end.length) chunks.push(end);
+  return new Blob(chunks, {type:"audio/mp3"});
+}
+async function doExport(t, format, btn){
+  var oldText = btn.textContent;
+  btn.disabled = true; btn.textContent = "...";
+  try {
+    var buf = await decodeTrack(t);
+    var s0f = t.loopStart || 0, s1f = (t.loopEnd == null ? 1 : t.loopEnd);
+    var s0 = Math.round(s0f * buf.length), s1 = Math.round(s1f * buf.length);
+    if (s1 - s0 < 100) { s0 = 0; s1 = buf.length; }
+    var blob = format === "wav" ? bufferToWav(buf, s0, s1) : bufferToMp3(buf, s0, s1);
+    var suffix = (s0f > 0.001 || s1f < 0.999) ? "_loop" : "";
+    var ok = await offerFile("dre_" + t.slug + suffix + "." + format, blob);
+    track("export/" + format + "/" + t.slug);
+    if (!ok) alert("Could not offer the file for download in this view. Try opening the page directly.");
+  } catch (e) {
+    alert("Export failed: " + (e && e.message ? e.message : e));
+  } finally {
+    btn.disabled = false; btn.textContent = oldText;
+  }
+}
+
+function fmt(t){ t = Math.max(0, Math.round(t)); return Math.floor(t/60) + ":" + String(t%60).padStart(2,"0"); }
+function fmtDate(d){
+  if (!d) return "";
+  if (/^\d{4}$/.test(d)) return d;
+  var dt = new Date(d + "T00:00:00");
+  if (isNaN(dt.getTime())) return d;
+  return dt.toLocaleDateString(undefined, {day:"numeric", month:"short", year:"numeric"});
+}
+var ICON_PLAY = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>';
+var ICON_PAUSE = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>';
+
+var list = document.getElementById("list");
+var audios = {}, current = null, raf = 0, focused = null;
+
+function cssVar(n){ return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
+function drawWave(t, prog){
+  if (!t.canvas) return;
+  var c = t.canvas, dpr = window.devicePixelRatio || 1;
+  var w = c.clientWidth, h = c.clientHeight;
+  if (!w) return;
+  if (c.width !== Math.round(w*dpr)) { c.width = Math.round(w*dpr); c.height = Math.round(h*dpr); }
+  var g = c.getContext("2d"); g.setTransform(dpr,0,0,dpr,0,0); g.clearRect(0,0,w,h);
+  var n = t.peaks.length, bw = w/n, gap = Math.min(2, bw*.3);
+  var s0 = t.loopStart || 0, s1 = (t.loopEnd == null ? 1 : t.loopEnd);
+  for (var i = 0; i < n; i++) {
+    var ph = Math.max(3, t.peaks[i]*h*.92);
+    var frac = i/n;
+    var inLoop = frac >= s0 && frac <= s1;
+    g.fillStyle = frac < prog ? cssVar("--accent") : (inLoop ? cssVar("--wave") : "#332a2c");
+    g.fillRect(i*bw, (h-ph)/2, Math.max(1, bw-gap), ph);
+  }
+  if (t.trimOn) {
+    if (t.handleStart) t.handleStart.style.left = (s0*100) + "%";
+    if (t.handleEnd) t.handleEnd.style.left = (s1*100) + "%";
+  }
+}
+function get(slug){
+  if (!audios[slug]) {
+    var a = new Audio(); a.preload = "none"; a.src = TRACKS_BY_SLUG[slug].audioFile;
+    a.addEventListener("ended", function(){ setPlaying(slug,false); });
+    audios[slug] = a;
+  }
+  return audios[slug];
+}
+function setPlaying(slug, on){
+  var el = document.getElementById("t-" + slug); if (!el) return;
+  el.classList.toggle("playing", on);
+  var b = el.querySelector(".play"); if (!b) return;
+  b.innerHTML = on ? ICON_PAUSE : ICON_PLAY;
+  b.setAttribute("aria-label", (on ? "Pause " : "Play ") + el.dataset.title);
+  if (!on) cancelAnimationFrame(raf); else tick();
+}
+function tick(){
+  if (current) {
+    var a = audios[current.slug], t = current;
+    var d = a.duration || t.dur, p = d ? a.currentTime/d : 0;
+    var s1 = (t.loopEnd == null ? 1 : t.loopEnd);
+    if (t.loopOn && d && p >= s1 - 0.01) {
+      a.currentTime = (t.loopStart || 0) * d;
+    }
+    drawWave(t, p);
+    t.timeEl.textContent = fmt(a.currentTime) + " / " + fmt(d);
+    raf = requestAnimationFrame(tick);
+  }
+}
+function toggle(t){
+  var a = get(t.slug);
+  if (current && current.slug !== t.slug) { audios[current.slug].pause(); setPlaying(current.slug,false); }
+  if (a.paused) { current = t; a.play().catch(function(){}); setPlaying(t.slug,true); track("play/" + t.slug); }
+  else { a.pause(); setPlaying(t.slug,false); }
+}
+function seek(t, e){
+  var r = t.canvas.getBoundingClientRect(), p = Math.min(1, Math.max(0, (e.clientX - r.left)/r.width));
+  var a = get(t.slug);
+  var go = function(){ a.currentTime = p*(a.duration || t.dur); drawWave(t, p); t.timeEl.textContent = fmt(a.currentTime) + " / " + fmt(a.duration || t.dur); };
+  if (a.readyState < 1) { a.addEventListener("loadedmetadata", go, {once:true}); a.load(); } else go();
+  if (a.paused) { current = t; a.play().catch(function(){}); setPlaying(t.slug,true); track("play/" + t.slug); }
+}
+function seekBy(t, deltaSec){
+  var a = get(t.slug), d = a.duration || t.dur;
+  a.currentTime = Math.max(0, Math.min(d, (a.currentTime||0) + deltaSec));
+  drawWave(t, d ? a.currentTime/d : 0);
+}
+
+var TRACKS_BY_SLUG = {};
+var LAST_VISIT_KEY = "crateCall.lastVisit";
+var lastVisit = safe(function(){ return localStorage.getItem(LAST_VISIT_KEY); });
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+TRACKS.forEach(function(t){
+  TRACKS_BY_SLUG[t.slug] = t; t.loopStart = 0; t.loopEnd = 1; t.loopOn = false; t.trimOn = false;
+  t.isNew = !!(lastVisit && t.dateFound && /^\d{4}-\d{2}-\d{2}$/.test(t.dateFound) && t.dateFound > lastVisit);
+});
+safe(function(){ localStorage.setItem(LAST_VISIT_KEY, new Date().toISOString().slice(0,10)); });
+
+TRACKS.forEach(function(t, i){
+  var li = document.createElement("li");
+  li.className = "track"; li.id = "t-" + t.slug; li.dataset.title = t.title; li.dataset.mode = t.mode;
+  li.tabIndex = 0;
+  li.addEventListener("focus", function(){ focused = t; });
+
+  var licClass = t.licenseRisk === "none" ? "ok" : "caution";
+  var metaBits = [];
+  if (t.audioFile) metaBits.push('<span>' + fmt(t.dur) + '</span>');
+  metaBits.push('<span class="lic ' + licClass + '">' + t.licenseNote + '</span>');
+  if (t.datePublished) metaBits.push('<span>Published ' + fmtDate(t.datePublished) + '</span>');
+  if (t.dateFound) metaBits.push('<span>Found ' + fmtDate(t.dateFound) + '</span>');
+
+  var leadHtml = t.audioFile
+    ? '<button class="play" type="button" aria-label="Play ' + t.title + '">' + ICON_PLAY + '</button>'
+    : '<a class="ext" href="' + t.sourceUrl + '" target="_blank" rel="noopener">Open<br>source</a>';
+
+  var waveHtml = t.audioFile
+    ? '<div class="wave"><span class="time">0:00 / ' + fmt(t.dur) + '</span><canvas></canvas><div class="handle" style="display:none"></div><div class="handle" style="display:none"></div></div>'
+    : '';
+
+  var loopExportHtml = t.audioFile
+    ? '<button class="mini" type="button" data-act="loop" aria-pressed="false">Loop</button>' +
+      '<button class="mini" type="button" data-act="trim" aria-pressed="false">Trim</button>' +
+      '<button class="mini push" type="button" data-act="wav">Export WAV</button>' +
+      '<button class="mini" type="button" data-act="mp3">Export MP3</button>'
+    : '';
+
+  li.innerHTML =
+    leadHtml +
+    '<div><div class="head"><h2></h2></div><div class="meta">' + metaBits.join("") + '</div></div>' +
+    waveHtml +
+    '<div class="controls"><div class="verdicts" role="group" aria-label="Verdict for ' + t.title + '"></div>' + loopExportHtml + '</div>' +
+    '<textarea class="note" rows="1" placeholder="Note (optional): where you could use it, what you noticed" maxlength="400"></textarea>' +
+    '<details class="prov"><summary></summary><div class="body">' +
+      (t.author ? 'Author: ' + t.author + '<br>' : '') +
+      'Source: <a href="' + t.sourceUrl + '" target="_blank" rel="noopener">' + t.sourceUrl + '</a><br>' +
+      'Licence: ' + t.license +
+    '</div></details>';
+
+  li.querySelector("h2").innerHTML = esc(t.title) + (t.isNew ? '<span class="new-badge">NEW</span>' : '');
+  if (t.audioFile) {
+    t.canvas = li.querySelector("canvas"); t.timeEl = li.querySelector(".time"); t.li = li;
+    var handles = li.querySelectorAll(".handle");
+    t.handleStart = handles[0]; t.handleEnd = handles[1];
+  } else {
+    t.li = li;
+  }
+
+  var vbox = li.querySelector(".verdicts");
+  VERDICTS.forEach(function(v){
+    var b = document.createElement("button");
+    b.type = "button"; b.className = "v"; b.dataset.v = v[0]; b.textContent = v[1];
+    b.setAttribute("aria-pressed", state.v[t.slug] === v[0] ? "true" : "false");
+    b.addEventListener("click", function(){ setVerdict(t, v[0]); });
+    vbox.appendChild(b);
+  });
+
+  if (t.audioFile) {
+    li.querySelector(".play").addEventListener("click", function(){ toggle(t); });
+    t.canvas.parentNode.addEventListener("click", function(e){
+      if (e.target.classList.contains("handle")) return;
+      seek(t, e);
+    });
+    li.querySelectorAll(".mini").forEach(function(b){
+      var act = b.dataset.act;
+      if (act === "loop") {
+        b.addEventListener("click", function(){
+          t.loopOn = b.getAttribute("aria-pressed") !== "true";
+          b.setAttribute("aria-pressed", t.loopOn ? "true" : "false");
+          track("loop/" + t.slug);
+        });
+      } else if (act === "trim") {
+        b.addEventListener("click", function(){
+          t.trimOn = b.getAttribute("aria-pressed") !== "true";
+          b.setAttribute("aria-pressed", t.trimOn ? "true" : "false");
+          t.handleStart.style.display = t.trimOn ? "block" : "none";
+          t.handleEnd.style.display = t.trimOn ? "block" : "none";
+          drawWave(t, 0);
+        });
+      } else if (act === "wav" || act === "mp3") {
+        b.addEventListener("click", function(){ doExport(t, act, b); });
+      }
+    });
+    [t.handleStart, t.handleEnd].forEach(function(h, idx){
+      h.addEventListener("pointerdown", function(e){
+        e.preventDefault();
+        h.setPointerCapture(e.pointerId);
+        var wave = t.canvas.parentNode;
+        function move(ev){
+          var r = wave.getBoundingClientRect();
+          var p = Math.min(1, Math.max(0, (ev.clientX - r.left)/r.width));
+          if (idx === 0) t.loopStart = Math.min(p, t.loopEnd - 0.02);
+          else t.loopEnd = Math.max(p, t.loopStart + 0.02);
+          t.loopStart = Math.max(0, t.loopStart); t.loopEnd = Math.min(1, t.loopEnd);
+          drawWave(t, 0);
+        }
+        function up(ev){ h.releasePointerCapture(e.pointerId); window.removeEventListener("pointermove", move); window.removeEventListener("pointerup", up); }
+        window.addEventListener("pointermove", move);
+        window.addEventListener("pointerup", up);
+      });
+    });
+  }
+
+  var nt = li.querySelector(".note"); nt.value = state.n[t.slug] || "";
+  nt.addEventListener("input", function(){ state.n[t.slug] = nt.value; if (!nt.value) delete state.n[t.slug]; save(); });
+
+  list.appendChild(li);
+});
+
+function setVerdict(t, v){
+  state.v[t.slug] = (state.v[t.slug] === v) ? null : v;
+  if (!state.v[t.slug]) delete state.v[t.slug];
+  save(); refresh(); track("verdict/" + v + "/" + t.slug);
+}
+
+function refresh(){
+  var modeTracks = TRACKS.filter(function(t){ return t.mode === state.mode; });
+  var counts = {all:modeTracks.length, love:0, keep:0, maybe:0, drop:0, none:0}, rated = 0;
+  modeTracks.forEach(function(t){
+    var v = state.v[t.slug];
+    if (v) { counts[v]++; rated++; } else counts.none++;
+  });
+  TRACKS.forEach(function(t){
+    var inMode = t.mode === state.mode;
+    var v = state.v[t.slug];
+    t.li.querySelectorAll(".v").forEach(function(b){ b.setAttribute("aria-pressed", b.dataset.v === v ? "true" : "false"); });
+    t.li.hidden = !inMode || !(state.filter === "all" || (state.filter === "none" ? !v : v === state.filter));
+  });
+  var tally = document.getElementById("tally"); tally.innerHTML = "";
+  [["all","All"],["love","Love"],["keep","Keep"],["maybe","Maybe"],["drop","Drop"],["none","Unrated"]].forEach(function(f){
+    var b = document.createElement("button"); b.type = "button"; b.className = "chip";
+    b.setAttribute("aria-pressed", state.filter === f[0] ? "true" : "false");
+    b.innerHTML = f[1] + "<b>" + counts[f[0]] + "</b>";
+    b.addEventListener("click", function(){ state.filter = f[0]; refresh(); });
+    tally.appendChild(b);
+  });
+  document.getElementById("count").textContent = rated + " of " + modeTracks.length + " rated";
+  document.getElementById("modeMusic").setAttribute("aria-pressed", state.mode === "music" ? "true" : "false");
+  document.getElementById("modeSfx").setAttribute("aria-pressed", state.mode === "sfx" ? "true" : "false");
+  var tag = document.getElementById("tagline");
+  tag.innerHTML = state.mode === "music"
+    ? "Music candidates for the VR game. Press play, choose a verdict, add a note if something stands out. Press <kbd>?</kbd> any time for shortcuts."
+    : "SFX candidates &mdash; verified CC0 sources, linked rather than hosted here. Open a source to preview, then rate and note it. Press <kbd>?</kbd> for shortcuts.";
+  TRACKS.forEach(function(t){ if (t.canvas) { var a = audios[t.slug]; drawWave(t, a && a.duration ? a.currentTime/a.duration : 0); } });
+}
+
+document.getElementById("modeMusic").addEventListener("click", function(){ state.mode = "music"; state.filter = "all"; save(); refresh(); });
+document.getElementById("modeSfx").addEventListener("click", function(){ state.mode = "sfx"; state.filter = "all"; save(); refresh(); });
+
+var who = document.getElementById("who"); who.value = state.who;
+who.addEventListener("input", function(){ state.who = who.value; save(); });
+
+function buildFeedbackText(){
+  var lines = ["CrateCall feedback" + (state.who ? " from " + state.who : ""), ""];
+  VERDICTS.forEach(function(v){
+    var items = TRACKS.filter(function(t){ return state.v[t.slug] === v[0]; });
+    if (!items.length) return;
+    lines.push(v[1].toUpperCase());
+    items.forEach(function(t){ lines.push("- " + t.title + (state.n[t.slug] ? ": " + state.n[t.slug].replace(/\s+/g," ") : "")); });
+    lines.push("");
+  });
+  var unrated = TRACKS.filter(function(t){ return !state.v[t.slug] && state.n[t.slug]; });
+  if (unrated.length) { lines.push("NOTES ONLY"); unrated.forEach(function(t){ lines.push("- " + t.title + ": " + state.n[t.slug].replace(/\s+/g," ")); }); }
+  return lines.join("\n").trim();
+}
+document.getElementById("send").addEventListener("click", function(){
+  var text = buildFeedbackText();
+  var out = document.getElementById("out"), ta = document.getElementById("outText");
+  ta.value = text; out.hidden = false; ta.focus(); ta.select();
+  safe(function(){ if (navigator.clipboard) navigator.clipboard.writeText(text); });
+  var subject = "CrateCall feedback" + (state.who ? " from " + state.who : "");
+  var mailUrl = "mailto:" + MAILTO + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(text);
+  safe(function(){ window.location.href = mailUrl; });
+  track("feedback/sent");
+  out.scrollIntoView({behavior:"smooth", block:"center"});
+});
+
+/* ---- suggest a track (mailto) ------------------------------------------ */
+var suggestModal = document.getElementById("suggestModal");
+document.getElementById("suggestOpen").addEventListener("click", function(){ suggestModal.classList.add("open"); document.getElementById("sgTitle").focus(); });
+function closeSuggest(){ suggestModal.classList.remove("open"); document.getElementById("sgOut").hidden = true; }
+document.getElementById("sgCancel").addEventListener("click", closeSuggest);
+suggestModal.addEventListener("click", function(e){ if (e.target === suggestModal) closeSuggest(); });
+document.getElementById("sgSend").addEventListener("click", function(){
+  var title = document.getElementById("sgTitle").value.trim();
+  var url = document.getElementById("sgUrl").value.trim();
+  var lic = document.getElementById("sgLicence").value.trim();
+  var notes = document.getElementById("sgNotes").value.trim();
+  if (!title || !url) { alert("Title and source URL help us check it — please fill both in."); return; }
+  var body = "Suggested for CrateCall (" + state.mode + " mode)\n\nTitle: " + title + "\nSource: " + url + "\nLicence stated: " + (lic || "not given") + "\nNotes: " + (notes || "-") + (state.who ? "\n\nSubmitted by: " + state.who : "");
+  var mailUrl = "mailto:" + MAILTO + "?subject=" + encodeURIComponent("Track suggestion: " + title) + "&body=" + encodeURIComponent(body);
+  safe(function(){ if (navigator.clipboard) navigator.clipboard.writeText(body); });
+  safe(function(){ window.location.href = mailUrl; });
+  var sgOut = document.getElementById("sgOut"), sgOutText = document.getElementById("sgOutText");
+  sgOutText.value = body; sgOut.hidden = false; sgOutText.focus(); sgOutText.select();
+  track("suggest/sent");
+});
+
+/* ---- menu sheet ---------------------------------------------------------*/
+var sheet = document.getElementById("sheet"), sheetBackdrop = document.getElementById("sheetBackdrop");
+function openSheet(){ sheet.classList.add("open"); sheetBackdrop.classList.add("open"); }
+function closeSheet(){ sheet.classList.remove("open"); sheetBackdrop.classList.remove("open"); }
+document.getElementById("menuBtn").addEventListener("click", function(){ sheet.classList.contains("open") ? closeSheet() : openSheet(); });
+document.getElementById("sheetClose").addEventListener("click", closeSheet);
+sheetBackdrop.addEventListener("click", closeSheet);
+
+/* ---- keyboard shortcuts -------------------------------------------------*/
+window.addEventListener("keydown", function(e){
+  if (e.target && (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA")) return;
+  if (e.key === "?") { sheet.classList.contains("open") ? closeSheet() : openSheet(); return; }
+  if (e.key === "Escape") { closeSheet(); closeSuggest(); return; }
+  if (e.key === "[") { document.getElementById("modeMusic").click(); return; }
+  if (e.key === "]") { document.getElementById("modeSfx").click(); return; }
+  var visible = TRACKS.filter(function(t){ return t.mode === state.mode && !t.li.hidden; });
+  if (!visible.length) return;
+  var idx = focused ? visible.indexOf(focused) : -1;
+  if (e.key === "ArrowDown") { e.preventDefault(); var n = visible[Math.min(visible.length-1, idx+1)] || visible[0]; n.li.focus(); return; }
+  if (e.key === "ArrowUp") { e.preventDefault(); var p = visible[Math.max(0, idx-1)] || visible[0]; p.li.focus(); return; }
+  if (!focused || focused.mode !== state.mode) return;
+  if (e.key === " " || e.key === "Enter") { e.preventDefault(); if (focused.audioFile) toggle(focused); else { var extLink = focused.li.querySelector(".ext"); if (extLink) extLink.click(); } return; }
+  if (e.key === "ArrowLeft") { e.preventDefault(); if (focused.audioFile) seekBy(focused, -5); return; }
+  if (e.key === "ArrowRight") { e.preventDefault(); if (focused.audioFile) seekBy(focused, 5); return; }
+  var keyMap = {l:"love", k:"keep", m:"maybe", d:"drop"};
+  var lower = e.key.toLowerCase();
+  if (keyMap[lower]) { setVerdict(focused, keyMap[lower]); }
+});
+
+function dismissFreshBanner(){ document.getElementById("freshBanner").hidden = true; safe(function(){ sessionStorage.setItem("crateCall.freshDismissed","1"); }); }
+function updateFreshBanner(){
+  var banner = document.getElementById("freshBanner");
+  var newCount = TRACKS.filter(function(t){ return t.isNew; }).length;
+  var dismissed = safe(function(){ return sessionStorage.getItem("crateCall.freshDismissed"); });
+  if (newCount > 0 && !dismissed) {
+    banner.hidden = false;
+    banner.innerHTML = '<span>' + newCount + ' track' + (newCount===1?'':'s') + ' added since your last visit</span><button type="button" aria-label="Dismiss">&times;</button>';
+    banner.onclick = dismissFreshBanner;
+  } else {
+    banner.hidden = true;
+  }
+}
+
+window.addEventListener("resize", refresh);
+refresh();
+updateFreshBanner();
+track("open");
+</script>
