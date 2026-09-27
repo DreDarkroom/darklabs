@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>RESONANCE CORE</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="game-container">
+        <canvas id="gameCanvas" width="960" height="540"></canvas>
+        <div id="mobile-hud">
+            <div id="dpad">
+                <button id="btn-left" class="hud-btn">◄</button>
+                <button id="btn-right" class="hud-btn">►</button>
+            </div>
+            <div id="action-cluster">
+                <button id="btn-strike" class="hud-btn">S</button>
+                <button id="btn-jump" class="hud-btn">J</button>
+            </div>
+        </div>
+        <div id="ui-layer">
+            <!-- Start Screen / Victory Overlay will go here -->
+        </div>
+    </div>
+    <script src="game.js"></script>
+</body>
+</html>
