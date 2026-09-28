@@ -1,0 +1,413 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta name="darkreader-lock">
+<meta name="theme-color" content="#060607">
+<title>ChungusCello</title>
+<meta name="description" content="A physically-modelled cello in the browser. Bow, pluck, tremolo and chug it; loop it; sing into it; turn any sound into a cello-playable sampler; play it with MIDI or in VR on a Quest. No samples, no sign-up.">
+<meta property="og:title" content="ChungusCello — Dre Darklabs">
+<meta property="og:description" content="Bow, pluck, chug, loop and sing into a physically-modelled cello. Works on phones and in VR.">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<a class="labs-link" href="../">&larr; Darkroom Labs</a>
+
+<main>
+  <header class="head">
+    <pre class="cello" id="celloArt" aria-hidden="true">
+      __
+     |==|
+     |==|     CHUNGUSCELLO
+     |==|
+   .-'||'-.
+  (   ||   )
+   )  ||  (
+  (  =||=  )
+   '-.||.-'
+      ||</pre>
+    <h1 class="title">ChungusCello<span class="blink">_</span></h1>
+    <p class="tagline">a physically-modelled cello &mdash; bow it, pluck it, chug it, loop it, sing into it</p>
+    <canvas class="scope" id="scope" width="760" height="36" aria-hidden="true"></canvas>
+  </header>
+
+  <section class="start" id="startScreen">
+    <button id="startBtn" class="start-btn">tap to rosin the bow</button>
+    <p class="hint">(browsers block audio until you interact once &mdash; one tap and it's live)</p>
+    <p class="hint">iPhone / iPad: if you hear nothing, check the silent switch &middot; headphones recommended for the mic features</p>
+    <p class="hint" id="startErr" role="alert"></p>
+  </section>
+
+  <!-- ============ THE INSTRUMENT ============ -->
+  <section class="panel" id="panel" hidden>
+
+    <div class="row arts-row">
+      <div class="arts" id="arts" role="radiogroup" aria-label="Articulation"></div>
+    </div>
+
+    <div class="row quick">
+      <label class="inline grow"><span class="lbl">Sound</span> <select id="presetSel" aria-label="Preset"></select></label>
+      <span class="oct-group" title="Octave of the computer keys and on-screen keys (Z / X)">
+        <span class="dim">Oct</span>
+        <button id="octDown" class="oct-btn" aria-label="Octave down">&minus;</button>
+        <span id="octLabel">0</span>
+        <button id="octUp" class="oct-btn" aria-label="Octave up">+</button>
+      </span>
+      <button id="sectionBtn" class="btn small" title="Solo, duet, quartet or a section of eight">Players: 1</button>
+      <button id="dsBtn" class="btn small" title="Add a second note above every note (C)">Double stop: off</button>
+      <button id="droneBtn" class="btn small" title="Sustained open-string drone (Q)">Drone</button>
+      <button id="panicBtn" class="btn small danger" title="All notes off (Esc)">Panic</button>
+    </div>
+
+    <div class="row surface">
+      <div class="surface-bar">
+        <div class="tabs" role="tablist" aria-label="Play surface">
+          <button role="tab" class="tab on" id="tabFb" aria-selected="true" aria-controls="fingerboard">Fingerboard</button>
+          <button role="tab" class="tab" id="tabKeys" aria-selected="false" aria-controls="keysWrap">Keys</button>
+        </div>
+        <span class="fb-opts" id="fbOpts">
+          <label class="inline"><span class="lbl">Snap</span> <select id="snapSel" aria-label="Pitch snapping"><option value="soft">soft (keeps vibrato)</option><option value="snap">to notes</option><option value="free">fretless</option></select></label>
+          <label class="inline"><span class="lbl">Span</span> <select id="rangeSel" aria-label="Fingerboard span"><option value="12">1 octave</option><option value="19" selected>1½ octaves</option><option value="24">2 octaves</option></select></label>
+        </span>
+      </div>
+      <canvas id="fingerboard" class="fingerboard" aria-label="Cello fingerboard: touch a string to play, slide for pitch, wiggle for vibrato, move across the string to move the bow"></canvas>
+      <p class="dim small-note" id="fbHelp">touch a string to bow it &middot; slide along for pitch &middot; wiggle for vibrato &middot; move across the string to shift the bow toward the bridge &middot; two fingers = double stop</p>
+      <div id="keysWrap" class="keys-wrap" hidden>
+        <div class="keyboard" id="keyboard"></div>
+        <p class="dim small-note">computer keys <b>A W S E D F T G Y H U J K O L P ; '</b> &middot; <b>Z / X</b> octave &middot; drag across keys to glide in mono mode</p>
+      </div>
+    </div>
+
+    <div class="row bowrow">
+      <div class="bowpad-wrap">
+        <h2 class="section-label">bow <span class="dim" id="bowReadout"></span></h2>
+        <div class="bowpad" id="bowpad" aria-label="Bow pad: left–right is bow position, up–down is bow pressure"><canvas id="bowCanvas"></canvas></div>
+        <div class="bow-labels"><span>&larr; sul tasto</span><span>pressure &uarr;</span><span>ponticello &rarr;</span></div>
+        <label class="inline check" title="Notes only sound while you move on the pad, like drawing a real bow"><input type="checkbox" id="handBow"> Hand bow &mdash; stroke the pad to bow</label>
+      </div>
+      <div class="knobs">
+        <div class="knob-group"><label for="dynKnob">Dynamics <span class="dim" id="dynVal"></span></label><input type="range" id="dynKnob" data-set="dynamics" min="0" max="1" step="0.01"></div>
+        <div class="knob-group"><label for="vibKnob">Vibrato <span class="dim">depth</span></label><input type="range" id="vibKnob" data-set="vibDepth" min="0" max="50" step="1"></div>
+        <div class="knob-group"><label for="vibRateKnob">Vibrato <span class="dim">rate</span></label><input type="range" id="vibRateKnob" data-set="vibRate" min="3" max="8" step="0.1"></div>
+        <div class="knob-group"><label for="glideKnob">Glide</label><input type="range" id="glideKnob" data-set="glide" min="0" max="0.4" step="0.005"></div>
+        <div class="knob-group"><label for="revKnob">Reverb</label><input type="range" id="revKnob" data-set="reverbMix" min="0" max="1" step="0.01"></div>
+        <div class="knob-group"><label for="volKnob">Volume</label><input type="range" id="volKnob" data-set="volume" min="0" max="1" step="0.01"></div>
+      </div>
+    </div>
+
+    <div class="row looper" id="looper">
+      <h2 class="section-label">loop station <span class="dim">&mdash; Space rec / overdub &middot; Enter stop / play &middot; Backspace undo &middot; page-turner pedals work too</span></h2>
+      <div class="loop-main">
+        <canvas id="loopRing" class="loop-ring" width="132" height="132" aria-hidden="true"></canvas>
+        <div class="loop-btns">
+          <button id="loopRec" class="btn big rec" title="Record / overdub (Space)">&#9679; Rec</button>
+          <button id="loopStop" class="btn big" title="Stop / play (Enter)">&#9632; Stop</button>
+          <button id="loopUndo" class="btn" title="Undo last layer (Backspace)">&#8630; Undo</button>
+          <button id="loopClear" class="btn danger">&#10005; Clear</button>
+        </div>
+        <div class="loop-opts">
+          <label class="inline">Length <select id="loopBars"><option value="free">free &mdash; sets the tempo</option><option value="1">1 bar</option><option value="2">2 bars</option><option value="4">4 bars</option><option value="8">8 bars</option></select></label>
+          <label class="inline">BPM <input type="number" id="bpm" min="30" max="300" step="1"></label>
+          <button id="tapBtn" class="btn small" title="Tap tempo (T)">Tap</button>
+          <label class="inline check"><input type="checkbox" id="metroChk"> Metronome</label>
+          <label class="inline check"><input type="checkbox" id="countInChk" checked> Count-in</label>
+          <label class="inline check"><input type="checkbox" id="onePassChk"> One-pass overdubs</label>
+        </div>
+      </div>
+      <div class="layers" id="layers"></div>
+      <p class="status" id="loopStatus" role="status"></p>
+    </div>
+
+    <p class="status" id="status" role="status"></p>
+  </section>
+
+  <!-- ============ DRAWERS ============ -->
+  <div class="drawers" id="drawers" hidden>
+
+    <details class="drawer" id="soundDrawer">
+      <summary><span class="d-name">Sound</span><span class="d-sub">strings, bow, body, players, the Chungus amp and effects</span></summary>
+      <div class="d-body">
+        <h3 class="sub">Strings &amp; key</h3>
+        <div class="ed-grid">
+          <label class="field">Tuning<select data-set="tuning" id="tuningSel"></select></label>
+          <label class="field">A4 reference (Hz)<input type="number" data-set="a4" min="400" max="480" step="1"></label>
+          <label class="field">Key<select data-set="keyRoot" data-num id="keySel"></select></label>
+          <label class="field">Scale<select data-set="scale" id="scaleSel"></select></label>
+          <label class="field">Transpose (semitones)<input type="number" data-set="transpose" min="-24" max="24" step="1"></label>
+        </div>
+        <h3 class="sub">Bow</h3>
+        <div class="ed-grid">
+          <div class="knob-group"><label>Bow position <span class="dim">tasto &rarr; ponti</span></label><input type="range" data-set="bowPos" min="0" max="1" step="0.01"></div>
+          <div class="knob-group"><label>Bow pressure</label><input type="range" data-set="pressure" min="0" max="1" step="0.01"></div>
+          <div class="knob-group"><label>Brightness</label><input type="range" data-set="bright" min="0" max="1" step="0.01"></div>
+          <div class="knob-group"><label>Attack</label><input type="range" data-set="attack" min="0.2" max="4" step="0.05"></div>
+          <div class="knob-group"><label>Release</label><input type="range" data-set="release" min="0.03" max="2" step="0.01"></div>
+          <div class="knob-group"><label>Vibrato delay</label><input type="range" data-set="vibDelay" min="0" max="1" step="0.01"></div>
+        </div>
+        <h3 class="sub">Body &amp; resonance</h3>
+        <div class="ed-grid">
+          <label class="field">Body<select data-set="body" id="bodySel"></select></label>
+          <div class="knob-group"><label>Body mix</label><input type="range" data-set="bodyMix" min="0" max="1" step="0.01"></div>
+          <div class="knob-group"><label>Sympathetic strings</label><input type="range" data-set="symp" min="0" max="1" step="0.01"></div>
+        </div>
+        <h3 class="sub">Players</h3>
+        <div class="ed-grid">
+          <label class="field">Voice mode<select data-set="voiceMode"><option value="poly">poly &mdash; chords</option><option value="mono">mono legato &mdash; slurs between notes</option></select></label>
+          <label class="field">Players<select data-set="section" data-num><option value="1">solo</option><option value="2">duet</option><option value="4">quartet</option><option value="8">section of 8</option></select></label>
+          <div class="knob-group"><label>Section spread (cents)</label><input type="range" data-set="sectionSpread" min="0" max="30" step="1"></div>
+          <label class="field">Double stop<select data-set="doubleStop" id="dsSel"></select></label>
+          <label class="field">Max voices<select data-set="maxVoices" data-num><option value="8">8 (older phones)</option><option value="16">16</option><option value="24">24 (desktop)</option></select></label>
+        </div>
+        <h3 class="sub">Chungus amp <span class="dim">&mdash; the Chug articulation turns it up to at least 55%</span></h3>
+        <div class="ed-grid">
+          <div class="knob-group"><label>Drive</label><input type="range" data-set="drive" min="0" max="1" step="0.01"></div>
+          <div class="knob-group"><label>Amp tone</label><input type="range" data-set="driveTone" min="0" max="1" step="0.01"></div>
+          <label class="field">Chug rhythm<select data-set="chugPattern" id="chugSel"></select></label>
+        </div>
+        <h3 class="sub">EQ &amp; space</h3>
+        <div class="ed-grid">
+          <div class="knob-group"><label>Low (dB)</label><input type="range" data-set="eqLow" min="-12" max="12" step="0.5"></div>
+          <div class="knob-group"><label>Mid (dB)</label><input type="range" data-set="eqMid" min="-12" max="12" step="0.5"></div>
+          <div class="knob-group"><label>High (dB)</label><input type="range" data-set="eqHigh" min="-12" max="12" step="0.5"></div>
+          <div class="knob-group"><label>Chorus / ensemble</label><input type="range" data-set="chorus" min="0" max="1" step="0.01"></div>
+          <div class="knob-group"><label>Delay</label><input type="range" data-set="delayMix" min="0" max="1" step="0.01"></div>
+          <label class="field">Delay time<select data-set="delayDiv"><option value="1/8">1/8</option><option value="3/16">dotted 1/8</option><option value="1/4">1/4</option><option value="3/8">dotted 1/4</option><option value="1/12">1/8 triplet</option></select></label>
+          <div class="knob-group"><label>Delay feedback</label><input type="range" data-set="delayFb" min="0" max="0.9" step="0.01"></div>
+          <label class="field">Reverb room<select data-set="reverbType" id="roomSel"></select></label>
+          <div class="knob-group"><label>Reverb</label><input type="range" data-set="reverbMix" min="0" max="1" step="0.01"></div>
+        </div>
+      </div>
+    </details>
+
+    <details class="drawer" id="voiceDrawer">
+      <summary><span class="d-name">Voice &amp; mic</span><span class="d-sub">tuner, sing-to-play and the Chungus sampler</span></summary>
+      <div class="d-body">
+        <p class="dim small-note">The mic is only opened when you press one of these, and nothing leaves your device. Use headphones so the cello doesn't feed back into the mic.</p>
+
+        <h3 class="sub">Tuner <span class="dim">&mdash; tune a real cello (or anything)</span></h3>
+        <div class="tuner">
+          <button id="tunerBtn" class="btn small">Start tuner</button>
+          <div class="tuner-read"><span id="tunerNote" class="tuner-note">&ndash;</span><span id="tunerHz" class="dim">&nbsp;</span></div>
+          <canvas id="tunerCanvas" width="320" height="44" aria-hidden="true"></canvas>
+          <div class="ref-strings" id="refStrings"></div>
+        </div>
+
+        <h3 class="sub">Sing to play <span class="dim">&mdash; your voice bows the cello</span></h3>
+        <div class="ed-grid">
+          <button id="singBtn" class="btn small">Start singing</button>
+          <label class="field">Octave<select id="singOct"><option value="-2">&minus;2</option><option value="-1">&minus;1</option><option value="0" selected>as sung</option><option value="1">+1</option></select></label>
+          <label class="inline check"><input type="checkbox" id="singSnap" checked> Snap to key</label>
+          <div class="knob-group"><label>Gate (sensitivity)</label><input type="range" id="singGate" min="0.002" max="0.08" step="0.001" value="0.012"></div>
+          <div class="meter"><span id="singMeter"></span></div>
+          <span class="dim small-note" id="singRead"></span>
+        </div>
+
+        <h3 class="sub">Chungus sampler <span class="dim">&mdash; any sound becomes a playable instrument, like MeowSynth</span></h3>
+        <div class="ed-grid">
+          <label class="field">Sound source<select data-set="source"><option value="model">string model</option><option value="sampler">Chungus sampler</option><option value="both">both, layered</option></select></label>
+          <div class="knob-group"><label>Sampler level in the layer</label><input type="range" data-set="samplerMix" min="0" max="1" step="0.01"></div>
+        </div>
+        <div class="slots" id="slots"></div>
+        <p class="dim small-note">Record or load a sound (sing a steady note, hum, "chug", play a real cello note&hellip;), then set <b>Sound source</b> to sampler or both. Pitch is detected automatically; the loop point is found and crossfaded so held notes sustain. Recordings stay in this browser.</p>
+        <div class="ed-grid">
+          <label class="inline check"><input type="checkbox" id="micLoop"> Send the mic into the looper (loop a real instrument)</label>
+          <label class="inline check"><input type="checkbox" id="micMon"> Monitor the mic (headphones only!)</label>
+        </div>
+        <p class="status" id="micStatus" role="status"></p>
+      </div>
+    </details>
+
+    <details class="drawer" id="phraseDrawer">
+      <summary><span class="d-name">Phrases</span><span class="d-sub">Bach, Pachelbel, Beethoven and some Chungus originals &mdash; play, loop, learn</span></summary>
+      <div class="d-body">
+        <div class="ed-flags">
+          <label class="inline check"><input type="checkbox" id="phLoop" checked> Loop</label>
+          <label class="inline">Transpose <select id="phTrans"><option value="-12">&minus;12</option><option value="-5">&minus;5</option><option value="0" selected>0</option><option value="5">+5</option><option value="7">+7</option><option value="12">+12</option></select></label>
+          <button id="phStop" class="btn small">Stop phrase</button>
+        </div>
+        <div class="phrases" id="phrases"></div>
+        <p class="dim small-note"><b>&#10227; into looper</b> sets the loop length to the phrase, counts nothing in, and records one pass as a layer &mdash; then you play over it.</p>
+      </div>
+    </details>
+
+    <details class="drawer" id="recDrawer">
+      <summary><span class="d-name">Record &amp; export</span><span class="d-sub">record what you play to WAV + MIDI, export loops as stems and a Reaper project</span></summary>
+      <div class="d-body">
+        <h3 class="sub">Performance recorder <span class="dim">&mdash; everything you hear (R)</span></h3>
+        <div class="ex-btns">
+          <button id="recBtn" class="btn primary">&#9679; Record</button>
+          <span id="recTime" class="rec-time">0:00</span>
+          <button id="recWav" class="btn small" disabled>Download WAV</button>
+          <button id="recMidi" class="btn small" disabled>Download MIDI</button>
+          <label class="inline">Bit depth <select id="bitSel"><option value="16">16-bit</option><option value="24" selected>24-bit</option></select></label>
+        </div>
+        <h3 class="sub">Loop exports</h3>
+        <div class="ex-btns">
+          <label class="inline">Repeats <select id="exRepeats"><option value="1">1&times;</option><option value="2">2&times;</option><option value="4">4&times;</option></select></label>
+          <label class="inline check"><input type="checkbox" id="exNorm" checked> Normalise mix to &minus;1 dBFS</label>
+          <button id="exMix" class="btn small">Loop mix (.wav)</button>
+          <button id="exStems" class="btn small primary">Stems + Reaper project (.zip)</button>
+        </div>
+        <p class="dim small-note">Stems are each loop layer as its own WAV, all the same length from zero, plus the mix and a <b>.RPP</b> that opens in Reaper with every layer on its own track. Other DAWs: drag the WAVs in at bar 1 and set the tempo from <b>info.txt</b>.</p>
+        <p class="status" id="exStatus" role="status"></p>
+      </div>
+    </details>
+
+    <details class="drawer" id="midiDrawer">
+      <summary><span class="d-name">MIDI</span><span class="d-sub">keyboards, MPE controllers, breath controllers, pedals &mdash; in and out</span></summary>
+      <div class="d-body">
+        <p class="dim small-note" id="midiSupport"></p>
+        <div class="ed-grid">
+          <button id="midiEnable" class="btn small">Enable MIDI</button>
+          <label class="field">Input<select id="midiIn"><option value="">all inputs</option></select></label>
+          <label class="field">Output<select id="midiOut"><option value="">off</option></select></label>
+          <label class="inline check"><input type="checkbox" id="midiMpe"> MPE (per-note bend, pressure, timbre)</label>
+          <label class="field">Bend range<select id="midiBend"><option value="2">&plusmn;2</option><option value="12">&plusmn;12</option><option value="24">&plusmn;24</option><option value="48">&plusmn;48 (MPE)</option></select></label>
+        </div>
+        <p class="dim small-note"><b>Velocity</b> &rarr; bow speed &middot; <b>pitch bend</b> slides &middot; <b>mod wheel</b> adds vibrato &middot; <b>breath (CC2) / expression (CC11)</b> &rarr; dynamics, live, like a crescendo on the bow &middot; <b>CC74</b> &rarr; bow position &middot; <b>aftertouch</b> &rarr; bow pressure &middot; <b>sustain pedal</b> holds &middot; <b>program change</b> picks a sound. Out: whatever you play here is sent to the output port (GM program 43, Cello).</p>
+        <p class="status" id="midiStatus" role="status"></p>
+      </div>
+    </details>
+
+    <details class="drawer" id="vrDrawer">
+      <summary><span class="d-name">VR &amp; 3D</span><span class="d-sub">play a cello in your room on Meta Quest 2 / 3, or look at it in 3D</span></summary>
+      <div class="d-body">
+        <div class="ex-btns">
+          <button id="vrBtn" class="btn primary" disabled>Enter VR</button>
+          <button id="view3dBtn" class="btn small">3D view</button>
+          <span class="dim small-note" id="vrSupport">checking for a headset&hellip;</span>
+        </div>
+        <div class="view3d" id="view3d" hidden></div>
+        <div class="vr-help">
+          <p><b>In the headset:</b> a cello stands in front of you. Your <b>left hand</b> stops the strings: hold the <b>left trigger</b> (or pinch) with your hand on the neck &mdash; higher up the neck is higher pitch, like the real thing. Your <b>right hand</b> holds the bow: draw it across the strings near the bridge. Bow speed is loudness, the right trigger adds weight, and tilting the bow picks the string.</p>
+          <p><b>Easy mode</b> (default on): the bow sounds whenever the right trigger is held and you move your hand, so you don't need to hit the strings exactly. <b>A</b> = next articulation, <b>B</b> = loop rec/overdub, <b>X</b> = drone, <b>Y</b> = recenter the cello, thumbstick = dynamics. Hand tracking works too: pinch to press.</p>
+          <label class="inline check"><input type="checkbox" id="vrEasy" checked> Easy mode</label>
+          <label class="inline check"><input type="checkbox" id="vrSnap" checked> Snap the left hand to the key</label>
+          <label class="inline check"><input type="checkbox" id="vrAR"> Passthrough (see your room, Quest 3 / Quest 2 grey)</label>
+        </div>
+        <p class="status" id="vrStatus" role="status"></p>
+      </div>
+    </details>
+
+    <details class="drawer" id="presetDrawer">
+      <summary><span class="d-name">Presets &amp; share</span><span class="d-sub">sounds, your own saves, share links</span></summary>
+      <div class="d-body">
+        <div class="preset-grid" id="presetGrid"></div>
+        <h3 class="sub">Your sounds</h3>
+        <div class="ex-btns">
+          <input type="text" id="userPresetName" maxlength="28" placeholder="name this sound" aria-label="Preset name">
+          <button id="savePreset" class="btn small">Save current sound</button>
+        </div>
+        <div class="preset-grid" id="userPresets"></div>
+        <h3 class="sub">Share</h3>
+        <div class="ex-btns">
+          <button id="shareBtn" class="btn small">Copy share link</button>
+          <button id="exportSettings" class="btn small">Save settings (.json)</button>
+          <label class="btn small file-btn">Open settings<input type="file" id="importSettings" accept=".json,application/json"></label>
+          <button id="resetBtn" class="btn small danger">Reset to defaults</button>
+        </div>
+        <p class="dim small-note">Share links carry the whole sound (not recordings or loops). Everything else autosaves in this browser.</p>
+        <p class="status" id="shareStatus" role="status"></p>
+      </div>
+    </details>
+
+    <details class="drawer" id="learnDrawer">
+      <summary><span class="d-name">Learn</span><span class="d-sub">ten short lessons: how a cello works and how to play this one</span></summary>
+      <div class="d-body learn">
+        <p>Each lesson has a <b>Try it</b> button that sets things up. Read, try, change one thing, listen again.</p>
+        <details class="lesson"><summary>1 &middot; Four strings in fifths</summary>
+          <p>A cello's strings are tuned <b>C2 G2 D3 A3</b> &mdash; each a perfect fifth (seven semitones) above the last, an octave below a viola. The fingerboard shows them left to right (bottom to top in landscape), lowest first, with the nut at the top/left. The open-string names sit by the nut.</p>
+          <p>This isn't a recording. Each note is a <b>digital waveguide</b>: a simulation of waves running up and down a string, with a bow that grips and slips (the &ldquo;stick&ndash;slip&rdquo; or Helmholtz motion) &mdash; once per cycle, 65 times a second on the open C.</p>
+          <button class="btn small try" data-try="preset:concert,surface:fb">Try it</button>
+        </details>
+        <details class="lesson"><summary>2 &middot; The bow: speed, weight and where it sits</summary>
+          <p>Three things shape a bowed note: <b>bow speed</b> (mostly loudness &mdash; the Dynamics slider, or velocity), <b>bow pressure</b> (how hard it presses: too little and the tone goes airy, too much and it crunches) and the <b>contact point</b>. Near the bridge (<i>sul ponticello</i>) the tone is bright and glassy; over the fingerboard (<i>sul tasto</i>) it's soft and flutey.</p>
+          <p><b>Try:</b> hold a note, then drag around the bow pad &mdash; left/right is contact point, up/down is pressure. Then switch on <b>Hand bow</b> and stroke the pad back and forth while you hold a note: now you are the bow.</p>
+          <button class="btn small try" data-try="preset:concert,art:arco">Try it</button>
+        </details>
+        <details class="lesson"><summary>3 &middot; The left hand: intonation, vibrato, slides</summary>
+          <p>A cello has no frets, so the player's finger decides the exact pitch (<b>intonation</b>). <b>Vibrato</b> is the finger rocking back and forth &mdash; usually 5&ndash;7 times a second, a few cents wide. A <b>glissando</b> is a slide between notes.</p>
+          <p><b>Try:</b> set Snap to <b>fretless</b>, find a note by ear, then wiggle your finger. Then set Snap back to <b>soft</b>: still fingers get pulled into tune, but your wiggle stays.</p>
+          <button class="btn small try" data-try="snap:free,preset:concert">Try it (fretless)</button>
+        </details>
+        <details class="lesson"><summary>4 &middot; Articulations</summary>
+          <p><b>Arco</b> is normal bowing. <b>Spiccato</b> bounces the bow for short notes. <b>Pizzicato</b> plucks with a finger. <b>Tremolo</b> moves the bow back and forth as fast as possible &mdash; the sound of suspense in film scores. <b>Col legno</b> hits the string with the wood of the bow. <b>Harmonics</b> touch the string lightly so it vibrates in halves: a pure, whistling note an octave up. Number keys <b>1&ndash;9</b> switch between them.</p>
+          <button class="btn small try" data-try="phrase:horror">Try it (tremolo horror)</button>
+        </details>
+        <details class="lesson"><summary>5 &middot; Double stops and the section</summary>
+          <p>Bowing two strings at once is a <b>double stop</b>. Because the strings are a fifth apart, fifths are the most natural &mdash; and a fifth is exactly a guitarist's <b>power chord</b>. Thirds and sixths (the &ldquo;in key&rdquo; options) follow the scale you pick in Sound.</p>
+          <p><b>Players</b> turns one cello into a duet, a quartet or a section of eight. Each player is slightly out of tune and out of time with the others &mdash; that spread is what makes a section sound big.</p>
+          <button class="btn small try" data-try="preset:section">Try it (film section)</button>
+        </details>
+        <details class="lesson"><summary>6 &middot; Chugging: the cello goes metal</summary>
+          <p>Cellos have played metal for decades &mdash; Apocalyptica's debut, <i>Plays Metallica by Four Cellos</i>, came out in 1996. The <b>Chug</b> articulation plays short, hard strokes locked to the tempo and pushes the string through the <b>Chungus amp</b>: a tightening filter before a valve-style clipper, then a speaker-cabinet filter. Hold a note and it gallops. Pick the rhythm under Sound &rarr; Chug rhythm; add a <b>fifth</b> double stop for power chords.</p>
+          <button class="btn small try" data-try="preset:chungus,phrase:chungus">Try it (Chungus riff)</button>
+        </details>
+        <details class="lesson"><summary>7 &middot; Building a piece with the looper</summary>
+          <p>Live looping means recording a short passage, letting it repeat, and stacking more parts on top. Cellist <b>Zo&euml; Keating</b> builds whole pieces this way. A classic plan: a bass line first, then harmony, then the melody. Leave <b>Length</b> on <i>free</i> and the first loop sets the tempo; pick bars to lock it to the metronome with a count-in.</p>
+          <p>Every layer can be muted, turned down, <b>reversed</b> or played at <b>half speed</b> (an octave down, twice as long). <b>Try:</b> load the Pachelbel bass into the looper, then play over it.</p>
+          <button class="btn small try" data-try="loopphrase:pachelbel">Try it (Pachelbel into the looper)</button>
+        </details>
+        <details class="lesson"><summary>8 &middot; Make an instrument out of anything</summary>
+          <p>This is the MeowSynth trick: record a sound, find its pitch, and play it back faster or slower to hit every other note. Open <b>Voice &amp; mic</b>, record a steady &ldquo;chuuug&rdquo; or a hum into a slot (or borrow a meow), and set Sound source to <b>sampler</b> or <b>both</b>. The sampler finds a loop inside your sound so held notes keep going.</p>
+          <button class="btn small try" data-try="drawer:voiceDrawer">Open Voice &amp; mic</button>
+        </details>
+        <details class="lesson"><summary>9 &middot; Tuning, pitch standards and scordatura</summary>
+          <p>Modern orchestras tune A4 to around <b>440 Hz</b>; many baroque ensembles use <b>415 Hz</b>, about a semitone lower. <b>Scordatura</b> means retuning strings for a piece: Bach's fifth cello suite asks for the A string to be tuned down to G, and Kod&aacute;ly's solo sonata lowers the bottom two strings to B and F&sharp;. Both are in Sound &rarr; Tuning, and the sympathetic strings retune with them.</p>
+          <button class="btn small try" data-try="preset:baroque,phrase:bach">Try it (baroque Bach)</button>
+        </details>
+        <details class="lesson"><summary>10 &middot; Playing it for real: phones, MIDI, VR</summary>
+          <p><b>Phones:</b> turn the phone sideways for longer strings; use two hands &mdash; one on the fingerboard, one stroking the bow pad in Hand bow mode. <b>Latency</b> (the delay between touch and sound) is lowest with wired headphones; Bluetooth adds a noticeable lag, which the looper compensates for automatically. <b>MIDI:</b> an MPE controller gives every finger its own slide, pressure and bow position. <b>VR:</b> on a Quest, open the VR drawer and press Enter VR.</p>
+        </details>
+      </div>
+    </details>
+
+    <details class="drawer">
+      <summary><span class="d-name">Keys</span><span class="d-sub">keyboard shortcuts</span></summary>
+      <div class="d-body">
+        <table class="keys-table">
+          <tr><td>A W S E D F T G Y H U J K O L P ; '</td><td>play (typing-piano layout, like MeowSynth)</td></tr>
+          <tr><td>Z / X</td><td>octave down / up</td></tr>
+          <tr><td>1&ndash;9</td><td>articulation: arco, spiccato, pizz, tremolo, chug, harmonics, col legno, ponticello, sul tasto</td></tr>
+          <tr><td>Space</td><td>looper: record &rarr; play &rarr; overdub</td></tr>
+          <tr><td>Enter</td><td>looper stop / play</td></tr>
+          <tr><td>Backspace</td><td>undo last loop layer</td></tr>
+          <tr><td>Page Down / Page Up</td><td>looper record / undo (Bluetooth page-turner pedals)</td></tr>
+          <tr><td>R</td><td>record performance on / off</td></tr>
+          <tr><td>Q</td><td>drone on / off</td></tr>
+          <tr><td>M</td><td>metronome</td></tr>
+          <tr><td>T</td><td>tap tempo</td></tr>
+          <tr><td>C</td><td>cycle double stop</td></tr>
+          <tr><td>V</td><td>cycle players (solo / duet / quartet / section)</td></tr>
+          <tr><td>&uarr; / &darr;</td><td>dynamics</td></tr>
+          <tr><td>&larr; / &rarr;</td><td>bow position (tasto / ponticello)</td></tr>
+          <tr><td>[ / ]</td><td>previous / next sound</td></tr>
+          <tr><td>Esc</td><td>panic &mdash; all notes off</td></tr>
+        </table>
+      </div>
+    </details>
+  </div>
+
+  <div class="dock" id="dock" hidden>
+    <button id="dockRec" class="btn rec">&#9679; Loop</button>
+    <button id="dockStop" class="btn">&#9632;</button>
+    <button id="dockUndo" class="btn">&#8630;</button>
+    <button id="dockDrone" class="btn">Drone</button>
+    <button id="dockPanic" class="btn danger">Panic</button>
+  </div>
+
+  <footer>
+    <p>part of <b>Dre Darklabs</b> &mdash; every note is a bowed-string simulation running in your browser on the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API" target="_blank" rel="noopener">Web Audio API</a> (digital waveguide after McIntyre, Schumacher &amp; Woodhouse and Smith). no samples, no build step, no tracking. VR uses <a href="https://threejs.org" target="_blank" rel="noopener">three.js</a>.</p>
+    <p class="mark" aria-hidden="true">dd&middot;rk</p>
+  </footer>
+</main>
+
+<script type="module" src="js/app.js"></script>
+</body>
+</html>

@@ -64,6 +64,15 @@ footer{text-align:center;color:#666;font-size:.9rem;padding-top:2rem;border-top:
 footer a{color:var(--red-soft);text-decoration:none}
 footer a:hover{text-decoration:underline}
 @media (max-width:900px){.instruments{grid-template-columns:1fr;max-width:520px;margin-left:auto;margin-right:auto}}
+
+/* ChungusCello: newest live instrument, full width, lit like a cello varnish */
+.instruments .card--new{grid-column:1/-1;position:relative;border-color:var(--red-soft);background:radial-gradient(ellipse at 90% 0%,rgba(255,138,61,.12),transparent 55%),#1c1414;box-shadow:0 0 24px rgba(105,0,0,.4);padding:2.25rem}
+.instruments .card--new:hover{box-shadow:0 0 30px rgba(105,0,0,.55)}
+.instruments .card--new .card-icon{font-size:4rem}
+.instruments .card--new h2{font-size:2rem}
+.instruments .card--new p{font-size:1.02rem}
+.instruments .card--new .note{color:#b59a8e;font-size:.85rem;margin:-1rem 0 1.25rem;line-height:1.5}
+.new-badge{position:absolute;top:1rem;right:1rem;background:#ff8a3d;color:#1a0a02;font-size:.65rem;font-weight:700;letter-spacing:.08em;padding:.2rem .5rem;border-radius:3px}
 @media (max-width:768px){h1{font-size:2rem}.card{padding:1.5rem}}
 
 .wip-head, .soon-head{text-align:center;margin:1rem 0 1.5rem}
@@ -142,6 +151,16 @@ footer a:hover{text-decoration:underline}
 </header>
 
 <main class="instruments">
+<!-- ChungusCello -->
+<section class="card card--new" id="chunguscello">
+<span class="new-badge">NEW</span>
+<div class="card-icon">&#x1F3BB;</div>
+<h2>ChungusCello</h2>
+<p>A physically-modelled cello &mdash; every note is a simulated bowed string, not a recording. Bow it, pluck it, tremolo it, or chug it through the Chungus amp. Fretless touch fingerboard with slides and vibrato, a loop station, sing-to-play, a tuner, and a sampler that turns any sound into an instrument (MeowSynth's meow included). MIDI and MPE in and out, WAV/MIDI/stem exports with a Reaper project, and it installs offline.</p>
+<p class="note">Works on phones (turn sideways for longer strings) &middot; play it in VR on Meta Quest 2 / 3 from the Quest Browser</p>
+<a class="btn" href="/darklabs/chunguscello/">Open ChungusCello</a>
+</section>
+
 <!-- MeowSynth -->
 <section class="card" id="meowsynth">
 <div class="card-icon">&#x1F431;</div>

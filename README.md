@@ -12,6 +12,17 @@ Audio API, live at **[dredarkroom.github.io/darklabs](https://dredarkroom.github
 
 ## Live
 
+- **ChungusCello** — a physically-modelled cello. Every note is a bowed-string
+  simulation (a digital waveguide with a stick–slip bow, after McIntyre,
+  Schumacher & Woodhouse and Smith) running in an AudioWorklet, through a
+  synthesised cello body and four sympathetic open strings. Nine
+  articulations (arco, spiccato, pizz, tremolo, **chug** through the Chungus
+  amp, harmonics, col legno, ponticello, sul tasto), a fretless multi-touch
+  fingerboard, a bow pad you can stroke to bow, sections of up to eight
+  players, double stops, a loop station, sing-to-play, a tuner, a
+  MeowSynth-style sampler for any sound, MIDI/MPE in and out, WAV/MIDI/stems +
+  Reaper exports, share links, offline install, and a WebXR mode for playing a
+  life-size cello on Meta Quest 2/3. See [`chunguscello/`](chunguscello/).
 - **MeowSynth** — a chromatic synth built entirely from two human "meow"
   voice memos, sliced into one-shots and pitch-shifted across a typing-piano
   layout, plus seven one-shot mood pads.
