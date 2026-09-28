@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<title>Prompt Lab | Darklabs</title>
+<meta name="description" content="A browser-based experimental laboratory for comparing and evaluating AI prompts.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2214%22 fill=%22%23060607%22/><text x=%2250%22 y=%2268%22 font-size=%2258%22 font-family=%22monospace%22 font-weight=%22700%22 text-anchor=%22middle%22 fill=%22%23690000%22>PL</text></svg>">
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@18.2.0?dev",
+    "react-dom/client": "https://esm.sh/react-dom@18.2.0/client?dev"
+  }
+}
+</script>
+<script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style type="text/tailwindcss">
+@theme {
+  --color-red: #690000;
+  --color-red-soft: #a83232;
+  --color-purple: #3a1750;
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+}
+</style>
+<style>
+* { box-sizing: border-box; }
+html { background: #0a0a0a; }
+body {
+  position: relative;
+  font-family: var(--font-sans);
+  background: #0a0a0a;
+  color: #fff;
+  min-height: 100vh;
+}
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 12% 8%, rgba(58,23,80,.35), transparent 55%),
+    radial-gradient(ellipse at 88% 92%, rgba(58,23,80,.28), transparent 55%);
+}
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: .05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+}
+</style>
+</head>
+<body class="p-5 md:p-8">
+  <div id="root"></div>
+  <script type="text/babel" data-type="module" src="app.js"></script>
+</body>
+</html>
