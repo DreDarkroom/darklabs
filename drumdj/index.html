@@ -25,6 +25,7 @@ section.tab{display:none}section.tab.on{display:block}
 .pads{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;max-width:640px}
 .pad{height:84px;border-radius:12px;background:linear-gradient(160deg,var(--panel2),var(--panel));border:1px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:700;touch-action:none;user-select:none}
 .pad small{color:var(--mut);font-weight:400}
+.pad.smp{border-color:var(--ok)}
 .pad.hit{background:var(--acc);color:#12081d;border-color:#fff}
 .bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:10px 0}
 .ctl{display:flex;flex-direction:column;font-size:11px;color:var(--mut);gap:2px;min-width:110px}
@@ -79,7 +80,7 @@ canvas#sfxwave{width:100%;max-width:640px;height:90px;background:#0008;border-ra
 <main>
 
 <section class="tab on" id="t-drums">
-  <p class="hint">Acoustic-modelled kit (kick, snare, rim, clap, hats with choke, toms, crash, ride, cowbell). Click lower on a pad to hit harder. Keys: Q W E R / A S D F / Z X C V. Space = play/stop.</p>
+  <p class="hint">Acoustic-modelled kit (kick, snare, rim, clap, hats with choke, toms, crash, ride, cowbell). Click lower on a pad to hit harder. Keys: Q W E R / A S D F / Z X C V. Space = play/stop. <b>Real drums:</b> drop an audio file on a pad (or double-click it) to replace that voice with your own recorded one-shot.</p>
   <div class="pads" id="pads"></div>
   <div class="bar">
     <button id="seqPlay">▶ Play</button>
@@ -90,6 +91,7 @@ canvas#sfxwave{width:100%;max-width:640px;height:90px;background:#0008;border-ra
     <label class="ctl">Tune <input type="range" id="tune" min="70" max="140" value="100"></label>
     <label class="ctl">Decay <input type="range" id="decay" min="40" max="200" value="100"></label>
     <button id="seqExport">Export loop .wav</button>
+    <button id="kitReset">Reset to synth kit</button>
   </div>
   <div class="grid" id="grid"></div>
 </section>
@@ -226,6 +228,10 @@ const DR={
   cow(c,d,t,v){const g=envG(c,d,t,.5*v,.34*KIT.decay),f=c.createBiquadFilter();f.type='bandpass';f.frequency.value=900;f.Q.value=.9;f.connect(g);[562,845].forEach(fr=>{const s=c.createOscillator();s.type='square';s.frequency.value=fr*KIT.tune;s.connect(f);s.start(t);s.stop(t+.4)})}
 };
 const PADS=[['kick','Kick','Q'],['snare','Snare','W'],['rim','Rim','E'],['clap','Clap','R'],['hatC','Hat Closed','A'],['hatO','Hat Open','S'],['tomH','Tom Hi','D'],['tomM','Tom Mid','F'],['tomL','Tom Lo','Z'],['crash','Crash','X'],['ride','Ride','C'],['cow','Cowbell','V']];
+// Real one-shots: a decoded sample dropped on a pad replaces the synth voice (live and in offline renders).
+const KITSMP={};
+Object.keys(DR).forEach(id=>{const synth=DR[id];DR[id]=(c,d,t,v)=>{const b=KITSMP[id];if(!b)return synth(c,d,t,v);
+  const s=c.createBufferSource(),g=c.createGain();s.buffer=b;s.playbackRate.value=KIT.tune;g.gain.value=v;s.connect(g);g.connect(d);s.start(t)}});
 let drumBus;
 function hit(name,vel=.9){ensure();DR[name](ctx,drumBus,ctx.currentTime+.005,vel)}
 
@@ -235,8 +241,13 @@ const padEls={};
   PADS.forEach(([id,name,key])=>{
     const p=document.createElement('div');p.className='pad';p.innerHTML=`${name}<small>${key}</small>`;
     p.addEventListener('pointerdown',e=>{const r=p.getBoundingClientRect();hit(id,.45+.55*clamp((e.clientY-r.top)/r.height,0,1));flash(id)});
+    const load=async f=>{try{KITSMP[id]=await decodeFile(f);p.classList.add('smp')}catch(e){alert('Could not decode that file')}};
+    p.addEventListener('dragover',e=>e.preventDefault());
+    p.addEventListener('drop',e=>{e.preventDefault();e.dataTransfer.files[0]&&load(e.dataTransfer.files[0])});
+    p.addEventListener('dblclick',()=>{const i=document.createElement('input');i.type='file';i.accept='audio/*';i.onchange=()=>i.files[0]&&load(i.files[0]);i.click()});
     box.appendChild(p);padEls[id]=p;});
 }
+$('#kitReset').onclick=()=>{Object.keys(KITSMP).forEach(k=>delete KITSMP[k]);$$('.pad.smp').forEach(p=>p.classList.remove('smp'))};
 function flash(id){const p=padEls[id];p.classList.add('hit');setTimeout(()=>p.classList.remove('hit'),90)}
 const KEYMAP={};PADS.forEach(([id,,k])=>KEYMAP[k]=id);
 addEventListener('keydown',e=>{
@@ -333,11 +344,14 @@ function detectBpm(buf){
   const d=buf.getChannelData(0),sr=buf.sampleRate,win=Math.floor(sr/200),n=Math.min(Math.floor(d.length/win),200*60),env=new Float32Array(n);
   for(let i=0;i<n;i++){let s=0;for(let j=0;j<win;j++)s+=Math.abs(d[i*win+j]);env[i]=s/win}
   const on=new Float32Array(n);for(let i=1;i<n;i++)on[i]=Math.max(0,env[i]-env[i-1]);
-  const score=bpm=>{const lag=200*60/bpm;let s=0;for(let k=1;k<=4;k++){const L=lag*k;for(let i=0;i+L<n;i++)s+=on[i]*on[Math.round(i+L)]}return s};
+  // comb filter: mean onset energy on a beat grid, best phase. Mean (not sum) so faster grids get no free bias.
+  const score=bpm=>{const lag=200*60/bpm;let best=0;
+    for(let ph=0;ph<lag;ph+=1){let s=0,c=0;for(let p=ph;p<n-1;p+=lag){s+=on[Math.round(p)];c++}if(c&&s/c>best)best=s/c}
+    return best};
   let best=120,bs=-1;
-  for(let bpm=70;bpm<=180;bpm+=.5){const s=score(bpm);if(s>bs){bs=s;best=bpm}}
-  // a 4/3 (or 2x) overshoot is a common false lock: prefer the slower grid if it scores nearly as well
-  for(const f of [.75,.5]){const c=best*f;if(c>=70&&score(c)>=.5*bs)best=c}
+  for(let bpm=80;bpm<=170;bpm+=.5){const s=score(bpm);if(s>bs){bs=s;best=bpm}}
+  // 2/3 tempo (triplet feel) is the classic false lock; take the 3/2 grid if it is nearly as strong
+  if(best*1.5<=170&&score(best*1.5)>=.85*bs)best*=1.5;
   return Math.round(best*2)/2;
 }
 function peaksOf(buf,N=1200){const d=buf.getChannelData(0),step=Math.floor(d.length/N)||1,p=new Float32Array(N);for(let i=0;i<N;i++){let m=0;for(let j=0;j<step;j+=8)m=Math.max(m,Math.abs(d[i*step+j]||0));p[i]=m}return p}
