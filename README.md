@@ -28,6 +28,10 @@ Audio API, live at **[dredarkroom.github.io/darklabs](https://dredarkroom.github
   layout, plus seven one-shot mood pads.
 - **MonkeyBeat** — a 16-step drum machine, 8 patterns with song chain, built
   from slices of a monkey-impression recording.
+- **DarkDeck** — a modelled acoustic drum kit with a 16-step sequencer,
+  a two-deck DJ mixer (EQ, filter, loops, hot cues, sync, crossfader), an
+  8-pad sampler (files, mic, resample), a master FX rack and an SFX maker
+  that exports WAV. Everything is synthesised; bring your own audio to DJ.
 - **Both Together** — MeowSynth and MonkeyBeat side by side on one page.
 
 ## Work in progress
