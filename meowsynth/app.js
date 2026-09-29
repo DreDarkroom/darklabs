@@ -6,7 +6,7 @@
 //
 "use strict";
 
-const SAMPLES_URL = "/darklabs/samples/manifest.json";
+const SAMPLES_URL = "../samples/manifest.json";
 
 // Standard "typing piano" layout: lowercase = white keys, the row above = black keys.
 // Semitone offset is just this array's index — 'a' is the recorded pitch of the sample,
@@ -106,7 +106,7 @@ async function loadSamples() {
 
   const results = await Promise.all(
     manifest.map(async (m) => {
-      const r = await fetch(`/darklabs/samples/${m.file}`);
+      const r = await fetch(`../samples/${m.file}`);
       const arr = await r.arrayBuffer();
       const buf = await audioCtx.decodeAudioData(arr);
       return [m.slug, buf];
