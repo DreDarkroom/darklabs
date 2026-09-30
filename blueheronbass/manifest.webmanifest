@@ -1,0 +1,12 @@
+{
+  "name": "BlueHeronBass — Dre Darklabs",
+  "short_name": "BlueHeronBass",
+  "description": "A five-string bass with a blue heron in its voice. Works offline.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#060a10",
+  "theme_color": "#060a10",
+  "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
+}

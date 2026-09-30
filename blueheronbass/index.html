@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta name="darkreader-lock">
+<meta name="theme-color" content="#060a10">
+<meta name="robots" content="noindex">
+<title>BlueHeronBass</title>
+<meta name="description" content="A five-string bass in the browser with a blue heron in its voice: finger, pick, slap, pop, tap and harmonics, a fuzz and envelope-filter amp, a loop station and MIDI. No samples, no sign-up.">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<a class="labs-link" href="../">&larr; Darkroom Labs</a>
+
+<main>
+  <header class="head">
+    <pre class="heron" id="heronArt" aria-hidden="true">
+        __
+      _(o >==       B L U E H E R O N B A S S
+     ( _/
+      \ \      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+       \ \    ====|==|==|==|==|==|==|==|==|===
+        | |
+       _| |_
+      (_/ \_)</pre>
+    <h1 class="title">BlueHeronBass<span class="blink">_</span></h1>
+    <p class="tagline">a five-string bass with a heron in its throat &mdash; pluck it, slap it, fuzz it, loop it</p>
+    <canvas class="scope" id="scope" width="760" height="36" aria-hidden="true"></canvas>
+  </header>
+
+  <section class="start" id="startScreen">
+    <button id="startBtn" class="start-btn">tap to wade in</button>
+    <p class="hint">(browsers block audio until you interact once &mdash; one tap and it's live)</p>
+    <p class="hint">Works in a Quest / VR browser as a flat page: point and click the strings.</p>
+    <p class="hint" id="startErr" role="alert"></p>
+  </section>
+
+  <section class="panel" id="panel" hidden>
+
+    <div class="row"><div class="arts" id="arts" role="radiogroup" aria-label="Articulation"></div>
+      <p class="dim small-note" id="artTip"></p></div>
+
+    <div class="row quick">
+      <label class="inline grow"><span class="lbl">Sound</span> <select id="presetSel" aria-label="Preset"></select></label>
+      <label class="inline grow"><span class="lbl">Strings</span> <select id="tuningSel" aria-label="Tuning"></select></label>
+      <span class="oct-group" title="Octave of the computer keys">
+        <span class="dim">Keys oct</span>
+        <button id="octDown" class="oct-btn" aria-label="Octave down">&minus;</button>
+        <span id="octLabel">0</span>
+        <button id="octUp" class="oct-btn" aria-label="Octave up">+</button>
+      </span>
+      <button id="ringBtn" class="btn small" title="Notes keep ringing after you lift off (handy with one pointer / in VR)">Let ring: off</button>
+      <button id="panicBtn" class="btn small danger" title="All notes off (Esc)">Panic</button>
+    </div>
+
+    <div class="row">
+      <div class="surface-bar">
+        <label class="inline"><span class="lbl">Frets</span> <select id="spanSel" aria-label="Number of frets"><option value="12">12</option><option value="17">17</option><option value="24">24</option></select></label>
+        <label class="inline"><span class="lbl">Show</span> <select id="rootSel" aria-label="Scale root"></select> <select id="scaleSel" aria-label="Scale"></select></label>
+      </div>
+      <canvas id="fretboard" class="fretboard" aria-label="Bass fretboard: touch a string to pluck it, slide along it to change fret"></canvas>
+      <p class="dim small-note">touch a string to play it &middot; slide along it to glide between frets &middot; several fingers = several strings &middot; computer keys: the Z and Q rows play like a piano from low E (Esc = panic)</p>
+    </div>
+
+    <div class="row">
+      <h3 class="sub">Amp <span class="dim">&mdash; compressor, blended fuzz (lows stay clean), envelope filter, EQ</span></h3>
+      <div class="knobs" id="knobs"></div>
+    </div>
+
+    <div class="row">
+      <h3 class="sub">Heron <span class="dim">&mdash; synthesised calls; they also grow out of every note and can excite the strings</span></h3>
+      <div class="pads" id="pads"></div>
+      <div class="ed-grid">
+        <div class="knob-group"><label for="padPitch">Pad pitch <span class="val" id="padPitchV"></span></label><input type="range" id="padPitch" min="-12" max="12" step="1" value="0"></div>
+        <div class="knob-group"><label for="padLvl">Pad level</label><input type="range" id="padLvl" min="0" max="1" step="0.01" value="0.8"></div>
+        <label class="field">Load your own sound into
+          <select id="slotSel"></select></label>
+        <label class="btn small file-btn">Choose audio file<input type="file" id="slotFile" accept="audio/*"></label>
+      </div>
+    </div>
+
+    <div class="row">
+      <h3 class="sub">Loop &amp; groove</h3>
+      <div class="loop-row">
+        <button id="loopBtn" class="btn big rec">● Loop</button>
+        <button id="stopBtn" class="btn">Stop</button>
+        <button id="undoBtn" class="btn">Undo</button>
+        <button id="clearBtn" class="btn danger">Clear</button>
+      </div>
+      <div class="loopbar"><div id="loopBar"></div></div>
+      <p class="dim small-note" id="loopInfo"></p>
+      <div class="quick">
+        <label class="inline"><span class="lbl">BPM</span> <input type="number" id="bpm" min="40" max="240" value="100"></label>
+        <button id="metroBtn" class="btn small">Click: off</button>
+        <button id="countBtn" class="btn small">Count-in: on</button>
+        <label class="inline"><span class="lbl">Length</span> <select id="barsSel"><option value="0">free</option><option value="1">1 bar</option><option value="2">2 bars</option><option value="4">4 bars</option></select></label>
+        <div class="knob-group grow"><label for="loopVol">Loop volume</label><input type="range" id="loopVol" min="0" max="1" step="0.01" value="0.9"></div>
+      </div>
+    </div>
+
+    <div class="row">
+      <h3 class="sub">Record &amp; export</h3>
+      <div class="ex-btns">
+        <button id="takeBtn" class="btn rec">● Record take</button>
+        <button id="exTakeWav" class="btn" disabled>Take → WAV</button>
+        <button id="exTakeMidi" class="btn" disabled>Take → MIDI</button>
+        <button id="exLoop" class="btn" disabled>Loop → stems + Reaper (.zip)</button>
+        <button id="midiBtn" class="btn">Enable MIDI</button>
+        <select id="midiOut" hidden aria-label="MIDI out"></select>
+      </div>
+      <p class="status" id="status" role="status"></p>
+    </div>
+  </section>
+
+  <footer class="foot">BlueHeronBass &middot; part of Dre Darklabs &middot; Karplus&ndash;Strong strings in an AudioWorklet, no samples, no frameworks</footer>
+</main>
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
