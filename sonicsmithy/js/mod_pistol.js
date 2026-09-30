@@ -4,6 +4,7 @@ import { PISTOL_KINDS, pistolLayers, renderLayers, makePistol } from './synth.js
 import { resultView, variantGrid } from './ui_result.js';
 import { analyze, rate } from './analyze.js';
 import { peakOf, mul, N } from './dsp.js';
+import { NOTES } from './guide.js';
 
 export function init() {
   let kind = 'sidearm', seed = 11, variation = 0.08, sci = 0.5, layers = [], armed = null;
@@ -71,7 +72,8 @@ export function init() {
         panel('Pistol type', kindBox, { open: true }),
         panel('Layer stack', h('div', {}, layerBox,
           h('p', { class: 'hint' }, 'Each layer lives in its own band (HP/LP) so they stack without mud: click ≥2 kHz · crack 0.9–9 k · body 70–1.1 k · sub <150 · zap sci-fi sweetener · action · tink · tail ≤4 k.')), { open: true }),
-        panel('Acquire — swap a layer for a library / imported sound', picker, { open: false })),
+        panel('Acquire — swap a layer for a library / imported sound', picker, { open: false }),
+        h('div', { class: 'guide' }, h('b', {}, '◆ design note'), NOTES.pistol.map((t) => h('p', {}, t)))),
       h('div', { class: 'detail' },
         h('div', { class: 'bar-row' }, arrowBtn('Generate new', () => regen(1 + Math.floor(Math.random() * 9999))), btn('↻ Re-roll seed', () => regen(seed + 1), 'ghost'),
           slider({ label: 'variation', min: 0, max: 0.3, step: 0.01, value: variation, fmt: (v) => Math.round(v * 100) + '%', onInput: (v) => { variation = v; clearTimeout(deb); deb = setTimeout(() => regen(), 200); } }),

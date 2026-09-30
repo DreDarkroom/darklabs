@@ -44,6 +44,10 @@ Audio API, live at **[dredarkroom.github.io/darklabs](https://dredarkroom.github
   between tracks, built to be hosted or broadcast.
 - **ThroatTapper** — percussion from throat taps and a chromatic hum across
   the QWERTY row. Works, not yet promoted or styled to match the rest.
+- **Sonic Smithy** — the SFX counterpart to CrateCall: audition and
+  auto-rate CC0 sound packs (with a live in-app fetcher for more), layer and
+  slice/loop them, generate new sci-fi SFX from scratch (Pistol Lab, Rail
+  Lab), then export a Godot-ready folder with a manifest and autoload script.
 
 ## Coming soon
 

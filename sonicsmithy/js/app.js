@@ -7,10 +7,15 @@ import * as gen from './mod_gen.js';
 import * as pistol from './mod_pistol.js';
 import * as rail from './mod_rail.js';
 import * as exp from './mod_export.js';
+import * as sources from './mod_sources.js';
+import { init as fxInit } from './fx.js';
+
+fxInit($('#fx'));
 
 const MODS = [
   ['audition', 'Audition', audition], ['layer', 'Layer', layer], ['edit', 'Slice · Loop', edit],
-  ['generate', 'Generate', gen], ['pistol', 'Pistol Lab', pistol], ['rail', 'Rail Lab', rail], ['export', 'Export', exp],
+  ['generate', 'Generate', gen], ['pistol', 'Pistol Lab', pistol], ['rail', 'Rail Lab', rail],
+  ['export', 'Export', exp], ['sources', 'Sources', sources],
 ];
 const tabs = $('#tabs'), mods = $('#mods'), inst = {};
 let curId = null;
@@ -30,7 +35,7 @@ MODS.forEach(([id, label, m], i) => {
   inst[id].btn = b; tabs.append(b);
 });
 document.addEventListener('keydown', (e) => {
-  if (e.altKey && /^[1-7]$/.test(e.key)) { go(MODS[+e.key - 1][0]); e.preventDefault(); }
+  if (e.altKey && /^[1-8]$/.test(e.key)) { go(MODS[+e.key - 1][0]); e.preventDefault(); }
   if (e.key === 'Escape') eng.stop();
 });
 $('#stop').onclick = () => eng.stop();

@@ -3,6 +3,7 @@ import { h, slider, panel, btn, arrowBtn, downBtn, toast, lib, hub, miniBrowser,
 import { renderLayers } from './synth.js';
 import { resample as rs, semis, N, mul, peakOf } from './dsp.js';
 import { resultView } from './ui_result.js';
+import { GENERAL } from './guide.js';
 
 // role -> { band, default gain/offset, what to look for in the library (target centroid Hz / duration ms) }
 const ROLES = {
@@ -86,7 +87,9 @@ export function init() {
         panel('Layer stack', box, { open: true }),
         h('div', { class: 'bar-row' }, maxSl, catSelect(cat, (c) => { cat = c; maxMs = PROFILES[c].len[1]; maxSl.set(maxMs); render(); })),
         rv.el,
-        h('p', { class: 'hint' }, 'Pro layering: transient (>2 kHz, first ms) → body (mids) → sub (<160 Hz, nudged 0–5 ms) → tail (short, dark). Band-limit each layer, stagger onsets by a few ms, glue with a light compressor, soft-clip, then brickwall. Keep total length inside the category budget.'))));
+        h('p', { class: 'hint' }, 'Pro layering: transient (>2 kHz, first ms) → body (mids) → sub (<160 Hz, nudged 0–5 ms) → tail (short, dark). Band-limit each layer, stagger onsets by a few ms, glue with a light compressor, soft-clip, then brickwall. Keep total length inside the category budget.'),
+        h('div', { class: 'guide' }, h('b', {}, '◆ design notes'), GENERAL.map((t) => h('p', {}, t))))));
+
   hub.layerAdd = (it) => { hub.go('layer'); ensureAudio(it).then(() => { tracks.push(newTrack('body', it)); tracks[tracks.length - 1].locked = true; tracks[tracks.length - 1].label = 'Layer ' + tracks.length; paint(); render(true); }); };
   paint();
   return { root, onShow() {} };

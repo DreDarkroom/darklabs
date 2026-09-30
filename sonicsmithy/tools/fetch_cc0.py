@@ -63,9 +63,45 @@ def probe(path):
     return out
 
 
+EXTRA_FILE = os.path.join(DEST, "_extra_packs.json")
+
+
+def load_extra():
+    try:
+        with open(EXTRA_FILE) as f:
+            return json.load(f)
+    except Exception:
+        return {}
+
+
+def save_extra(extra):
+    with open(EXTRA_FILE, "w") as f:
+        json.dump(extra, f, indent=1)
+
+
+def fetch_one(name, landing, license_="CC0 1.0", tags=None):
+    """Fetch a single extra pack by its Kenney landing page and remember it for future rescans."""
+    tags = tags or []
+    pdir = os.path.join(DEST, name)
+    url = zip_url(landing)
+    os.makedirs(pdir, exist_ok=True)
+    z = zipfile.ZipFile(io.BytesIO(get(url)))
+    n = 0
+    for m in z.namelist():
+        if m.lower().endswith(EXTS + (".txt",)) and "__MACOSX" not in m:
+            z.extract(m, pdir)
+            n += 1
+    extra = load_extra()
+    extra[name] = {"landing": landing, "license": license_, "tags": tags}
+    save_extra(extra)
+    return n
+
+
 def scan():
     entries = []
     pack_meta = {p[0]: p for p in PACKS}
+    for name, meta in load_extra().items():
+        pack_meta[name] = (name, meta["landing"], meta.get("license", "CC0 1.0"), meta.get("tags", []))
     for pack in sorted(os.listdir(DEST)):
         pdir = os.path.join(DEST, pack)
         if pack.startswith("_") or not os.path.isdir(pdir):

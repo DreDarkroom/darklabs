@@ -12,6 +12,7 @@ import http.server, io, json, os, socketserver, sys, urllib.parse
 ROOT = os.path.dirname(os.path.abspath(__file__))
 EXPORTS = os.path.join(ROOT, "exports")
 PORT = int(os.environ.get("PORT", 8765))
+sys.path.insert(0, os.path.join(ROOT, "tools"))
 
 try:
     import numpy as np, soundfile as sf
@@ -73,7 +74,7 @@ class H(http.server.SimpleHTTPRequestHandler):
     def do_GET(self):
         if self.path.startswith("/api/caps"):
             return self._json({"encode": HAVE_SF, "formats": ["wav"] + (["ogg", "mp3", "flac"] if HAVE_SF else []),
-                               "exports": EXPORTS})
+                               "exports": EXPORTS, "fetch": True})
         return super().do_GET()
 
     def do_POST(self):
@@ -92,6 +93,13 @@ class H(http.server.SimpleHTTPRequestHandler):
                 self.send_header("Content-Length", str(len(b)))
                 self.end_headers()
                 self.wfile.write(b)
+            elif u.path == "/api/fetch-pack":
+                import fetch_cc0
+                name, landing = q["name"][0], q["landing"][0]
+                tags = q.get("tags", [""])[0].split(",") if q.get("tags", [""])[0] else []
+                n = fetch_cc0.fetch_one(name, landing, q.get("license", ["CC0 1.0"])[0], [t for t in tags if t])
+                fetch_cc0.scan()
+                self._json({"ok": True, "pack": name, "files": n})
             elif u.path == "/api/save":
                 full = safe_export_path(q["path"][0])
                 os.makedirs(os.path.dirname(full), exist_ok=True)

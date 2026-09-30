@@ -1,0 +1,17 @@
+{
+ "kenney-ui-audio": {
+  "landing": "https://kenney.nl/assets/ui-audio",
+  "license": "CC0 1.0",
+  "tags": [
+   "ui"
+  ]
+ },
+ "kenney-casino-audio": {
+  "landing": "https://kenney.nl/assets/casino-audio",
+  "license": "CC0 1.0",
+  "tags": [
+   "ui",
+   "pickup"
+  ]
+ }
+}

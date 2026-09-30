@@ -1,8 +1,34 @@
 # Sonic Smithy
 
 Sci-fi SFX forge for Godot — audition CC0 sounds, layer them, slice/loop them, generate new
-ones from scratch, and export game-ready files with a Godot manifest. Local-only tool
-(private branch `feature/sonic-smithy`).
+ones from scratch, and export game-ready files with a Godot manifest. Live at
+`https://dredarkroom.github.io/darklabs/sonicsmithy/` (works with no server: WAV + zip export
+only — see below for what the local server adds).
+
+## v2
+
+* **Design Notes** — a "◆ design note" panel next to Generate, Pistol Lab, Rail Lab and Layer
+  built from real game-audio/Foley practice for a sci-fi movement/VR game: layered construction,
+  doppler shape for motion, restrained reverb, pitch direction as a reward/impact cue.
+* **Dash whoosh / Dash landing** — two new Generate kinds built on that guidance: a true doppler
+  arc (filter centre + amplitude both rise then fall, matching something passing at speed) and a
+  soft landing thump.
+* **Sources tab** — pulls more CC0 packs *live* from kenney.nl straight into the running app (see
+  "Live CC0 fetch" below), links out to **CrateCall** (the sibling tool doing the same
+  audition/rate/export job for this VR game's music), and lists other CC0 catalogues.
+* **Ambient visualiser** — a few soft, slow-drifting colour glows behind the UI that swell gently
+  with whatever's playing (a light taste of the Safelight approach). Display-only, never exported,
+  and it steps back under `prefers-reduced-motion`.
+* Theme pass: darker red, more purple throughout, white sheen highlights on buttons/panels/grades.
+
+## Live CC0 fetch
+
+With `server.py` running, the **Sources** tab pulls a real Kenney CC0 zip straight from
+`kenney.nl`, extracts it into `library/cc0/`, and rebuilds the index — no CLI needed. This is the
+same code path as `tools/fetch_cc0.py`, exposed as `POST /api/fetch-pack?name=...&landing=...`.
+It already shipped 6 packs / 470 sounds this way (sci-fi, impact, digital, interface, UI, casino
+audio — all CC0). **Roadmap:** an in-browser fetch fallback for the static Pages build (no
+Python backend there), blocked on kenney.nl's CORS policy — worth revisiting if they ever add it.
 
 ```
 python server.py            # http://127.0.0.1:8765
@@ -25,6 +51,7 @@ The app also works from any static server; without `server.py` you still get WAV
 | **Pistol Lab** | 6 pistol types built from 8 stacked layers (mute/solo/gain/offset/re-roll per layer), swap any layer for a library sound, best-of-24, keep an 8-variant set. |
 | **Rail Lab** | Pleasant rail grind loops (slow/med/fast) + land/leave one-shots; harshness meter; seamless loop. |
 | **Export** | Basket → WAV 16/24/32f, OGG, MP3, FLAC, or *match source*; Godot manifest + `sfx_bank.gd` + LICENSES.txt. |
+| **Sources** | Live-fetch more CC0 packs from kenney.nl (needs `server.py`), cross-link to CrateCall (the music-side sibling tool), pointers to Freesound/OpenGameArt CC0 search. |
 
 ## Rating
 
@@ -51,5 +78,5 @@ var g := SfxBank.loop("rail_grind_med"); SfxBank.set_grind_speed(g, speed)
 
 ## Sources & licences
 
-Kenney *Sci-Fi Sounds*, *Impact Sounds*, *Digital Audio*, *Interface Sounds* — CC0 1.0 (kenney.nl).
+Kenney *Sci-Fi Sounds*, *Impact Sounds*, *Digital Audio*, *Interface Sounds*, *UI Audio*, *Casino Audio* — CC0 1.0 (kenney.nl).
 Provenance is stored per sound in `library/cc0/index.json` and written to `LICENSES.txt` on export.

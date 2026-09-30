@@ -144,6 +144,29 @@ defKind('teleport', 'Teleport', 'sweep', (p, r) => {
   const e = env(n, [[0, 0], [d * 0.72, 1], [d, 0]]);
   return svf(mul(add(mul(tone, 0.8), mul(shim, 0.22)), e), 5500, 0.7, 'lp');
 });
+defKind('dash_whoosh', 'Dash whoosh', 'whoosh', (p, r) => {
+  // True doppler shape: a bandpass centre frequency that arcs UP then DOWN (approach -> passing -> departure),
+  // with amplitude peaking at the same instant, is what makes fast movement read convincingly (see Design Notes).
+  const d = 0.55 * p.len, n = N(d), peak = 0.42;
+  const arc = (lo, hi) => env(n, [[0, lo], [d * peak, hi], [d, lo]], true);
+  const fc = arc(500, 3400 * semis(p.pitch) * (0.7 + p.bright * 0.6));
+  const amp = env(n, [[0, 0], [d * peak, 1], [d, 0]]).map((v) => Math.sin(v * Math.PI / 2));
+  let x = mul(svf(pink(n, r), fc, 2.2 + p.scifi * 1.5, 'bp'), amp);
+  if (p.scifi > 0.05) { // a faint shimmering "wonder" layer riding the same doppler arc
+    const shimmer = mul(osc(n, arc(1200, 4200), 'sine'), mul(amp, 0.18 * p.scifi));
+    x = add(x, shimmer);
+  }
+  return x;
+});
+defKind('dash_land', 'Dash landing', 'impact', (p, r) => {
+  // A soft "feet find the ground" thump, not a crash: shorter, rounder and quieter in the highs than Heavy impact.
+  const d = 0.32 * p.len, n = N(d), f0 = 92 * semis(p.pitch);
+  const thud = mul(osc(n, glide(n, f0, f0 * 0.45, 0.09), 'sine'), decay(n, 0.1 * p.len));
+  const pat = mul(svf(white(n, r), 900 + p.bright * 1200, 0.9, 'lp'), decay(n, 0.03));
+  let x = add(mul(thud, 1.1), mul(pat, 0.35));
+  if (p.scifi > 0.15) x = add(x, mul(osc(n, 220 * semis(p.pitch), 'sine'), mul(decay(n, 0.1), 0.1 * p.scifi)));
+  return softClip(x, 1.1 + p.grit);
+});
 defKind('ricochet', 'Ricochet', 'impact', (p, r) => {
   const d = 0.5 * p.len, n = N(d), f0 = 2400 * semis(p.pitch);
   let x = new Float32Array(n);

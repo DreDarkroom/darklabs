@@ -2,6 +2,7 @@
 import { h, slider, panel, btn, arrowBtn, downBtn, toast, addMade, lib, emit, eng } from './core.js';
 import { railLoop, railLand, railLeave, DEFAULT_RAIL } from './synth.js';
 import { resultView } from './ui_result.js';
+import { NOTES } from './guide.js';
 import { analyze } from './analyze.js';
 
 export function init() {
@@ -37,7 +38,8 @@ export function init() {
         h('div', { class: 'bar-row' }, arrowBtn('Generate loop', () => { P.seed = 1 + Math.floor(Math.random() * 999); run(); }), btn('↻ Re-roll', () => { P.seed++; run(); }, 'ghost')),
         panel('Pleasantness meter', h('div', {}, harsh, harshTxt), { open: true }),
         panel('One-shots', h('div', { class: 'bar-row' }, arrowBtn('Land (clang + scrape-in)', one(railLand, 'rail_land'), 'purple'), arrowBtn('Leave (scrape-out + ping)', one(railLeave, 'rail_leave'), 'purple')), { open: true }),
-        h('p', { class: 'hint' }, 'Recipe: band-passed pink noise with a wandering cutoff, stick-slip roughness, four open-fifth resonators (F–C) for a soft singing rail, sparse filtered sparks, then a 3.4 kHz scoop, high-shelf tilt and 24 dB/oct low-pass. Loop seam is equal-power crossfaded.')),
+        h('p', { class: 'hint' }, 'Recipe: band-passed pink noise with a wandering cutoff, stick-slip roughness, four open-fifth resonators (F–C) for a soft singing rail, sparse filtered sparks, then a 3.4 kHz scoop, high-shelf tilt and 24 dB/oct low-pass. Loop seam is equal-power crossfaded.'),
+        h('div', { class: 'guide' }, h('b', {}, '◆ design note'), NOTES.rail.map((t) => h('p', {}, t)))),
       h('div', { class: 'detail' }, rv.el,
         panel('Godot set', h('div', {}, h('p', { class: 'hint' }, 'In Godot drive AudioStreamPlayer.pitch_scale from player speed: slow ≈ 0.85, fast ≈ 1.2 (lerp). Crossfade the three loops by speed for a rich result; play Land on grind start and Leave on jump-off.'),
           downBtn('Build full set → basket', buildSet, 'teal')), { open: true }))));
