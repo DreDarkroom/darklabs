@@ -44,6 +44,7 @@ function fadeTail(out, sr, sec) {
 }
 
 export const PIANO_RANGE = [21, 108];
+export const MARIMBA_RANGE = [40, 100];
 
 /** Felt piano note, mono. */
 export function bakePiano(midi, sr) {
@@ -98,54 +99,142 @@ export function bakePiano(midi, sr) {
 }
 
 
-/** Soft electronic kick: a sine that falls from ~150 Hz to ~46 Hz, with a tiny click. */
-export function bakeKick(sr) {
-  const out = new Float32Array(Math.floor(0.5 * sr)), rnd = mulberry32(5150); let ph = 0;
+/**
+ * Marimba bar, mono. Soft mallet on a rosewood bar: the fundamental (a slightly detuned pair, so it
+ * shimmers) carries the note; the 4th partial is a quick bright "tock" and the 10th is barely there.
+ * A tube resonator keeps the fundamental ringing warmly under the bar.
+ */
+export function bakeMarimba(midi, sr) {
+  midi = clamp(midi, MARIMBA_RANGE[0], MARIMBA_RANGE[1]);
+  const f0 = hz(midi);
+  const dur = clamp(3.0 - (midi - 48) * 0.032, 1.1, 3.0);
+  const out = new Float32Array(Math.floor(dur * sr));
+  const rnd = mulberry32(9001 + midi * 53);
+  const tau1 = clamp(0.66 - (midi - 48) * 0.0058, 0.2, 0.66);
+
+  addMode(out, sr, f0, 0.62, rnd() * TAU, tau1, tau1 * 2.4, 0.3);
+  addMode(out, sr, f0 * (1 + 0.0013), 0.4, rnd() * TAU, tau1 * 1.06, tau1 * 2.2, 0.3);
+  addMode(out, sr, f0 * 4.0 * (1 + 0.003 * (rnd() - 0.5)), 0.17, rnd() * TAU, tau1 * 0.2, tau1 * 0.45, 0.15);
+  addMode(out, sr, f0 * 9.9 * (1 + 0.005 * (rnd() - 0.5)), 0.035, rnd() * TAU, tau1 * 0.06, tau1 * 0.1, 0.1);
+  addMode(out, sr, f0, 0.3, rnd() * TAU, tau1 * 2.0, tau1 * 3.2, 0.5);        // resonator tube
+
+  const att = Math.floor(0.03 * sr);
+  for (let i = 0; i < att; i++) out[i] *= 1 - Math.exp(-i / (0.0022 * sr));  // soft mallet: a rounded onset
+
+  // mallet: a muffled knock (low-passed) plus a faint woody body resonance
+  let lp = 0, lp2 = 0, b1 = 0, b2 = 0;
+  const nz = Math.floor(0.05 * sr);
+  const wf = 2 * Math.sin(Math.PI * Math.min(f0 * 2.7, 2400) / sr);
+  for (let i = 0; i < nz && i < out.length; i++) {
+    const x = rnd() * 2 - 1;
+    lp += 0.07 * (x - lp); lp2 += 0.02 * (x - lp2);
+    out[i] += (lp - lp2) * 0.55 * Math.exp(-i / (0.005 * sr));
+    b1 += wf * b2; const hi = x - b1 - 0.08 * b2; b2 += wf * hi;           // narrow band-pass: the bar's wood
+    out[i] += b2 * 0.05 * Math.exp(-i / (0.012 * sr));
+  }
+  fadeTail(out, sr, 0.3);
+  return leveled(out, sr, 0.1, 0.3);
+}
+
+/** Restrained hand percussion: shaker, wood tick, soft conga. */
+export function bakePerc(kind, sr) {
+  const rnd = mulberry32(7000 + kind.length * 91);
+  if (kind === "shaker") {
+    const out = new Float32Array(Math.floor(0.16 * sr)); let lp = 0, soft = 0;
+    for (let i = 0; i < out.length; i++) {
+      const t = i / sr, x = rnd() * 2 - 1;
+      lp += 0.28 * (x - lp);
+      soft += 0.45 * ((x - lp) - soft);                                  // roll the top off (~7 kHz): a shaker, not a hiss
+      const env = (1 - Math.exp(-t / 0.012)) * Math.exp(-t / 0.032);
+      out[i] = soft * env;
+    }
+    fadeTail(out, sr, 0.02);
+    return leveled(out, sr, 0.06, 0.12);
+  }
+  if (kind === "tick") {
+    const out = new Float32Array(Math.floor(0.14 * sr)); let ph = 0;
+    for (let i = 0; i < out.length; i++) {
+      const t = i / sr, f = 920 + 360 * Math.exp(-t / 0.006);
+      ph += (TAU * f) / sr;
+      const click = i < 0.002 * sr ? (rnd() * 2 - 1) * 0.5 : 0;
+      out[i] = (Math.sin(ph) * Math.exp(-t / 0.014) + click) * (1 - Math.exp(-t / 0.0006));
+    }
+    fadeTail(out, sr, 0.02);
+    return leveled(out, sr, 0.07, 0.08);
+  }
+  // soft conga / hand drum
+  const out = new Float32Array(Math.floor(0.5 * sr)); let ph = 0, lp = 0;
   for (let i = 0; i < out.length; i++) {
-    const t = i / sr;
-    ph += (TAU * (46 + 110 * Math.exp(-t / 0.028))) / sr;
-    out[i] = Math.sin(ph) * Math.exp(-t / 0.16) * (1 - Math.exp(-t / 0.0008)) + (i < 0.002 * sr ? (rnd() * 2 - 1) * 0.25 : 0);
+    const t = i / sr, f = 118 + 78 * Math.exp(-t / 0.035);
+    ph += (TAU * f) / sr;
+    lp += 0.12 * ((rnd() * 2 - 1) - lp);
+    const body = Math.sin(ph) * Math.exp(-t / 0.13);
+    const slap = lp * Math.exp(-t / 0.012) * 0.55;
+    out[i] = (body + slap) * (1 - Math.exp(-t / 0.001));
   }
   fadeTail(out, sr, 0.1);
-  return leveled(out, sr, 0.2, 0.15);
+  return leveled(out, sr, 0.12, 0.2);
 }
 
-/** Hi-hat: high-passed noise, short (closed) or ringing (open). */
-export function bakeHat(open, sr) {
-  const out = new Float32Array(Math.floor((open ? 0.32 : 0.08) * sr)), rnd = mulberry32(open ? 6161 : 6162); let lp = 0, soft = 0;
+/** A finger snap: a tight burst of band-passed noise with a little woody body. */
+export function bakeSnap(sr) {
+  const out = new Float32Array(Math.floor(0.14 * sr)), rnd = mulberry32(4242);
+  const f = 2 * Math.sin(Math.PI * 2400 / sr); let low = 0, band = 0, ph = 0;
   for (let i = 0; i < out.length; i++) {
     const t = i / sr, x = rnd() * 2 - 1;
-    lp += 0.22 * (x - lp); soft += 0.5 * ((x - lp) - soft);
-    out[i] = soft * Math.exp(-t / (open ? 0.085 : 0.014)) * (1 - Math.exp(-t / 0.0006));
+    low += f * band; const high = x - low - 0.5 * band; band += f * high;
+    ph += (TAU * 1150) / sr;
+    out[i] = (band * Math.exp(-t / 0.018) + Math.sin(ph) * 0.25 * Math.exp(-t / 0.012)) * (1 - Math.exp(-t / 0.0004));
   }
-  fadeTail(out, sr, open ? 0.05 : 0.01);
-  return leveled(out, sr, open ? 0.05 : 0.06, 0.08);
+  fadeTail(out, sr, 0.03);
+  return leveled(out, sr, 0.08, 0.06);
 }
 
-/** Clap / snare: three tight bursts of band-passed noise and a short tail. */
-export function bakeClap(sr) {
-  const out = new Float32Array(Math.floor(0.34 * sr)), rnd = mulberry32(7172);
-  const f = 2 * Math.sin(Math.PI * 1500 / sr); let low = 0, band = 0;
+/** The cowbell. Two detuned squares (about 540 and 800 Hz, the classic pair) through a band-pass, with a short ring. */
+export function bakeCowbell(sr) {
+  const out = new Float32Array(Math.floor(0.5 * sr));
+  const f = 2 * Math.sin(Math.PI * 820 / sr); let low = 0, band = 0, p1 = 0, p2 = 0;
   for (let i = 0; i < out.length; i++) {
-    const t = i / sr, x = rnd() * 2 - 1;
-    low += f * band; const high = x - low - 0.35 * band; band += f * high;
-    const burst = Math.exp(-((t % 0.011) / 0.003)) * (t < 0.033 ? 1 : 0), tail = Math.exp(-t / 0.09);
-    out[i] = band * (burst * 0.9 + tail * 0.5) * (1 - Math.exp(-t / 0.0004));
+    const t = i / sr;
+    p1 += 540 / sr; p2 += 800 / sr; p1 -= Math.floor(p1); p2 -= Math.floor(p2);
+    const x = ((p1 < 0.5 ? 1 : -1) + (p2 < 0.5 ? 1 : -1)) * 0.5;
+    low += f * band; const high = x - low - 0.55 * band; band += f * high;
+    out[i] = band * (0.6 * Math.exp(-t / 0.28) + 0.4 * Math.exp(-t / 0.045)) * (1 - Math.exp(-t / 0.0006));
   }
-  fadeTail(out, sr, 0.06);
-  return leveled(out, sr, 0.08, 0.1);
+  fadeTail(out, sr, 0.08);
+  return leveled(out, sr, 0.1, 0.12);
 }
 
-/** Crash / impact wash: a long, bright, decaying noise. */
-export function bakeCrash(sr) {
-  const out = new Float32Array(Math.floor(2.8 * sr)), rnd = mulberry32(8183); let lp = 0;
-  for (let i = 0; i < out.length; i++) {
-    const t = i / sr, x = rnd() * 2 - 1;
-    lp += 0.2 * (x - lp);
-    out[i] = (x - lp) * Math.exp(-t / 0.85) * (1 - Math.exp(-t / 0.004));
+/**
+ * The Shepard-Risset staircase, pre-rendered as a SEAMLESS loop: eight octave-spaced sines glide up one octave over
+ * `T` seconds under a fixed window in log-frequency (centred near 300 Hz, so it never whistles). Oscillator k at
+ * the end of the loop is exactly oscillator k+1 at the start, and the initial phases are chained so that identity
+ * holds sample-for-sample: the loop point is invisible, and because it is a fixed buffer it cannot drift or run away.
+ */
+export const SHEP = { sr: 16000, T: 20, N: 8 };
+
+/** Add oscillator k of the staircase into `out` (one slice of the bake, ~60 ms, so it can run in idle time). */
+export function addShepardOsc(out, k, part = 0, parts = 1, N = SHEP.N, T = SHEP.T) {
+  const n = out.length, base = 19, beta = (TAU * base * T) / Math.LN2;
+  let phi0 = 0; for (let j = 0; j < k; j++) phi0 += beta * Math.pow(2, j);
+  const A = beta * Math.pow(2, k);
+  for (let i = Math.floor((n * part) / parts), i1 = Math.floor((n * (part + 1)) / parts); i < i1; i++) {
+    const y = (k + i / n) / N, d = (y - 0.5) / 0.16, w = Math.exp(-d * d);
+    if (w < 1e-4) continue;
+    out[i] += w * Math.sin(phi0 + A * (Math.pow(2, i / n) - 1));
   }
-  fadeTail(out, sr, 0.5);
-  return leveled(out, sr, 0.06, 0.5);
+}
+
+export function finishShepard(out) {
+  let pk = 1e-9; for (let i = 0; i < out.length; i++) pk = Math.max(pk, Math.abs(out[i]));
+  for (let i = 0; i < out.length; i++) out[i] *= 0.55 / pk;
+  return out;
+}
+
+export function bakeShepard(sr = SHEP.sr, T = SHEP.T, N = SHEP.N) {
+  const out = new Float32Array(Math.floor(T * sr));
+  for (let k = 0; k < N; k++) addShepardOsc(out, k, 0, 1, N, T);
+  return finishShepard(out);
 }
 
 /** Procedural sunlit-room reverb: decaying noise that darkens with age, soft early taps, a slow bloom. */

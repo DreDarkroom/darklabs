@@ -2,13 +2,12 @@
 // (no AudioWorklet): nothing to fail to load, nothing allocating on the audio thread.
 //
 //   piano ─┐
-//   pluck ─┤ (ducked by the kick)
-//   pad ───┤ (ducked by the kick)         reverb (procedural IR) ┐
+//   pluck ─┤ (a marimba, opened by the climb; ducked by the heartbeat)
+//   pad ───┤ (ducked by the heartbeat)    reverb (procedural IR) ┐
 //   bass ──┼─► mix ─► tape ─► soft clip ─► glue ─► out           ├─ sends from every bus
-//   drums ─┤                                  echo (ping-pong) ───┘
-//   fx ────┘ (risers, impact, the Shepard-Risset shimmer; ducked)
+//   perc ──┘ (hand percussion: shaker, tick, tom, snap, cowbell)  echo (ping-pong) ───┘
 
-import { bakePiano, bakeKick, bakeHat, bakeClap, bakeCrash, makeReverbIR, tapeCurve, softClipCurve, PIANO_RANGE } from "./dsp.js";
+import { bakePiano, bakeMarimba, bakePerc, bakeSnap, bakeCowbell, addShepardOsc, finishShepard, SHEP, makeReverbIR, tapeCurve, softClipCurve, PIANO_RANGE, MARIMBA_RANGE } from "./dsp.js";
 import { clamp, mtof, mulberry32, smooth } from "./theory.js";
 
 // ───────────────────────────────────────────────────────── sample bank
@@ -34,12 +33,36 @@ export class SampleBank {
     return { buf: this.bufs.get(s.key) || this._store(s.key, [bakePiano(s.base, this.sr)]), rate: s.rate };
   }
 
-  drum(kind) {
-    const k = "d" + kind;
+  marimba(midi) {
+    const m = clamp(Math.round(midi), MARIMBA_RANGE[0], MARIMBA_RANGE[1]);
+    const base = clamp(Math.round(m / 2) * 2, MARIMBA_RANGE[0], MARIMBA_RANGE[1]), key = "m" + base;
+    return { buf: this.bufs.get(key) || this._store(key, [bakeMarimba(base, this.sr)]), rate: Math.pow(2, (midi - base) / 12) };
+  }
+
+  /** Organic percussion one-shots: shaker, tick (wood), conga (also the tom, pitched down), snap, cowbell. */
+  perc(kind) {
+    const k = "x" + kind;
     if (this.bufs.has(k)) return this.bufs.get(k);
-    const d = kind === "kick" ? bakeKick(this.sr) : kind === "hat" ? bakeHat(false, this.sr) : kind === "ohat" ? bakeHat(true, this.sr)
-      : kind === "clap" ? bakeClap(this.sr) : bakeCrash(this.sr);
+    const d = kind === "snap" ? bakeSnap(this.sr) : kind === "cow" ? bakeCowbell(this.sr) : bakePerc(kind === "conga" ? "drum" : kind, this.sr);
     return this._store(k, [d]);
+  }
+
+  /** The staircase loop (24 kHz is plenty: nothing above ~2 kHz in it). Built on demand, or in idle time at start-up. */
+  shep() {
+    if (this.bufs.has("shep")) return this.bufs.get("shep");
+    while (!this.shepStep()) { /* if it is wanted before idle time finished it, finish it now */ }
+    return this.bufs.get("shep");
+  }
+
+  /** One ~60 ms slice of the staircase bake; returns true when the buffer is complete. */
+  shepStep() {
+    if (this.bufs.has("shep")) return true;
+    if (!this._shep) this._shep = { out: new Float32Array(Math.floor(SHEP.T * SHEP.sr)), k: 0 };
+    const j = this._shep;
+    addShepardOsc(j.out, j.k >> 1, j.k & 1, 2); j.k++;                       // two half-slices per oscillator
+    if (j.k < SHEP.N * 2) return false;
+    const b = this.ctx.createBuffer(1, j.out.length, SHEP.sr); b.copyToChannel(finishShepard(j.out), 0); this.bufs.set("shep", b); this._shep = null;
+    return true;
   }
 
   ir(seconds) { return this.bufs.get("ir" + seconds) || this._store("ir" + seconds, makeReverbIR(this.sr, seconds)); }
@@ -56,9 +79,8 @@ export class SampleBank {
 
 // ───────────────────────────────────────────────────────── graph
 
-const BUS_GAIN = { piano: 1.9, pluck: 0.55, pad: 0.42, bass: 0.7, drums: 1.1, fx: 0.8 };
-const SENDS = { piano: [0.5, 0.18], pluck: [0.3, 0.4], pad: [0.5, 0.15], bass: [0.04, 0], drums: [0.2, 0.08], fx: [0.5, 0.2] };
-const SHEP_N = 9;
+const BUS_GAIN = { piano: 1.9, pluck: 1.5, pad: 0.42, bass: 0.7, perc: 1.4 };
+const SENDS = { piano: [0.5, 0.18], pluck: [0.42, 0.4], pad: [0.5, 0.15], bass: [0.04, 0], perc: [0.25, 0.1] };
 
 export function buildGraph(ctx, o = {}) {
   const G = (v = 1) => { const n = ctx.createGain(); n.gain.value = v; return n; };
@@ -70,11 +92,12 @@ export function buildGraph(ctx, o = {}) {
   g.mix = G(1);
   g.buses = {}; for (const k of Object.keys(BUS_GAIN)) g.buses[k] = G(BUS_GAIN[k]);
 
-  // sidechain "ducks": the kick pumps the pad, pluck and fx, the hallmark of an electronic build
-  g.duck = { pad: G(1), pluck: G(1), fx: G(1) };
-  for (const k of Object.keys(g.buses)) {
-    if (g.duck[k]) { g.buses[k].connect(g.duck[k]); g.duck[k].connect(g.mix); } else g.buses[k].connect(g.mix);
-  }
+  // a soft "heartbeat" ducks the pad and the marimba; the marimba bus also runs through a shared lowpass the climb opens
+  g.duck = { pad: G(1), pluck: G(1) };
+  g.pluckLp = F("lowpass", 1800, -2);
+  g.buses.pluck.connect(g.pluckLp); g.pluckLp.connect(g.duck.pluck); g.duck.pluck.connect(g.mix);
+  g.buses.pad.connect(g.duck.pad); g.duck.pad.connect(g.mix);
+  for (const k of ["piano", "bass", "perc"]) g.buses[k].connect(g.mix);
 
   // reverb
   g.revIn = G(o.space ?? 0.3);
@@ -99,7 +122,7 @@ export function buildGraph(ctx, o = {}) {
     g.dL.delayTime.setTargetAtTime(d, t, 0.05); g.dR.delayTime.setTargetAtTime(d, t, 0.05);
   };
   g.setBpm(o.bpm || 104, 0);
-  g.fbBoth = (v) => { g.echoFb.gain.setTargetAtTime(v, ctx.currentTime, 0.1); fbR.gain.setTargetAtTime(v, ctx.currentTime, 0.1); };
+  g.fbBoth = (v) => { const t = ctx.currentTime; for (const p of [g.echoFb.gain, fbR.gain]) { p.cancelScheduledValues(t); p.setTargetAtTime(v, t, 0.1); } };
 
   for (const k of Object.keys(g.buses)) {
     const [r, d] = SENDS[k];
@@ -136,35 +159,34 @@ export function buildGraph(ctx, o = {}) {
   }
   padCh.connect(g.buses.pad);
 
-  // the Shepard-Risset shimmer: octave-spaced sines under a fixed spectral window, sliding up forever.
-  // Each sine fades out at the top just as a new one fades in at the bottom, so the rise never arrives.
-  g.shep = { out: G(0), oscs: [], gains: [], phase: 0 };
-  for (let k = 0; k < SHEP_N; k++) {
-    const osc = ctx.createOscillator(); osc.type = "sine"; osc.frequency.value = 55 * Math.pow(2, k);
-    const gn = G(0); osc.connect(gn); gn.connect(g.shep.out); osc.start();
-    g.shep.oscs.push(osc); g.shep.gains.push(gn);
-  }
-  g.shep.out.connect(g.buses.fx);
-  g.shep.update = (phase, base, t = ctx.currentTime) => {
-    for (let k = 0; k < SHEP_N; k++) {
-      const x = (k + phase) / SHEP_N, w = 0.5 - 0.5 * Math.cos(2 * Math.PI * x);
-      g.shep.oscs[k].frequency.setTargetAtTime(base * Math.pow(2, k + phase), t, 0.05);
-      g.shep.gains[k].gain.setTargetAtTime(w * w, t, 0.05);
+  // the staircase: one looping buffer (see bakeShepard), started when it is wanted and stopped when it has faded out
+  g.shepOut = G(0); const shepLp = F("lowpass", 2400, -3); g.shepOut.connect(shepLp); shepLp.connect(g.duck.pad); g.shepSrc = null;
+  g.setShepard = (level, rate = 1) => {
+    const t = ctx.currentTime;
+    if (level > 0.002 && !g.shepSrc) {
+      const src = ctx.createBufferSource(); src.buffer = o.bank.shep(); src.loop = true; src.playbackRate.value = rate; src.connect(g.shepOut); src.start(t); g.shepSrc = src;
+    }
+    if (g.shepSrc) {
+      g.shepSrc.playbackRate.setTargetAtTime(rate, t, 0.5);
+      g.shepOut.gain.cancelScheduledValues(t); g.shepOut.gain.setTargetAtTime(level, t, 0.6);
+      if (level <= 0.002) { const s = g.shepSrc; g.shepSrc = null; try { s.stop(t + 3); } catch (e) { /* */ } s.onended = () => { try { s.disconnect(); } catch (e) { /* */ } }; }
     }
   };
 
   // live controls
   const ST = (p, v, tc = 0.06) => p.setTargetAtTime(v, ctx.currentTime, tc);
+  // for parameters re-aimed many times a second: drop the old automation first so the event list can't grow
+  const AIM = (p, v, tc) => { const t = ctx.currentTime; p.cancelScheduledValues(t); p.setTargetAtTime(v, t, tc); };
   g.set = {
     space: (v) => ST(g.revIn.gain, v),
     echo: (v) => ST(g.delIn.gain, v),
     tape: (v) => { ST(g.tapeWet.gain, v); ST(g.tapeDry.gain, 1 - v * 0.6); ST(g.wow.depth.gain, 0.0003 * v); ST(g.flut.depth.gain, 0.00004 * v); },
     master: (v) => ST(g.master.gain, v),
-    shep: (v) => ST(g.shep.out.gain, v, 0.4),
   };
   /** The climb opens the room: pad filter, echo feedback. (Space and echo level are set by the app.) */
   g.applyAscent = (a) => {
-    ST(g.padIn.frequency, 420 * Math.pow(2, 4.4 * a), 0.4);
+    AIM(g.padIn.frequency, 420 * Math.pow(2, 4.4 * a), 0.4);
+    AIM(g.pluckLp.frequency, 520 * Math.pow(2, 4.2 * a), 0.3);
     g.fbBoth(0.36 + 0.2 * smooth(0.5, 1, a));
   };
   return g;
@@ -173,14 +195,13 @@ export function buildGraph(ctx, o = {}) {
 // ───────────────────────────────────────────────────────── voices
 
 const CAPS = { piano: 22, pluck: 18, pad: 8, bass: 4 };
-const REL = { piano: 0.16, pluck: 0.07, pad: 0.7, bass: 0.14 };
+const REL = { piano: 0.16, pluck: 0.25, pad: 0.7, bass: 0.14 };
 
 export class Voices {
   constructor(ctx, g, bank, opts = {}) {
     this.ctx = ctx; this.g = g; this.bank = bank;
     this.list = { piano: [], pluck: [], pad: [], bass: [] };
     this.tone = { felt: opts.felt ?? 1 };
-    this.fc = 1400;                       // pluck filter target, set by the climb
     this.pedal = false;
     this.rnd = mulberry32(2025);
   }
@@ -193,7 +214,7 @@ export class Voices {
     const arr = this.list[inst];
     for (const o of arr) if (o.midi === midi && o.pending && !o.released) this._release(o, t);     // re-striking re-damps the string
     if (arr.length >= CAPS[inst]) this._steal(arr, t);
-    const v = inst === "piano" ? this._piano(midi, vel, t) : inst === "pluck" ? this._pluck(midi, vel, t) : inst === "pad" ? this._pad(midi, vel, t) : this._bass(midi, vel, t);
+    const v = inst === "piano" || inst === "pluck" ? this._sampled(inst, midi, vel, t) : inst === "pad" ? this._pad(midi, vel, t) : this._bass(midi, vel, t);
     v.inst = inst; v.midi = midi; v.t0 = t; v.released = false; v.pending = false;
     arr.push(v);
     return v;
@@ -237,16 +258,18 @@ export class Voices {
     for (const n of nodes) { try { n.disconnect(); } catch (e) { /* already */ } }
   }
 
-  _piano(midi, vel, t) {
-    const ctx = this.ctx, { buf, rate } = this.bank.piano(midi);
+  /** Felt piano or marimba: a baked buffer through a velocity-dependent lowpass. */
+  _sampled(inst, midi, vel, t) {
+    const ctx = this.ctx, mar = inst === "pluck", { buf, rate } = mar ? this.bank.marimba(midi) : this.bank.piano(midi);
     const src = ctx.createBufferSource(); src.buffer = buf; src.playbackRate.value = rate; src.detune.value = (this.rnd() - 0.5) * 7;
     const lp = ctx.createBiquadFilter(); lp.type = "lowpass"; lp.Q.value = 0.35;
-    lp.frequency.value = clamp((260 + 3900 * Math.pow(vel, 1.4)) * this.tone.felt * (1 + clamp((midi - 60) / 60, -0.4, 0.8)), 300, 18000);   // soft touch = muffled felt
-    const gn = ctx.createGain(); gn.gain.value = 0.2 + 0.8 * Math.pow(vel, 1.3);
-    const pn = ctx.createStereoPanner(); pn.pan.value = clamp((midi - 66) / 34, -1, 1) * 0.6;
-    src.connect(lp); lp.connect(gn); gn.connect(pn); pn.connect(this.g.buses.piano);
+    lp.frequency.value = mar ? clamp(700 + 4300 * Math.pow(vel, 1.2), 500, 9000)
+      : clamp((260 + 3900 * Math.pow(vel, 1.4)) * this.tone.felt * (1 + clamp((midi - 60) / 60, -0.4, 0.8)), 300, 18000);   // soft touch = muffled felt
+    const gn = ctx.createGain(); gn.gain.value = mar ? (0.3 + 0.7 * vel) * (1 + clamp((midi - 72) / 24, 0, 1) * 0.9) : 0.2 + 0.8 * Math.pow(vel, 1.3);
+    const pn = ctx.createStereoPanner(); pn.pan.value = clamp((midi - 66) / 34, -1, 1) * (mar ? 0.5 : 0.6);
+    src.connect(lp); lp.connect(gn); gn.connect(pn); pn.connect(this.g.buses[mar ? "pluck" : "piano"]);
     src.start(t);
-    const tc = REL.piano, v = {
+    const tc = REL[inst], v = {
       release: (tt) => { gn.gain.cancelScheduledValues(tt); gn.gain.setTargetAtTime(0, tt, tc); try { src.stop(tt + tc * 6.5 + 0.05); } catch (e) { /* */ } },
       kill: (tt) => { gn.gain.cancelScheduledValues(tt); gn.gain.setTargetAtTime(0, tt, 0.012); try { src.stop(tt + 0.1); } catch (e) { /* */ } },
     };
@@ -260,22 +283,6 @@ export class Voices {
     v.release = (tt) => { env.gain.cancelScheduledValues(tt); env.gain.setTargetAtTime(0, tt, tc); for (const o of oscs) { try { o.stop(tt + tc * 6.5 + 0.05); } catch (e) { /* */ } } };
     v.kill = (tt) => { env.gain.cancelScheduledValues(tt); env.gain.setTargetAtTime(0, tt, 0.015); for (const o of oscs) { try { o.stop(tt + 0.12); } catch (e) { /* */ } } };
     oscs[0].onended = () => this._finish(v, [env, ...oscs, ...extra]);
-  }
-
-  /** The arpeggio voice: a detuned saw + square through a plucked filter. fc is how open the climb is. */
-  _pluck(midi, vel, t) {
-    const ctx = this.ctx, f = mtof(midi), v = {};
-    const o1 = ctx.createOscillator(); o1.type = "sawtooth"; o1.frequency.value = f;
-    const o2 = ctx.createOscillator(); o2.type = "square"; o2.frequency.value = f * 1.0045;
-    const m2 = ctx.createGain(); m2.gain.value = 0.32;
-    const lp = ctx.createBiquadFilter(); lp.type = "lowpass"; lp.Q.value = 2.5;
-    const fc = clamp(this.fc, 180, 11000);
-    lp.frequency.setValueAtTime(Math.min(fc * 2.6, 15000), t); lp.frequency.exponentialRampToValueAtTime(fc, t + 0.16);
-    const env = this._env(t, 0.1 + 0.16 * vel, 0.003);
-    o1.connect(lp); o2.connect(m2); m2.connect(lp); lp.connect(env); env.connect(this.g.buses.pluck);
-    o1.start(t); o2.start(t);
-    this._ends(v, env, [o1, o2], REL.pluck, [m2, lp]);
-    return v;
   }
 
   _pad(midi, vel, t) {
@@ -303,47 +310,44 @@ export class Voices {
     return v;
   }
 
-  // ───────────────────────────── one-shots, risers, ducking
+  // ───────────────────────────── one-shots, ducking, the swell and the drop
 
-  drum(kind, vel, t, rate = 1, pan = 0) {
+  perc(kind, vel, t, rate = 1, pan = 0) {
     t = Math.max(t, this.ctx.currentTime - 0.001);
-    const src = this.ctx.createBufferSource(); src.buffer = this.bank.drum(kind); src.playbackRate.value = rate;
+    const src = this.ctx.createBufferSource(); src.buffer = this.bank.perc(kind); src.playbackRate.value = rate;
     const g = this.ctx.createGain(); g.gain.value = 0.2 + 0.8 * clamp(vel, 0, 1);
     const p = this.ctx.createStereoPanner(); p.pan.value = pan;
-    src.connect(g); g.connect(p); p.connect(this.g.buses.drums);
+    src.connect(g); g.connect(p); p.connect(this.g.buses.perc);
     src.start(t);
     src.onended = () => { try { p.disconnect(); } catch (e) { /* */ } };
   }
 
-  /** Sidechain: dip the pad, pluck and fx under the kick, then let them swell back. */
-  duck(t, depth = 0.5, rel = 0.24) {
-    for (const k of ["pad", "pluck", "fx"]) {
+  /** The heartbeat: dip the pad and the marimba under a tom, then let them swell back. */
+  duck(t, depth = 0.3, rel = 0.3) {
+    for (const k of ["pad", "pluck"]) {
       const p = this.g.duck[k].gain, tt = Math.max(t, this.ctx.currentTime);
       p.setValueAtTime(1 - depth, tt); p.linearRampToValueAtTime(1, tt + rel);
     }
   }
 
-  /** Filtered noise that rises in pitch and level for `sec` seconds: the build. */
-  riser(t, sec) {
+  /** The build: the chord swells in from nothing over `sec` seconds, a pitched rise, not a noise sweep. */
+  swell(midis, t, sec) {
     const ctx = this.ctx; t = Math.max(t, ctx.currentTime);
-    const src = ctx.createBufferSource(); src.buffer = this.bank.noise(); src.loop = true;
-    const bp = ctx.createBiquadFilter(); bp.type = "bandpass"; bp.Q.value = 2.2;
-    bp.frequency.setValueAtTime(260, t); bp.frequency.exponentialRampToValueAtTime(9500, t + sec);
-    const g = ctx.createGain(); g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.5, t + sec * 0.96); g.gain.linearRampToValueAtTime(0, t + sec + 0.04);
-    src.connect(bp); bp.connect(g); g.connect(this.g.buses.fx);
-    src.start(t); src.stop(t + sec + 0.1);
-    src.onended = () => { try { g.disconnect(); } catch (e) { /* */ } };
+    midis.forEach((m, i) => {
+      const f = mtof(m), o1 = ctx.createOscillator(), o2 = ctx.createOscillator(), m2 = ctx.createGain(), e = ctx.createGain();
+      o1.type = "triangle"; o1.frequency.value = f; o2.type = "sawtooth"; o2.frequency.value = f; o2.detune.value = 6 + i * 2; m2.gain.value = 0.2;
+      e.gain.setValueAtTime(0.0001, t); e.gain.exponentialRampToValueAtTime(0.16, t + sec * 0.97); e.gain.linearRampToValueAtTime(0, t + sec + 0.05);
+      o1.connect(e); o2.connect(m2); m2.connect(e); e.connect(this.g.padIn);
+      o1.start(t); o2.start(t); o1.stop(t + sec + 0.12); o2.stop(t + sec + 0.12);
+      o1.onended = () => { try { e.disconnect(); m2.disconnect(); } catch (er) { /* */ } };
+    });
   }
 
-  /** The drop: a crash, a falling sub, and a ducked breath of silence either side. */
+  /** The drop: two low toms and a breath of space either side. */
   impact(t) {
-    const ctx = this.ctx; t = Math.max(t, ctx.currentTime);
-    this.drum("crash", 0.9, t, 1, 0);
-    const o = ctx.createOscillator(); o.type = "sine"; o.frequency.setValueAtTime(96, t); o.frequency.exponentialRampToValueAtTime(30, t + 1.3);
-    const g = ctx.createGain(); g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(0.7, t + 0.015); g.gain.exponentialRampToValueAtTime(0.0001, t + 1.5);
-    o.connect(g); g.connect(this.g.buses.bass); o.start(t); o.stop(t + 1.6);
-    o.onended = () => { try { g.disconnect(); } catch (e) { /* */ } };
-    this.duck(t, 0.7, 0.5);
+    t = Math.max(t, this.ctx.currentTime);
+    this.perc("conga", 0.95, t, 0.5, 0); this.perc("conga", 0.7, t + 0.01, 0.38, 0);
+    this.duck(t, 0.4, 0.6);
   }
 }
 
@@ -373,7 +377,7 @@ export class Engine {
     this.voices = new Voices(this.ctx, this.g, this.bank, { felt: this.params.felt });
     this.g.set.master(this.params.master);
     this.bank.warmPiano(55, 74);
-    for (const k of ["kick", "hat", "clap"]) this.bank.drum(k);
+    for (const k of ["shaker", "tick", "conga", "snap"]) this.bank.perc(k);
     this.ctx.onstatechange = () => this.emit("state", this.ctx.state);
     this.ready = true;
     this._warmRest();
@@ -383,11 +387,11 @@ export class Engine {
   async resume() { if (this.ctx && this.ctx.state !== "running") { try { await this.ctx.resume(); } catch (e) { /* needs a gesture */ } } }
 
   _warmRest() {
-    const jobs = []; for (let m = 36; m <= 96; m += 3) jobs.push(m);
+    const jobs = []; for (let m = 36; m <= 96; m += 3) jobs.push(["p", m]); for (let m = 52; m <= 92; m += 2) jobs.push(["m", m]); for (let k = 0; k < SHEP.N * 2; k++) jobs.push(["s", k]);
     const step = () => {
       const t0 = performance.now();
-      while (jobs.length && performance.now() - t0 < 8) this.bank.piano(jobs.shift());
-      if (jobs.length) setTimeout(step, 24); else { this.bank.drum("ohat"); this.bank.drum("crash"); }
+      while (jobs.length && performance.now() - t0 < 8) { const [k, m] = jobs.shift(); if (k === "p") this.bank.piano(m); else if (k === "m") this.bank.marimba(m); else this.bank.shepStep(); }
+      if (jobs.length) setTimeout(step, 24); else this.bank.perc("cow");
     };
     setTimeout(step, 400);
   }

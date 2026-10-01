@@ -3,11 +3,13 @@
 // Penrose is one long form that folds back on itself, like the staircase it is named for:
 //
 //   Intro    a felt piano alone, slow and close (Frahm)
-//   Climb    a pad breathes in, a figure starts to circle, bass, hats, the filter opens
-//   Build    a riser, a snare roll accelerating, the kick drops out ... and then
+//   Climb    a pad breathes in, a marimba figure circles, bass, a shuffling shaker, the filter opens
+//   Build    the chord swells in, the shaker rolls faster, the room goes quiet ... and then
 //   Peak     the drop: everything, wide open (Cooper)
 //   Release  it all falls away to the piano ... and the key lifts a whole step, so the next loop
 //            is the same music one step higher. Six laps and you are back where you began.
+//
+// There is no kit: SafeLight is a drummer on a break, so the pulse is hand percussion.
 //
 // One number runs it: ASCENT (0..1). In AUTO the arc moves it along; touch the slider and it
 // holds wherever you put it. Layers wake as a function of ascent, so the slider is also a mixer.
@@ -16,7 +18,7 @@
 // tick schedules what falls in the next ~140 ms on the audio clock. Notes you play yourself
 // never go through here.
 
-import { clamp, lerp, smooth, mulberry32, PROGRESSIONS, chordOn, degreeNote, voiceLead, snapToMode, toChordTone, NOTE_NAMES, mtof } from "./theory.js";
+import { clamp, lerp, smooth, mulberry32, PROGRESSIONS, chordOn, degreeNote, voiceLead, snapToMode, toChordTone, NOTE_NAMES } from "./theory.js";
 
 export const SECTIONS = ["Intro", "Climb", "Build", "Peak", "Release"];
 export const ARC_BARS = { short: 48, medium: 72, long: 112 };
@@ -67,7 +69,7 @@ export class Conductor {
     this.rnd = mulberry32((Date.now() & 0xffff) + 5);
     this.chord = null; this.prevPad = null; this.chordCount = 0;
     this.memory = []; this.cellAbs = null; this.lastUser = -99;
-    this.pi = 0; this.ai = 0; this.shepPhase = 0; this.lastCtl = 0; this.shepOn = false;
+    this.pi = 0; this.ai = 0; this.lastCtl = 0; this.swing = 0.12; this.cowbell = 0; this.stair = 0.6;
     this.listeners = {}; this.timer = null; this.metro = false;
   }
 
@@ -97,7 +99,7 @@ export class Conductor {
     if (!this.running) return;
     this.running = false; this.chord = null;
     if (this.timer) this.timer.stop();
-    this.e.setParam("shep", 0); this.shepOn = false;
+    if (this.e.g) this.e.g.setShepard(0);
     this.emit("transport", false);
   }
 
@@ -120,22 +122,21 @@ export class Conductor {
   tick() {
     if (!this.running) return;
     const ctx = this.ctx, now = ctx.currentTime, horizon = now + 0.14;
-    while (this.nextT < horizon) { this.scheduleStep(this.step, this.nextT); this.step++; this.nextT += this.stepSec; }
-    if (now - this.lastCtl > 0.08) this.control(now, now - this.lastCtl);
+    while (this.nextT < horizon) {
+      try { this.scheduleStep(this.step, this.nextT); } catch (err) { console.error(err); }       // a bad step must never replay: always move on
+      this.step++; this.nextT += this.stepSec;
+    }
+    if (now - this.lastCtl > 0.12) this.control(now);
   }
 
-  /** Continuous things: the room opens with the climb, and the Shepard shimmer slides. */
-  control(now, dt) {
-    dt = Math.min(dt, 0.25); this.lastCtl = now;
-    const a = this.a, g = this.e.g;
-    g.applyAscent(a);
-    const lvl = smooth(0.5, 0.95, a) * 0.09;
-    if (lvl > 0.002 || this.shepOn) {
-      const octPerSec = 1 / lerp(26, 8, a);
-      this.shepPhase = (this.shepPhase + dt * octPerSec) % 1;
-      g.shep.update(this.shepPhase, mtof(24 + this.pc), now);
-      this.e.setParam("shep", lvl); this.shepOn = lvl > 0.002;
-    }
+  /** Continuous things: the room opens with the climb (pad filter, marimba filter, echo feedback). */
+  control(now) {
+    this.lastCtl = now;
+    const a = this.a;
+    this.e.g.applyAscent(a);
+    // the staircase swells through the climb and the build, thins at the peak, and is gone by the release
+    const shape = smooth(0.4, 0.85, a) * (a >= 1 ? 0.55 : 1) * (this.sec === 4 && this.mode === "auto" ? 0.3 : 1);
+    this.e.g.setShepard(shape * 0.07 * this.stair, Math.pow(2, ((this.pc + 5) % 12 - 5) / 12));    // tonic-locked via playback rate (within +/- a fourth)
   }
 
   // ───────────────────────────────────────────── harmony
@@ -148,6 +149,8 @@ export class Conductor {
   }
 
   userTouched(t = this.ctx.currentTime) { this.lastUser = t; }
+
+  humanise(t, ms = 7) { return t + (this.rnd() - 0.5) * (ms / 500); }
 
   makeChord(idx) {
     const P = PROGRESSIONS[this.prog], n = P.degrees.length, root = this.root, i = idx % n;
@@ -202,7 +205,7 @@ export class Conductor {
 
   scheduleStep(step, t) {
     const s = step % 16, gbar = Math.floor(step / 16) + this.offset, N = this.N, arcBar = gbar % N;
-    const climbEnd = N - REL - PEAK - BUILD, buildEnd = climbEnd + BUILD, peakEnd = buildEnd + PEAK;
+    const climbEnd = N - REL - PEAK - BUILD, buildEnd = climbEnd + BUILD;
     const auto = this.mode === "auto";
     if (auto) {
       const r = arcAt(arcBar + s / 16, N);
@@ -214,18 +217,20 @@ export class Conductor {
     const c = this.cur; if (!c) return;
     const V = this.e.voices, ss = this.stepSec, a = this.a, chordSec = c.per * this.barSec;
     const A = {
-      pad: smooth(0.08, 0.2, a), sub: smooth(0.14, 0.3, a), arp: smooth(0.26, 0.36, a), bass: smooth(0.4, 0.5, a),
-      hat: smooth(0.48, 0.56, a), kick: smooth(0.5, 0.6, a), clap: smooth(0.68, 0.76, a),
+      pad: smooth(0.08, 0.2, a), sub: smooth(0.14, 0.3, a), arp: smooth(0.24, 0.34, a), bass: smooth(0.4, 0.5, a),
+      shake: smooth(0.34, 0.44, a), wood: smooth(0.5, 0.6, a), tom: smooth(0.56, 0.66, a), snap: smooth(0.72, 0.8, a),
     };
+    const chance = (x) => this.rnd() < x;
+    const T = t + (s % 2 === 1 ? this.swing * ss : 0);            // the shuffle: off-16ths land late, the Bonobo lilt
 
-    // the arc's own events
+    // the arc's own events: the chord swells in for the whole build, and the drop is two low toms
     if (auto && s === 0) {
-      if (arcBar === climbEnd) V.riser(t, BUILD * this.barSec);
+      if (arcBar === climbEnd) V.swell([...c.pad, c.bassRoot + 12], t, BUILD * this.barSec);
       if (arcBar === buildEnd) { V.impact(t); this.emit("drop", { t }); }
     }
-    const inRoll = auto && arcBar >= buildEnd - 2 && arcBar < buildEnd, lastBeforeDrop = auto && arcBar === buildEnd - 1;
+    const inRoll = auto && arcBar >= buildEnd - 2 && arcBar < buildEnd, hush = auto && arcBar === buildEnd - 1;
 
-    if (s % 4 === 0 && this.metro) V.drum("hat", s === 0 ? 0.6 : 0.3, t, 1.6);
+    if (s % 4 === 0 && this.metro) V.perc("tick", s === 0 ? 0.6 : 0.3, t, 1.5);
 
     // pad + sub: a chord per two bars, breathing in
     if (s === 0 && c.pos === 0) {
@@ -247,40 +252,54 @@ export class Conductor {
     if (c.newChord && s === 0 && a < 0.4) this.note("piano", c.bassRoot + 12, 0.32, t, chordSec);        // a low, soft anchor under the figure
     if (a >= 0.62 && (s === 0 || s === 8) && !inRoll) c.pad.slice(0, 3).forEach((n, i) => this.note("piano", n, 0.38 + 0.1 * (s === 0), t + i * 0.01, 7 * ss));
 
-    // arp: the same figure, one note short, on eighths then sixteenths, through a filter the climb opens
-    if (A.arp > 0.02 && !lastBeforeDrop) {
+    // the marimba figure: the same cell, one note short, circling against the bar. From the middle of the climb it is
+    // a Shepard SCALE: each note sounds in several octaves under a window that slides up one octave every eight bars,
+    // so the line seems to rise forever (a staircase you can hum, not a siren)
+    if (A.arp > 0.02 && !hush) {
       const div = a < 0.45 ? 2 : 1;
       if (s % div === 0) {
-        V.fc = 280 * Math.pow(2, 5.3 * a);
         let n = this.cellAbs ? this.cellAbs[this.ai++ % this.cellAbs.length] + 12 : c.arp[ARP_CELL[this.ai++ % ARP_CELL.length]];
         if (this.cellAbs && s % 4 === 0) n = toChordTone(n, c.tones.map((x) => x + 12));
-        while (n > 88) n -= 12;
-        this.note("pluck", n, (0.3 + 0.3 * a + (s % 4 === 0 ? 0.1 : 0)) * (0.5 + 0.5 * A.arp), t, ss * div * 0.9);
+        const vel = (0.3 + 0.25 * a + (s % 4 === 0 ? 0.1 : 0)) * (0.5 + 0.5 * A.arp);
+        if (a < 0.45) { while (n > 88) n -= 12; this.note("pluck", n, vel, T, ss * div * 0.9); }
+        else {
+          const pc = ((n % 12) + 12) % 12, center = 74 + 12 * (((gbar + s / 16) / 8) % 1);
+          for (let note = 48 + ((pc - 48 + 120) % 12); note <= 96; note += 12) {
+            const w = Math.exp(-Math.pow((note - center) / 9, 2));
+            if (w > 0.2) this.note("pluck", note, vel * w * 1.15, T, ss * div * 0.9);
+          }
+        }
       }
     }
 
-    // bass pulse: offbeat eighths that anticipate the next chord
+    // bass: offbeat eighths that anticipate the next chord
     if (A.bass > 0.02 && !inRoll) {
-      if ([2, 6, 10, 14].includes(s)) this.note("bass", c.pos === c.per - 1 && s === 14 ? c.nextBassRoot : c.bassRoot, 0.5 + 0.2 * A.bass, t, ss * 1.7);
+      if ([2, 6, 10, 14].includes(s)) this.note("bass", c.pos === c.per - 1 && s === 14 ? c.nextBassRoot : c.bassRoot, 0.5 + 0.2 * A.bass, T, ss * 1.7);
     }
 
-    // drums: a heartbeat, then four on the floor; the kick ducks the pad, arp and fx
-    if (A.kick > 0.02 && !inRoll && !lastBeforeDrop) {
-      const hit = a >= 0.62 ? s % 4 === 0 : s === 0 || s === 8;
-      if (hit) { V.drum("kick", 0.55 + 0.3 * A.kick, t); V.duck(t, 0.48 * A.kick, 0.22); }
+    // hand percussion, a drummer on a break: a shuffling shaker, a wooden clave, a soft tom heartbeat, snaps near the top
+    if (A.shake > 0.02 && !inRoll && !hush) {
+      const accent = s % 4 === 2 ? 0.3 : s % 4 === 0 ? 0.22 : 0.13;
+      if (chance((s % 2 === 0 ? 0.9 : 0.55) * (0.4 + 0.6 * A.shake))) V.perc("shaker", accent + this.rnd() * 0.06, this.humanise(T, 8), 1 + this.rnd() * 0.05, s % 4 < 2 ? -0.3 : 0.3);
     }
-    if (A.hat > 0.02 && !lastBeforeDrop) {
-      if (this.rnd() < 0.55 + 0.45 * A.hat) V.drum("hat", (s % 4 === 2 ? 0.34 : 0.17) + this.rnd() * 0.06, t, 1 + this.rnd() * 0.04, s % 2 ? 0.25 : -0.25);
-      if (a > 0.68 && s % 4 === 2) V.drum("ohat", 0.28, t, 1, 0.1);
+    if (A.wood > 0.02 && !inRoll && !hush) {
+      const clave = c.bar % 2 === 0 ? [0, 3, 6, 10, 12] : [2, 4, 8, 11, 14];
+      if (clave.includes(s) && chance(0.5 * A.wood)) V.perc("tick", 0.2 + this.rnd() * 0.1, this.humanise(T, 6), 1, 0.35);
     }
-    if (A.clap > 0.02 && !inRoll && (s === 4 || s === 12)) V.drum("clap", 0.45 * A.clap + 0.15, t);
+    if (A.tom > 0.02 && !inRoll && !hush) {
+      if (s === 0 || s === 10) { V.perc("conga", 0.45 + 0.3 * A.tom, t, 0.62, -0.1); V.duck(t, 0.2 * A.tom, 0.35); }
+      else if (s === 6 && chance(0.5 * A.tom)) V.perc("conga", 0.28, T, 0.85, -0.3);
+    }
+    if (A.snap > 0.02 && !inRoll && !hush && (s === 4 || s === 12)) V.perc("snap", 0.3 * A.snap + 0.1, t, 1, 0.15);
 
-    // the roll: eighths, then sixteenths, then thirty-seconds, pitching up
+    // more cowbell (a joke, off by default)
+    if (this.cowbell > 0.02 && a > 0.45 && [2, 6, 10, 14].includes(s) && !hush) V.perc("cow", 0.12 + 0.5 * this.cowbell, T, 1, 0);
+
+    // the roll: the shaker speeds up and pitches up through the last two bars
     if (inRoll) {
-      const rel = arcBar - (buildEnd - 2), pos = (rel + s / 16) / 2;            // 0..1 through the roll
-      const rate = 1 + 0.9 * pos, vel = 0.25 + 0.65 * pos;
-      if (rel === 0 ? s % 2 === 0 : true) V.drum("clap", vel, t, rate);
-      if (rel === 1 && s >= 8) V.drum("clap", vel * 0.85, t + ss / 2, rate * 1.05);
+      const rel = arcBar - (buildEnd - 2), pos = (rel + s / 16) / 2, vel = 0.15 + 0.45 * pos, rate = 1 + 0.5 * pos;
+      if (rel === 0 ? s % 2 === 0 : true) V.perc("shaker", vel, t, rate);
+      if (rel === 1 && s >= 8) V.perc("shaker", vel * 0.85, t + ss / 2, rate * 1.04);
     }
   }
 }

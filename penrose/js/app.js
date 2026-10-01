@@ -11,9 +11,10 @@ const INSTS = [{ id: "piano", name: "Felt Piano" }, { id: "pluck", name: "Pluck"
 const PAD_ORDER = [4, 5, 6, 7, 0, 1, 2, 3];
 const PAD_ROLE = ["root", "3rd", "5th", "7th", "octave", "3rd ↑", "5th ↑", "9th"];
 
-const DEFAULTS = { v: 1, inst: "piano", key: 2, prog: "frahm", arc: "medium", bpm: 104, felt: 100, space: 30, echo: 15, tape: 40, guide: true, pads: false, lowC: 48, lift: "1", metro: "0", seenHelp: false };
+const DEFAULTS = { v: 2, stair: 60, cowbell: 0, eco: "auto", inst: "piano", key: 2, prog: "frahm", arc: "medium", bpm: 104, felt: 100, space: 30, echo: 15, tape: 40, guide: true, pads: false, lowC: 48, lift: "1", metro: "0", seenHelp: false };
 let S = { ...DEFAULTS };
 try { Object.assign(S, JSON.parse(localStorage.getItem("penrose.v1") || "{}")); } catch (e) { /* private mode */ }
+if (S.v !== 2) Object.assign(S, { v: 2, cowbell: 0, eco: "auto" });
 const save = () => { try { localStorage.setItem("penrose.v1", JSON.stringify(S)); } catch (e) { /* ignore */ } };
 
 const engine = new Engine();
@@ -31,12 +32,18 @@ const secName = () => {
   const a = conductor.a; return a < 0.07 ? "Intro" : a < 0.78 ? "Climb" : a < 0.97 ? "Build" : "Peak";
 };
 
+const lastFx = {};
 function applyFx() {
-  engine.setParam("space", clamp(S.space / 100 + 0.3 * conductor.a, 0, 1));
-  engine.setParam("echo", clamp(S.echo / 100 + 0.22 * Math.max(0, conductor.a - 0.4), 0, 1));
-  engine.setParam("tape", S.tape / 100);
-  engine.setParam("felt", S.felt / 100);
+  const want = {
+    space: clamp(S.space / 100 + 0.3 * conductor.a, 0, 1), echo: clamp(S.echo / 100 + 0.22 * Math.max(0, conductor.a - 0.4), 0, 1),
+    tape: S.tape / 100, felt: S.felt / 100,
+  };
+  for (const k in want) if (lastFx[k] === undefined || Math.abs(lastFx[k] - want[k]) > 0.004) { lastFx[k] = want[k]; engine.setParam(k, want[k]); }   // only when it changed
+  conductor.cowbell = S.cowbell / 100; conductor.stair = S.stair / 100;
 }
+
+/** Eco (lighter visuals): on when asked, or automatically on machines reporting 4 cores or fewer. */
+function applyEco() { if (tunnel) tunnel.setEco(S.eco === "1" || (S.eco === "auto" && (navigator.hardwareConcurrency || 4) <= 4)); }
 
 // ───────────────────────────────────────────────────────── playing
 
@@ -232,7 +239,8 @@ function buildUI() {
   $("arcSel").value = S.arc; $("arcSel").onchange = (e) => { S.arc = e.target.value; conductor.arc = S.arc; conductor.arcBar = 0; save(); };
   Object.assign(conductor, { key: S.key, prog: S.prog, arc: S.arc, bpm: S.bpm, autoLift: S.lift === "1", metro: S.metro === "1" });
 
-  for (const id of ["felt", "space", "echo", "tape"]) {
+  $("eco").value = S.eco; $("eco").onchange = (e) => { S.eco = e.target.value; save(); applyEco(); };
+  for (const id of ["felt", "space", "echo", "tape", "cowbell", "stair"]) {
     const el = $(id); el.value = S[id]; el.addEventListener("input", () => { S[id] = +el.value; save(); applyFx(); });
   }
   const bpm = $("bpm"); bpm.value = S.bpm; $("bpmOut").textContent = S.bpm;
@@ -340,7 +348,7 @@ async function begin() {
 }
 
 addEventListener("DOMContentLoaded", () => {
-  tunnel = new Tunnel($("sky"));
+  tunnel = new Tunnel($("sky")); applyEco();
   arcGraph = new ArcGraph($("arcmap"));
   buildUI(); wireKeys(); frameLoop();
   addEventListener("resize", onResize);

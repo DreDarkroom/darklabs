@@ -1,6 +1,6 @@
 // Penrose service worker: installable and playable offline. Network-first (so updates land straight
 // away) with the cache as fallback. Bump CACHE with every release that changes a file in CORE.
-const CACHE = "penrose-v1";
+const CACHE = "penrose-v2";
 const CORE = ["./", "index.html", "style.css", "manifest.webmanifest", "icon.svg",
   "js/app.js", "js/engine.js", "js/conductor.js", "js/dsp.js", "js/theory.js", "js/visuals.js", "js/midi.js"];
 self.addEventListener("install", (e) => { e.waitUntil(caches.open(CACHE).then((c) => c.addAll(CORE)).then(() => self.skipWaiting()).catch(() => {})); });

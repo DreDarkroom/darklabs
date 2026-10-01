@@ -26,12 +26,16 @@ export class Tunnel {
   constructor(canvas) {
     this.c = canvas; this.x = canvas.getContext("2d", { alpha: false });
     this.phase = 0; this.t = 0; this.pings = []; this.boomV = 0; this.pulse = 0; this.level = 0; this.avg = 0.016; this.low = false;
+    this.eco = false; this.acc = 0; this.n = 0;
     this.reduced = typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
     this.resize(); addEventListener("resize", () => this.resize());
   }
 
+  /** Eco: render at 1x, half the frames, fewer rings. For slow machines; switched on automatically when frames run slow. */
+  setEco(on) { if (on !== this.eco) { this.eco = on; this.resize(); } }
+
   resize() {
-    this.dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+    this.dpr = this.eco || this.low ? 1 : Math.min(window.devicePixelRatio || 1, 1.5);
     this.w = innerWidth; this.h = innerHeight;
     this.c.width = Math.floor(this.w * this.dpr); this.c.height = Math.floor(this.h * this.dpr);
     this.x.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
@@ -43,9 +47,12 @@ export class Tunnel {
   beat(accent) { this.pulse = Math.max(this.pulse, accent ? 1 : 0.55); }
 
   frame(dt, st) {
-    dt = Math.min(dt, 0.05); this.t += dt;
+    dt = Math.min(dt, 0.05);
     this.avg += (dt - this.avg) * 0.04;
-    if (!this.low && this.t > 3 && this.avg > 0.03) this.low = true;                 // quality scaler: shed detail on slow devices
+    if (!this.low && this.t > 3 && this.avg > 0.026) { this.low = true; this.resize(); }       // quality scaler: shed detail on slow devices
+    this.acc += dt;
+    if ((this.eco || this.low) && ++this.n % 2) return;                                          // half the frames when lightening the load
+    dt = this.acc; this.acc = 0; this.t += dt;
     this.level += ((Number.isFinite(st.level) ? st.level : 0) - this.level) * Math.min(1, dt * 6);
     this.pulse *= Math.exp(-dt * 7); this.boomV *= Math.exp(-dt * 2.2);
     const x = this.x, w = this.w, h = this.h, a = clamp(st.a, 0, 1), L = clamp(this.level * 5, 0, 1);
@@ -61,7 +68,7 @@ export class Tunnel {
 
     // the rings
     x.globalCompositeOperation = "lighter";
-    const R = this.low ? 10 : 15, SEG = this.low ? 56 : 96, lw = Math.max(1, Math.min(w, h) / 520);
+    const light = this.eco || this.low, R = light ? 8 : 14, SEG = light ? 44 : 84, lw = Math.max(1, Math.min(w, h) / 520);
     const m1 = 0.025 + 0.13 * a + 0.05 * L, m2 = 0.015 + 0.09 * a + 0.06 * this.pulse, m3 = 0.1 * this.pulse * a;
     for (let i = 0; i < R; i++) {
       const d = i + this.phase, r = maxR * Math.pow(0.78, d);
@@ -81,7 +88,7 @@ export class Tunnel {
     }
 
     // the seed at the centre: a phyllotaxis of points that breathes with the beat
-    const dots = this.low ? 40 : 80, sr = Math.min(w, h) * (0.05 + 0.05 * a + 0.04 * this.pulse);
+    const dots = light ? 36 : 70, sr = Math.min(w, h) * (0.05 + 0.05 * a + 0.04 * this.pulse);
     x.fillStyle = `rgba(${Math.min(255, cr + 60) | 0},${Math.min(255, cg + 60) | 0},${Math.min(255, cb + 60) | 0},${(0.35 + 0.35 * this.pulse + 0.2 * a).toFixed(2)})`;
     for (let i = 1; i < dots; i++) {
       const ang = i * 2.39996 + this.t * 0.12, rad = sr * Math.sqrt(i / dots) * 1.9;

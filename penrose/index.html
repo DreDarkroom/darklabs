@@ -66,7 +66,7 @@
     <summary>How to play (start here)</summary>
     <ol>
       <li><b>Start soft.</b> Play a few slow notes. This is a felt piano, close and quiet, and nothing else is happening yet.</li>
-      <li><b>Press Climb.</b> The arc starts by itself: <b>Intro</b> (just piano), <b>Climb</b> (a pad, then a circling figure, then bass, hats and kick, with the filter opening), <b>Build</b> (a riser and a snare roll, then the kick drops out), <b>Peak</b> (the drop, everything open), <b>Release</b> (it all falls away back to the piano).</li>
+      <li><b>Press Climb.</b> The arc starts by itself: <b>Intro</b> (just piano), <b>Climb</b> (a pad, then a marimba figure circling your phrase, then bass and hand percussion, with the filter opening), <b>Build</b> (the chord swells in and the shaker rolls faster, then the room goes quiet), <b>Peak</b> (the drop, everything open), <b>Release</b> (it all falls away back to the piano).</li>
       <li><b>It never ends.</b> After the release the key lifts a whole step and the arc starts again, one step higher. Six laps and you are back where you began. The ripple map under the slider shows where you are.</li>
       <li><b>Play over it.</b> The glowing keys are the notes that fit the chord right now, and the piano figure steps aside while you play. A short phrase of your own (2 to 5 notes) becomes the figure the piano and the arpeggio circle.</li>
       <li><b>Or steer.</b> Touch the Ascent slider and the arc holds wherever you put it, so you can sit in the Intro for as long as you like, or stay at the edge of the drop. Press Climb to let it carry on from there.</li>
@@ -81,11 +81,14 @@
       <label>Space<input id="space" type="range" min="0" max="100" value="30"></label>
       <label>Echo<input id="echo" type="range" min="0" max="100" value="15"></label>
       <label>Tape<input id="tape" type="range" min="0" max="100" value="40"></label>
+      <label>Staircase (the endless rise)<input id="stair" type="range" min="0" max="100" value="60"></label>
+      <label>More cowbell<input id="cowbell" type="range" min="0" max="100" value="0"></label>
       <label>Tempo <output id="bpmOut">104</output><input id="bpm" type="range" min="80" max="132" value="104"></label>
       <label class="sel"><span>Key</span><select id="key"></select></label>
       <label class="sel"><span>Harmony</span><select id="prog"></select></label>
       <label class="sel"><span>Lift key each lap</span><select id="lift"><option value="1">Yes (the staircase)</option><option value="0">No</option></select></label>
       <label class="sel"><span>Click</span><select id="metro"><option value="0">Off</option><option value="1">On</option></select></label>
+      <label class="sel"><span>Eco mode</span><select id="eco"><option value="auto">Auto</option><option value="1">On (lighter visuals)</option><option value="0">Off</option></select></label>
     </div>
   </details>
 
