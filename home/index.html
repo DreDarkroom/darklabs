@@ -56,6 +56,18 @@ h2{font-size:clamp(2rem,6vw,3.6rem);line-height:1;letter-spacing:.14em;text-tran
 .strip{display:flex;gap:.9rem;margin-top:1.6rem;overflow:hidden;padding:.9rem 0;border-top:6px solid #111;border-bottom:6px solid #111;background:repeating-linear-gradient(90deg,transparent 0 22px,#050203 22px 30px)}
 .frame{flex:none;width:130px;height:92px;background:#1a0b0e;border:1px solid #2b1c1e;display:flex;align-items:center;justify-content:center;color:#a47f84;font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;animation:develop 2.4s ease both}
 @keyframes develop{from{filter:brightness(.1) sepia(1)}to{filter:none}}
+.frame{cursor:pointer;font:inherit;font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;border:1px solid #2b1c1e;color:#a47f84;position:relative}
+.frame:hover,.frame:focus-visible{border-color:var(--red-soft);color:#fff;outline:none}
+.frame.found{background:#2a1013;color:#ffd8dc}
+.frame.found::after{content:"";position:absolute;right:6px;top:6px;width:6px;height:6px;border-radius:50%;background:var(--red);box-shadow:0 0 8px var(--red)}
+.found-count{margin-top:.8rem;font-size:.75rem;letter-spacing:.26em;text-transform:uppercase;color:var(--dim)}
+#toast{position:fixed;left:50%;bottom:54px;transform:translateX(-50%) translateY(20px);z-index:40;background:rgba(10,4,5,.94);border:1px solid var(--red-soft);color:#fff;padding:.7rem 1.1rem;border-radius:3px;font-size:.85rem;letter-spacing:.08em;max-width:min(92vw,34rem);text-align:center;opacity:0;pointer-events:none;transition:opacity .4s,transform .4s}
+#toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+dialog#dino{background:#0a0405;color:#ffd8dc;border:1px solid var(--red-soft);border-radius:4px;padding:1.4rem 1.6rem;max-width:min(94vw,40rem)}
+dialog#dino::backdrop{background:rgba(0,0,0,.8)}
+dialog#dino pre{font:14px/1.15 ui-monospace,Consolas,monospace;color:#ff8a96;overflow:auto;margin:0 0 1rem}
+dialog#dino button{font:inherit;color:#fff;background:transparent;border:1px solid rgba(255,255,255,.4);border-radius:3px;padding:.5rem 1rem;cursor:pointer}
+html.neg{filter:invert(1) hue-rotate(180deg)}
 .end{text-align:center;align-items:center}
 .end h2{font-size:clamp(3rem,12vw,8rem)}
 footer{position:relative;z-index:10;text-align:center;color:#7a6a6a;font-size:.85rem;padding:2rem 1rem 3rem}
@@ -121,7 +133,7 @@ footer a{color:var(--red-soft);text-decoration:none}
     <a class="card" href="https://dredarkroom.github.io/contact-sheet/" rel="noopener" data-n="76"><i>LIVE</i><b>Contact Sheet</b><span>VR gallery to YouTube, unlisted until you say otherwise.</span></a>
     <a class="card" href="/darklabs/obscura/" data-n="64"><i>PREVIEW</i><b>Obscura</b><span>A camera obscura, four developer trays and 24 hidden frames to find.</span></a>
   </div>
-  <div class="strip" aria-hidden="true"><div class="frame">01</div><div class="frame">02</div><div class="frame">03</div><div class="frame">04</div><div class="frame">05</div><div class="frame">06</div><div class="frame">07</div><div class="frame">08</div></div>
+  <div class="strip" role="group" aria-label="A roll of eight film frames. Some are not blank."><button class="frame" type="button" data-f="1" aria-label="Film frame 01, undeveloped">01</button><button class="frame" type="button" data-f="2" aria-label="Film frame 02, undeveloped">02</button><button class="frame" type="button" data-f="3" aria-label="Film frame 03, undeveloped">03</button><button class="frame" type="button" data-f="4" aria-label="Film frame 04, undeveloped">04</button><button class="frame" type="button" data-f="5" aria-label="Film frame 05, undeveloped">05</button><button class="frame" type="button" data-f="6" aria-label="Film frame 06, undeveloped">06</button><button class="frame" type="button" data-f="7" aria-label="Film frame 07, undeveloped">07</button><button class="frame" type="button" data-f="8" aria-label="Film frame 08, undeveloped">08</button></div><p class="found-count" id="found">Frames developed: 0 / 8</p>
 </section>
 
 <section class="screen end" id="drop">
@@ -133,6 +145,13 @@ footer a{color:var(--red-soft);text-decoration:none}
 </main>
 <footer><p>&copy; Dre Darkroom &middot; <a href="https://github.com/DreDarkroom">GitHub</a> &middot; <a href="https://twitch.tv/dredarkroom" rel="noopener">Twitch</a> &middot; <a href="https://soundcloud.com/dredarkroom" rel="noopener">SoundCloud</a> &middot; <a href="https://mixcloud.com/darkroom" rel="noopener">Mixcloud</a></p></footer>
 <p class="hint" id="hint">scroll</p>
+<div id="toast" role="status" aria-live="polite"></div>
+<dialog id="dino" aria-label="A hidden dinosaur"><pre>                 __
+                / _)
+       _.----._/ /
+      /         /
+   __/ (  | (  |
+  /__.-'|_|--|_|</pre><p>Frame 04 wasn't blank. It never was a bug.</p><p style="margin-top:.8rem"><button type="button" id="dinoX">Close</button></p></dialog>
 
 <script type="module">
 import { Engine } from "../kit/engine.js";
@@ -208,6 +227,27 @@ function frame(now) {
 }
 requestAnimationFrame(frame);
 addEventListener("pointerdown", () => { if (engine.ctx && engine.ctx.state !== "running") engine.resume(); }, true);
+/* easter eggs: the roll of film, a dinosaur, and the Konami negative */
+const toast = (t) => { const e = $("toast"); e.textContent = t; e.classList.add("on"); clearTimeout(toast.t); toast.t = setTimeout(() => e.classList.remove("on"), 3400); };
+const FRAMES = { 1: "Exposure: you, looking.", 2: "Stop bath. Nothing here is moving.", 3: "A drummer, on a break.", 4: null, 5: "Fixer. Do not open the door.", 6: "A contact sheet, but real.", 7: "Dust. Always dust.", 8: "There is no ninth frame. Try: ↑ ↑ ↓ ↓ ← → ← → B A" };
+let found = new Set(); try { found = new Set(JSON.parse(localStorage.getItem("dd.frames") || "[]")); } catch (e) { /* storage may be blocked */ }
+const showFound = () => { $("found").textContent = "Frames developed: " + found.size + " / 8" + (found.size === 8 ? " · roll complete" : ""); document.querySelectorAll(".frame").forEach((f) => { const on = found.has(+f.dataset.f); f.classList.toggle("found", on); f.setAttribute("aria-label", "Film frame " + f.textContent + (on ? ", developed" : ", undeveloped")); }); };
+const shutter = () => { if (soundOn && engine.ready && engine.voices) engine.voices.perc("snap", 0.55, engine.now); };
+function negative(on) { const next = on === undefined ? !root.classList.contains("neg") : on; root.classList.toggle("neg", next); shutter(); toast(next ? "Negative developed. Same again to reverse it." : "Back to positive."); }
+document.querySelectorAll(".frame").forEach((f) => f.addEventListener("click", () => {
+  const n = +f.dataset.f; shutter(); const wasNew = !found.has(n); found.add(n); try { localStorage.setItem("dd.frames", JSON.stringify([...found])); } catch (e) { /* ignore */ }
+  showFound(); if (n === 4) $("dino").showModal(); else toast(FRAMES[n]);
+  if (wasNew && found.size === 8) setTimeout(() => { toast("Roll developed. Here is the negative."); negative(true); }, 900);
+}));
+$("dinoX").addEventListener("click", () => $("dino").close()); $("dino").addEventListener("click", (e) => { if (e.target === $("dino")) $("dino").close(); });
+const KONAMI = ["ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowLeft", "ArrowRight", "b", "a"]; let ki = 0, typed = "";
+addEventListener("keydown", (e) => {
+  const k = e.key.length === 1 ? e.key.toLowerCase() : e.key;
+  ki = k === KONAMI[ki] ? ki + 1 : (k === KONAMI[0] ? 1 : 0); if (ki === KONAMI.length) { ki = 0; negative(); }
+  if (e.key.length === 1) { typed = (typed + k).slice(-4); if (typed === "dino") { typed = ""; found.add(4); showFound(); $("dino").showModal(); } }
+});
+let taps = 0, tapT = 0; document.querySelector(".logo").addEventListener("click", () => { const now = performance.now(); taps = now - tapT < 900 ? taps + 1 : 1; tapT = now; if (taps >= 7) { taps = 0; negative(); } });   // mobile: tap the logo seven times
+showFound();
 window.__home = { engine, conductor, tunnel, progress, get a() { return a; } };
 console.log("%cDRE DARKROOM", "color:#d1122b;font:700 22px monospace", "\nscroll is the music.");
 </script>
