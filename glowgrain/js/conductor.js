@@ -15,19 +15,25 @@
 
 import {
   clamp, lerp, smooth, mulberry32, MODES, PROGRESSIONS, degreeNote, chordOn, voiceLead,
-  euclid, modeStep, snapToMode, NOTE_NAMES,
+  euclid, modeStep, snapToMode, toChordTone, NOTE_NAMES,
 } from "./theory.js";
 
+// The order Bloom opens in: piano -> resonance -> companions -> marimba -> bass -> pad -> pulse -> voice -> muse.
+// (Space, echo and air also swell continuously with Bloom: that is the spatial bloom.)
 export const LAYERS = [
-  { id: "pad", name: "Pad", at: 0.1 },
-  { id: "bass", name: "Bass", at: 0.28 },
-  { id: "marimba", name: "Marimba", at: 0.42 },
-  { id: "rhythm", name: "Hand", at: 0.55 },
-  { id: "voice", name: "Voice", at: 0.66 },
-  { id: "muse", name: "Muse", at: 0.82 },
+  { id: "resonance", name: "Resonance", at: 0.06 },
+  { id: "companions", name: "Companions", at: 0.16 },
+  { id: "marimba", name: "Marimba", at: 0.28 },
+  { id: "bass", name: "Bass", at: 0.4 },
+  { id: "pad", name: "Pad", at: 0.52 },
+  { id: "rhythm", name: "Pulse", at: 0.64 },
+  { id: "voice", name: "Voice", at: 0.76 },
+  { id: "muse", name: "Muse", at: 0.88 },
 ];
 
-const VOWEL_CYCLE = ["ah", "oh", "oo", "eh"];
+const CELL_LENGTHS = [3, 3, 4, 5, 5, 4];                    // the figure breathes: an additive process, as in Glass
+const VOICINGS = [[[1, 0], [2, 0], [3, 0], [4, 0]], [[2, 0], [4, 0], [1, 12], [3, 12]], [[4, 0], [2, 0], [3, 0], [0, 12]]];   // rich, open, sus2
+
 const ROMAN = ["I", "II", "III", "IV", "V", "VI", "VII"];
 
 function makeTimer() {
@@ -44,13 +50,15 @@ function makeTimer() {
 export class Conductor {
   constructor(engine) {
     this.e = engine;
-    this.bpm = 76; this.key = 0; this.mode = "major"; this.prog = "sunrise"; this.bloom = 0;
+    this.bpm = 72; this.key = 2; this.mode = "minor"; this.prog = "frahm"; this.bloom = 0;
+    this.swing = 0.1; this.memory = []; this.cell = []; this.cellDirty = true; this.cellIdx = 0; this.museIdx = 0;
+    this.chord = null; this.chordCount = 0; this.lastComp = 0; this.drones = [{ every: 37, at: 3, i: 0 }, { every: 53, at: 17, i: 1 }, { every: 71, at: 29, i: 2 }];
     this.pin = {};                       // layer id -> true/false to override the Bloom automation
     this.metro = false; this.quantize = true;
     this.running = false; this.step = 0; this.nextT = 0;
     this.rnd = mulberry32((Date.now() & 0xffff) + 11);
     this.cur = null; this.prevPad = null;
-    this.museShape = [0, 2, 1, 2, 3, 2, 1, 2]; this.marPat = euclid(7, 16, 0); this.arpIdx = 0;
+    this.marPat = euclid(7, 16, 0);
     this.listeners = {};
     this.timer = null;
     this.loop = { state: "idle", bars: 4, layers: [], stepSec: 0, len: 0, start: 0, recStart: 0, recEnd: 0, rec: [], open: new Map(), from: 0, odStart: 0, cursor: 0 };
@@ -75,8 +83,18 @@ export class Conductor {
 
   need() { return this.bloom > 0.02 || Object.values(this.pin).some((v) => v === true) || this.loop.state !== "idle"; }
 
+  /** Resonance and air follow Bloom; the sympathetic strings are tuned to the chord (or the key when stopped). */
+  refreshFx() {
+    if (!this.e.ready) return;
+    this.e.setParam("symp", this.amt("resonance"));
+    this.e.setParam("air", this.bloom);
+    const c = this.chordNow();
+    this.e.tuneResonance([c.tones[0], c.tones[2], c.tones[4]]);
+  }
+
   refresh() {
     if (!this.e.ready) return;
+    this.refreshFx();
     if (this.need() && !this.running) this.start();
     else if (!this.need() && this.running) this.stop();
   }
@@ -127,7 +145,7 @@ export class Conductor {
     if (this.cur) return this.cur;
     const deg = PROGRESSIONS[this.prog].degrees[0], root = 60 + this.key;
     const tones = chordOn(root, this.mode, deg);
-    return { deg, tones, arp: [tones[0], tones[1], tones[2], tones[3], tones[0] + 12, tones[1] + 12, tones[2] + 12, tones[4] + 12], third: tones[1] - tones[0] };
+    return { deg: parseInt(deg, 10), tones, arp: [tones[0], tones[1], tones[2], tones[3], tones[0] + 12, tones[1] + 12, tones[2] + 12, tones[4] + 12], third: tones[1] - tones[0] };
   }
 
   nextBarTime(minAhead = 0) {
@@ -140,43 +158,81 @@ export class Conductor {
   // ───────────────────────────────────────────── the ensemble
 
   humanise(t, ms = 7) { return t + (this.rnd() - 0.5) * (ms / 500); }
+  /** A little swing on the off-16ths: the lilt that makes a pulse feel played, not programmed. */
+  swung(t, s) { return s % 2 === 1 ? t + this.swing * this.stepSec : t; }
 
   note(inst, midi, vel, t, dur) {
     this.e.voices.playTimed(inst, midi, clamp(vel, 0.05, 1), t, dur);
     this.emit("note", { inst, midi, vel, t, gen: true });
   }
 
+  /** What you play is remembered: the marimba and the muse carry YOUR phrase on. */
+  remember(m, t = this.ctx.currentTime) {
+    const last = this.memory[this.memory.length - 1];
+    if (last && last.m === m && t - last.t < 0.4) return;
+    this.memory.push({ m, t }); if (this.memory.length > 8) this.memory.shift();
+    this.cellDirty = true;
+  }
+
+  /**
+   * The repeating figure (the Glass / Hania Rani cell). Built from the last notes you played, kept in
+   * the mode; if you haven't played, from the chord. It breathes between 3 and 5 notes every two chords.
+   */
+  buildCell(c) {
+    const root = 60 + this.key, now = this.ctx.currentTime;
+    const seq = [];
+    for (const x of this.memory) if (now - x.t < 40 && seq[seq.length - 1] !== x.m) seq.push(x.m);
+    let base = seq.slice(-4).map((m) => snapToMode(m, root, this.mode));
+    const fromYou = base.length >= 2;
+    if (!fromYou) base = [c.tones[0], c.tones[2], c.tones[1] + 12];
+    const len = CELL_LENGTHS[Math.floor(this.chordCount / 2) % CELL_LENGTHS.length];
+    const cell = base.slice(0, len);
+    while (cell.length < len) cell.push(modeStep(cell[cell.length - 1], cell.length % 2 ? 2 : -1, root, this.mode));
+    // a whisper of change: now and then one note moves a scale step, so the loop never quite repeats
+    if (!fromYou && this.rnd() < 0.35) { const i = Math.floor(this.rnd() * cell.length); cell[i] = modeStep(cell[i], this.rnd() < 0.5 ? -1 : 1, root, this.mode); }
+    this.cell = cell; this.cellDirty = false;
+  }
+
+  /** Reflect a note you played (or looped) back in the key: an echo, a cushion, a shimmer. */
+  companion(inst, m, vel, t) {
+    const amt = this.amt("companions");
+    if (amt < 0.05 || !this.e.ready || inst === "bass" || inst === "choir") return;
+    if (t - this.lastComp < 0.18 || this.rnd() > 0.15 + 0.55 * amt) return;       // answers some of your notes, never a wall of echoes
+    this.lastComp = t;
+    const ss = this.stepSec, root = 60 + this.key, r = this.rnd();
+    const fit = (n, lo, hi) => { while (n > hi) n -= 12; while (n < lo) n += 12; return n; };
+    if (r < 0.42) this.note("marimba", fit(modeStep(m, 2, root, this.mode), 55, 86), vel * 0.52 * (0.6 + 0.4 * amt), t + 3 * ss, 0.5);       // a diatonic third up, a dotted-eighth later
+    else if (r < 0.78) this.note("piano", fit(modeStep(m, -4, root, this.mode), 40, 84), vel * 0.4 * (0.6 + 0.4 * amt), t + 0.07, 1.4);      // a warm cushion: the fifth below, soft
+    else this.note("marimba", fit(m + 12, 60, 90), vel * 0.3, t + 2 * ss, 0.4);                                                               // an octave shimmer
+  }
+
   newBar(bar, t) {
-    const degs = PROGRESSIONS[this.prog].degrees;
-    const deg = degs[bar % degs.length];
+    const P = PROGRESSIONS[this.prog], per = P.bars || 2, n = P.degrees.length;
+    const idx = Math.floor(bar / per) % n, pos = bar % per, last = pos === per - 1;
     const root = 60 + this.key;
-    const tones = chordOn(root, this.mode, deg);                 // r 3 5 7 9, around C4
-    const third = tones[1] - tones[0];
-    let pad = [tones[1], tones[2], tones[3], tones[4]].map((n) => (n > 76 ? n - 12 : n));
-    pad = voiceLead(this.prevPad, pad); this.prevPad = pad;
-    pad = pad.map((n) => clamp(n, 55, 79));
-    const bassRoot = degreeNote(36 + this.key, this.mode, deg);
-    // two octaves of chord tones, a comfortable piano register; the marimba plays it an octave up
-    const arp = [tones[0], tones[1], tones[2], tones[3], tones[0] + 12, tones[1] + 12, tones[2] + 12, tones[4] + 12];
-    const roman = ROMAN[(deg - 1) % 7];
-    this.cur = {
-      bar, deg, tones, pad, bassRoot, arp, third,
-      label: NOTE_NAMES[((tones[0] % 12) + 12) % 12] + (third === 3 ? "m" : ""),
-      roman: third === 3 ? roman.toLowerCase() : roman,
-      vowel: VOWEL_CYCLE[bar % VOWEL_CYCLE.length],
-    };
-    // minimalist evolution: the figures hold for a cycle, then change a little
-    if (bar % degs.length === 0) {
-      if (bar === 0 || this.rnd() < 0.5) {
-        const k = [5, 7, 7, 9][Math.floor(this.rnd() * 4)];
-        this.marPat = euclid(k, 16, Math.floor(this.rnd() * 4) * 2);
-      }
+    const num = (i) => parseInt(P.degrees[i % n], 10);
+    let newChord = false;
+    if (pos === 0 || !this.chord) {
+      newChord = true;
+      const deg = num(idx), tones = chordOn(root, this.mode, P.degrees[idx]), third = tones[1] - tones[0];
+      let pad = VOICINGS[idx % VOICINGS.length].map(([i, o]) => tones[i] + o).map((x) => { while (x > 76) x -= 12; return x; });
+      pad = voiceLead(this.prevPad, pad).map((x) => clamp(x, 55, 79)); this.prevPad = pad;
+      const roman = ROMAN[(deg - 1) % 7];
+      this.chord = {
+        deg, tones, third, pad, idx,
+        bassRoot: degreeNote(36 + this.key, this.mode, deg),
+        arp: [tones[0], tones[1], tones[2], tones[3], tones[0] + 12, tones[1] + 12, tones[2] + 12, tones[4] + 12],
+        label: NOTE_NAMES[((tones[0] % 12) + 12) % 12] + (third === 3 ? "m" : ""),
+        roman: third === 3 ? roman.toLowerCase() : roman,
+        vowel: ["oo", "ah", "oh", "eh"][this.chordCount % 4],
+      };
+      this.chordCount++;
+      if (this.chordCount % 4 === 2 && this.rnd() < 0.6) this.marPat = euclid([5, 7, 7, 9][Math.floor(this.rnd() * 4)], 16, Math.floor(this.rnd() * 4) * 2);
+      this.e.tuneResonance([tones[0], tones[2], tones[4]]);
     }
-    if (this.rnd() < 0.4) {
-      const i = Math.floor(this.rnd() * 8); this.museShape = this.museShape.slice();
-      this.museShape[i] = clamp(this.museShape[i] + (this.rnd() < 0.5 ? -1 : 1), 0, 7);
-    }
-    this.bassVariant = bar % 4 === 3 ? 1 : 0;
+    const nextIdx = last ? idx + 1 : idx, nd = num(nextIdx);
+    this.cur = { ...this.chord, bar, pos, per, last, newChord, nextBassRoot: degreeNote(36 + this.key, this.mode, nd) };
+    if (newChord || this.cellDirty) this.buildCell(this.cur);
     this.emit("bar", { ...this.cur, t });
   }
 
@@ -187,50 +243,63 @@ export class Conductor {
     const c = this.cur; if (!c) return;
     const V = this.e.voices, ss = this.stepSec, a = {};
     for (const l of LAYERS) a[l.id] = this.amt(l.id);
-    const mn = (x) => (this.rnd() < x);
+    const chance = (x) => this.rnd() < x;
+    const T = (x = t) => this.swung(x, s);
+    const fit = (n, lo, hi) => { while (n > hi) n -= 12; while (n < lo) n += 12; return n; };
+    const barSec = this.barSec, chordSec = c.per * barSec;
 
     // metronome: always during the count-in, otherwise only if switched on (never logged into a take)
     if (s % 4 === 0 && (this.metro || this.loop.state === "countin")) V.perc("tick", s === 0 ? 0.5 : 0.28, t, 0, true);
 
-    // pad + voice: one chord per bar, overlapping so there's never a gap
-    if (s === 0) {
-      if (a.pad > 0.02) c.pad.forEach((n, i) => this.note("pad", n, 0.45 + 0.35 * a.pad, t + i * 0.012, this.barSec * 1.04));
-      if (a.voice > 0.02) {
-        this.e.g.setVowel(c.vowel, t, 2.2);
-        [c.tones[0] + 12, c.tones[2] + 12, c.tones[1] + 24].forEach((n, i) => this.note("choir", n, 0.38 + 0.3 * a.voice, t + 0.05 + i * 0.03, this.barSec * 1.0));
+    // pad: one open, ambiguous chord per harmonic change (rich, open, sus2 in turn), overlapping so there is never a gap
+    if (s === 0 && c.newChord && a.pad > 0.02) c.pad.forEach((n, i) => this.note("pad", n, 0.4 + 0.3 * a.pad, t + i * 0.015, chordSec * 1.05));
+
+    // Eno: three tape-loop drones of incommensurate length, each one soft pedal tone from the key, drifting in and out of phase
+    if (a.pad > 0.3) for (const d of this.drones) if (step % d.every === d.at) {
+      const root = 60 + this.key, tones = [root - 12, root - 12 + (this.mode === "major" || this.mode === "lydian" || this.mode === "mixolydian" ? 4 : 3), root];
+      this.note("pad", tones[d.i % 3], 0.2 + 0.2 * a.pad, t, d.every * ss * 0.8);
+    }
+
+    // voice: not a pad of "ahh", a sigh: a short phrase from the figure, on every other chord, then silence
+    if (s === 0 && c.pos === 0 && a.voice > 0.02 && this.chordCount % 2 === 1 && this.cell.length) {
+      this.e.g.setVowel(c.vowel, t, 1.4);
+      this.cell.slice(0, 3).forEach((n, i) => this.note("choir", fit(n + 12, 64, 84), 0.26 + 0.2 * a.voice, t + 0.05 + i * 60 / this.bpm, 1.5 * 60 / this.bpm));
+    }
+
+    // bass: a long soft root per chord; with the pulse awake a tumbao that ANTICIPATES the next chord on the "and of 4"
+    if (a.bass > 0.02) {
+      const r = c.bassRoot, fifth = r + 7 > 47 ? r - 5 : r + 7;
+      if (a.rhythm < 0.4) { if (s === 0 && c.newChord) this.note("bass", r, 0.45 + 0.3 * a.bass, t, chordSec * 0.97); }
+      else {
+        const hits = [[0, c.newChord || c.pos > 0 ? 5 : 5, r], [6, 3, fifth], [10, 3, r]];
+        if (c.last) hits.push([14, 2, c.nextBassRoot]);
+        for (const [hs, len, n] of hits) if (hs === s) this.note("bass", n, 0.5 + 0.3 * a.bass, this.humanise(T(), 5), len * ss);
       }
     }
 
-    // bass: a long root, or a lilting tumbao every fourth bar
-    if (a.bass > 0.02) {
-      const r = c.bassRoot, fifth = r + 7;
-      const hits = this.bassVariant ? [[0, 5, r], [6, 3, fifth], [10, 5, r + 12], [14, 2, fifth]] : [[0, 14, r], [10, 4, fifth > 47 ? fifth - 12 : fifth]];
-      for (const [hs, len, n] of hits) if (hs === s) this.note("bass", n, 0.5 + 0.35 * a.bass, this.humanise(t, 5), len * ss);
+    // marimba: a Euclidean pulse carrying the cell: your phrase, circling at a length that never lines up with the bar
+    if (a.marimba > 0.02 && this.marPat[s] && this.cell.length) {
+      let n = fit(this.cell[this.cellIdx++ % this.cell.length] + 12, 64, 86);
+      if (s % 4 === 0) n = fit(toChordTone(n, c.tones), 64, 86);
+      if (chance(0.55 + 0.45 * a.marimba)) this.note("marimba", n, 0.3 + (s % 4 === 0 ? 0.1 : 0) + this.rnd() * 0.12, this.humanise(T(), 9), 0.5);
     }
 
-    // marimba: a Euclidean ostinato over the chord tones
-    if (a.marimba > 0.02 && this.marPat[s]) {
-      let n = c.arp[this.arpIdx++ % c.arp.length] + 12;
-      while (n > 86) n -= 12;
-      const acc = s % 4 === 0 ? 0.1 : 0;
-      if (mn(0.55 + 0.45 * a.marimba)) this.note("marimba", n, 0.3 + acc + this.rnd() * 0.12, this.humanise(t, 9), 0.5);
-    }
-
-    // hand percussion, deliberately sparse
+    // pulse: a Latin lilt, barely there. Clave alternates 3-2 / 2-3; a cabasa on the 8ths; an occasional soft conga
     if (a.rhythm > 0.02) {
-      const g = a.rhythm;
-      const shake = s % 2 === 0 ? 0.9 : 0.6;
-      if (mn(shake * (0.4 + 0.6 * g))) V.perc("shaker", (s % 4 === 0 ? 0.34 : s % 2 === 0 ? 0.24 : 0.16) + this.rnd() * 0.08, this.humanise(t, 8), (s % 4 < 2 ? -0.25 : 0.25));
-      if ([0, 3, 6, 10, 12].includes(s) && mn(0.5 * g)) V.perc("tick", 0.26 + this.rnd() * 0.1, this.humanise(t, 6), 0.35);
-      if ([6, 14].includes(s) && mn(0.6 * g)) V.perc("drum", 0.34 + this.rnd() * 0.12, this.humanise(t, 6), -0.3);
+      const g = a.rhythm, clave = c.bar % 2 === 0 ? [0, 3, 6, 10, 12] : [2, 4, 8, 11, 14];
+      const accent = s % 4 === 2 ? 0.34 : s % 4 === 0 ? 0.26 : 0.17;
+      if (chance((s % 2 === 0 ? 0.85 : 0.5) * (0.4 + 0.6 * g))) V.perc("shaker", accent + this.rnd() * 0.07, this.humanise(T(), 8), s % 4 < 2 ? -0.3 : 0.3);
+      if (clave.includes(s) && chance(0.45 * g)) V.perc("tick", 0.22 + this.rnd() * 0.1, this.humanise(T(), 6), 0.35);
+      if ([6, 10, 14].includes(s) && chance(0.42 * g)) V.perc("drum", 0.28 + this.rnd() * 0.12, this.humanise(T(), 6), -0.3);
     }
 
-    // muse: a Glass-like piano arpeggio that slowly mutates
-    if (a.muse > 0.02 && s % 2 === 0) {
-      const pos = s / 2, idx = this.museShape[pos % 8];
-      const n = c.arp[clamp(idx, 0, c.arp.length - 1)];
-      const dens = lerp(0.55, 1, smooth(0.8, 1, this.bloom));
-      if (pos % 4 === 0 || mn(dens)) this.note("piano", clamp(n, 48, 79), (pos % 4 === 0 ? 0.42 : 0.3) + this.rnd() * 0.1, this.humanise(t, 10), 0.6);
+    // muse: the piano answers with your own figure on straight eighths, which phases against the bar and the marimba
+    if (a.muse > 0.02 && s % 2 === 0 && this.cell.length) {
+      const dens = lerp(0.6, 1, smooth(0.88, 1, this.bloom));
+      let n = this.cell[this.museIdx++ % this.cell.length];
+      if (s % 8 === 0) n = toChordTone(n, c.tones);
+      n = fit(n, 48, 79);
+      if (s % 8 === 0 || chance(dens)) this.note("piano", n, (this.museIdx % this.cell.length === 1 ? 0.42 : 0.3) + this.rnd() * 0.1, this.humanise(t, 10), 0.7);
     }
   }
 
@@ -335,6 +404,7 @@ export class Conductor {
           if (T < a || T < layer.from - 1e-6) continue;
           this.e.voices.playTimed(ev.inst, ev.midi, ev.vel, T, ev.dur ?? 0.5);
           this.emit("note", { inst: ev.inst, midi: ev.midi, vel: ev.vel, t: T, gen: true });
+          if (ev.inst === "piano" || ev.inst === "marimba") this.companion(ev.inst, ev.midi, ev.vel, T);
         }
       }
     }

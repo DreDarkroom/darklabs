@@ -13,6 +13,29 @@ a drifting pad, a warm bass, a marimba figure, light hand percussion, a voice, a
 self-playing piano figure that mutates slowly, the way a minimalist piece does. Every layer can be
 pinned on or muted. You play over the top with touch, mouse, computer keys or a MIDI keyboard.
 
+## The musical idea
+
+Frahm, Eno, Hopkins, Glass, Hania Rani, Bonobo, Air, Buena Vista, Manu Chao: the common thread is a tiny
+human-sounding figure that repeats while its harmony quietly moves underneath it, in a close, tactile
+sound with a soft electronic undercurrent and an understated syncopated pulse. GlowGrain is built around
+that:
+
+- **Slow modal harmony.** Defaults to D minor with *Frahm* (i VI III VII), two bars per chord, and open
+  / sus2 / rich pad voicings in turn. *Avril*, *Habana* (with a major dominant), *Airports*, *Glass* and
+  *Sunrise* are in the Progression menu.
+- **It carries your phrase.** The last few notes you play become the repeating *cell*; the marimba (and
+  later the piano) circle it, 3 to 5 notes long, so it phases against the bar and becomes hypnotic. On
+  strong beats the cell resolves to the nearest chord tone.
+- **Companions answer you:** a diatonic third on marimba a dotted-eighth later, a soft fifth below, an
+  octave shimmer. Never on every note.
+- **Resonance:** three tuned feedback combs (root, fifth, ninth of the chord) make the piano's strings
+  sing back; **air** is a bed of tape hiss that grows with Bloom.
+- **A Latin pulse, barely there:** swing on the off-16ths, alternating 3-2 / 2-3 clave, cabasa, soft
+  conga, and a bass tumbao that anticipates the next chord on the "and of 4". Three Eno-style drones of
+  incommensurate length drift in and out of phase.
+- **Bloom opens in order:** resonance, companions, marimba, bass, pad, pulse, voice, muse. Space, echo
+  and air widen the whole way up.
+
 ## How it sounds (all synthesised)
 
 - `js/dsp.js` bakes notes into buffers the first time a pitch is used (~20-60 ms each, in the

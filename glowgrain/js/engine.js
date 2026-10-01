@@ -172,6 +172,32 @@ export function buildGraph(ctx, o = {}) {
     g.formants.forEach((bp, i) => bp.frequency.setTargetAtTime(v[i], t, glide / 3));
   };
 
+  // sympathetic resonance: three tuned feedback combs (root, fifth, ninth of the chord, folded below ~340 Hz)
+  // fed by the piano and marimba, so the strings seem to sing back. The Web Audio cycle floor is one render
+  // quantum (2.7 ms), hence the fold. Level is Bloom's first stage.
+  const sympIn = F("highpass", 140, 0.6);
+  g.sympLevel = G(o.symp ?? 0);
+  const sympMidis = o.sympMidis || [50, 57, 64];
+  g.combs = sympMidis.map(() => {
+    // lowpass Q is in dB: -3 is flat (no resonant peak), so the loop gain is exactly the feedback < 1 and cannot run away
+    const d = ctx.createDelay(0.05), lp = F("lowpass", 3000, -3), fb = G(0.965), out = G(0.17);
+    sympIn.connect(d); d.connect(lp); lp.connect(fb); fb.connect(d); lp.connect(out); out.connect(g.sympLevel);
+    return d;
+  });
+  g.tuneSymp = (midis, t = ctx.currentTime) => midis.forEach((m, i) => {
+    let f = mtof(m); while (f > 330) f /= 2;
+    if (g.combs[i]) g.combs[i].delayTime.setTargetAtTime(1 / f, t, 0.08);
+  });
+  g.tuneSymp(sympMidis, 0);
+  g.sympLevel.connect(g.mix);
+  for (const [k, lvl] of [["piano", 0.5], ["marimba", 0.3]]) { const s = G(lvl); g.buses[k].connect(s); s.connect(sympIn); }
+
+  // air: a bed of very quiet band-limited hiss (tape and room), a little more of it as the instrument blooms
+  const airSrc = ctx.createBufferSource(); airSrc.buffer = o.bank.noise(); airSrc.loop = true;
+  const airHp = F("highpass", 2600, 0.5), airLp = F("lowpass", 9000, 0.5);
+  g.air = G(0.0008 + 0.0035 * (o.air ?? 0));
+  airSrc.connect(airHp); airHp.connect(airLp); airLp.connect(g.air); g.air.connect(g.post); airSrc.start();
+
   // live controls
   const ST = (p, v, tc = 0.06) => p.setTargetAtTime(v, ctx.currentTime, tc);
   g.set = {
@@ -179,6 +205,8 @@ export function buildGraph(ctx, o = {}) {
     echo: (v) => ST(g.delIn.gain, v),
     tape: (v) => { ST(g.tapeWet.gain, v); ST(g.tapeDry.gain, 1 - v * 0.6); ST(g.wow.depth.gain, 0.00032 * v); ST(g.flut.depth.gain, 0.00004 * v); },
     master: (v) => ST(g.master.gain, v),
+    symp: (v) => ST(g.sympLevel.gain, v * 0.9, 0.4),
+    air: (v) => ST(g.air.gain, 0.0008 + 0.0035 * v, 0.5),
   };
   return g;
 }
@@ -297,6 +325,7 @@ export class Voices {
   _sampled(inst, midi, vel, t) {
     const ctx = this.ctx, { buf, rate } = this.bank.buffer(ctx, inst, midi);
     const src = ctx.createBufferSource(); src.buffer = buf; src.playbackRate.value = rate;
+    src.detune.value = (this.rnd() - 0.5) * 7;                     // organic: no two strikes are identically in tune
     const lp = ctx.createBiquadFilter(); lp.type = "lowpass"; lp.Q.value = 0.35;
     // velocity -> brightness: a soft touch is muffled felt (~1 kHz), a firm one opens up (~8 kHz)
     const base = inst === "piano" ? 260 + 3900 * Math.pow(vel, 1.4) : 700 + 4300 * Math.pow(vel, 1.2);   // soft mallet / soft felt
@@ -378,7 +407,8 @@ export class Voices {
 export class Engine {
   constructor() {
     this.ctx = null; this.ready = false;
-    this.params = { space: 0.3, echo: 0.1, tape: 0.45, felt: 1, bpm: 76, master: 0.85 };
+    this.params = { space: 0.3, echo: 0.1, tape: 0.5, felt: 1, bpm: 72, master: 0.85, symp: 0, air: 0, sympMidis: [50, 57, 64] };
+    this.takePeak = {};
     this.listeners = {};
   }
 
@@ -423,8 +453,15 @@ export class Engine {
     setTimeout(step, 400);
   }
 
+  /** Retune the sympathetic strings to a chord (root, fifth, ninth as MIDI notes). */
+  tuneResonance(midis) {
+    this.params.sympMidis = midis;
+    if (this.g) this.g.tuneSymp(midis);
+  }
+
   setParam(name, v) {
     this.params[name] = v;
+    if (this.voices && this.voices.log && typeof v === "number") this.takePeak[name] = Math.max(this.takePeak[name] ?? v, v);   // exports keep the fullest sound of the take
     if (!this.g) return;
     if (name === "felt") this.voices.tone.felt = v;
     else if (name === "bpm") this.g.setBpm(v);
@@ -437,10 +474,11 @@ export class Engine {
     if (!this._buf) this._buf = new Float32Array(this.g.an.fftSize);
     this.g.an.getFloatTimeDomainData(this._buf);
     let e = 0; for (let i = 0; i < this._buf.length; i++) e += this._buf[i] * this._buf[i];
-    return Math.sqrt(e / this._buf.length);
+    const r = Math.sqrt(e / this._buf.length);
+    return Number.isFinite(r) ? r : 0;
   }
 
-  startTake() { this.voices.log = []; this.voices.logT0 = this.ctx.currentTime; this.takeStart = this.ctx.currentTime; }
+  startTake() { this.takePeak = { ...this.params }; this.voices.log = []; this.voices.logT0 = this.ctx.currentTime; this.takeStart = this.ctx.currentTime; }
   stopTake() { const l = this.voices.log; this.voices.log = null; this.takeLen = this.ctx.currentTime - this.takeStart; return l; }
   get taking() { return !!(this.voices && this.voices.log); }
 }

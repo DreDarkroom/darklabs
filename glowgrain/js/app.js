@@ -13,13 +13,15 @@ const INSTS = [
   { id: "piano", name: "Felt Piano" }, { id: "marimba", name: "Marimba" }, { id: "pad", name: "Sun Pad" },
   { id: "choir", name: "Voice" }, { id: "bass", name: "Bass" },
 ];
-const BLOOM_HINTS = [[0, "just the felt piano"], [0.1, "a pad drifts in"], [0.28, "warm bass underneath"], [0.42, "a marimba figure appears"],
-  [0.55, "hand percussion, lightly"], [0.66, "a voice joins"], [0.82, "the muse plays along"], [0.96, "in full bloom"]];
+const BLOOM_HINTS = [[0, "just the felt piano, close and dry"], [0.06, "the strings begin to sing back"], [0.16, "companions answer your notes"],
+  [0.28, "a marimba circles your phrase"], [0.4, "a warm bass settles in"], [0.52, "soft electronic air underneath"],
+  [0.64, "a Latin pulse, barely there"], [0.76, "a voice appears"], [0.88, "the muse plays along"], [0.97, "in full bloom"]];
 const PERC_MIDI = { shaker: 70, tick: 76, drum: 63 };
 
-const DEFAULTS = { inst: "piano", key: 0, mode: "major", prog: "sunrise", bpm: 76, felt: 100, space: 30, tape: 45, echo: 10, harmony: "off", lock: false, lowC: 48, loopBars: 4, metro: "0", snap: "1", guide: true, pads: false, seenHelp: false };
+const DEFAULTS = { v: 2, inst: "piano", key: 2, mode: "minor", prog: "frahm", bpm: 72, felt: 100, space: 28, tape: 55, echo: 10, harmony: "off", lock: false, lowC: 48, loopBars: 4, metro: "0", snap: "1", guide: true, pads: false, seenHelp: false };
 let S = { ...DEFAULTS };
 try { Object.assign(S, JSON.parse(localStorage.getItem("glowgrain.v1") || "{}")); } catch (e) { /* private mode */ }
+if (S.v !== 2) { Object.assign(S, { v: 2, key: 2, mode: "minor", prog: "frahm", bpm: 72, tape: 55, space: 28 }); }   // v2: the musical identity moved to minor / modal
 const save = () => { try { localStorage.setItem("glowgrain.v1", JSON.stringify(S)); } catch (e) { /* ignore */ } };
 
 const engine = new Engine();
@@ -55,6 +57,7 @@ function applyFx() {
   engine.setParam("echo", clamp(S.echo / 100 + 0.22 * smooth(0.45, 1, b), 0, 1));
   engine.setParam("tape", S.tape / 100);
   engine.setParam("felt", S.felt / 100);
+  conductor.refreshFx();
 }
 
 // ───────────────────────────────────────────────────────── playing
@@ -68,6 +71,8 @@ function press(id, m, vel, raw = false) {
   const voices = notes.map((n) => engine.voices.start(inst, n, n === m ? vel : vel * 0.78, t));
   held.set(id, { voices, notes, m, t });
   notes.forEach((n) => conductor.recordOn(id + ":" + n, inst, n, vel, t));
+  conductor.remember(m, t);                       // the marimba and the muse will carry this note on
+  conductor.companion(inst, m, vel, t);           // and the instrument answers it, in the key
   lightKey(m, "down", true); burst(m, vel, 3);
 }
 
@@ -306,7 +311,7 @@ function buildUI() {
   });
 
   const sel = (id, items, val) => { const s = $(id); items.forEach(([v, t]) => { const o = document.createElement("option"); o.value = v; o.textContent = t; s.appendChild(o); }); s.value = val; return s; };
-  const harmonyChanged = () => { conductor.cur = null; save(); paintScale(); updatePads(); };
+  const harmonyChanged = () => { conductor.cur = null; conductor.chord = null; conductor.refreshFx(); save(); paintScale(); updatePads(); };
   sel("key", NOTE_NAMES.map((n, i) => [i, n]), S.key).onchange = (e) => { S.key = +e.target.value; conductor.key = S.key; harmonyChanged(); };
   sel("mode", Object.entries(MODES).map(([k, v]) => [k, v.name]), S.mode).onchange = (e) => { S.mode = e.target.value; conductor.mode = S.mode; harmonyChanged(); };
   sel("prog", Object.entries(PROGRESSIONS).map(([k, v]) => [k, v.name]), S.prog).onchange = (e) => { S.prog = e.target.value; conductor.prog = S.prog; harmonyChanged(); };
@@ -426,7 +431,7 @@ function toggleTake() {
     clearInterval(takeTimer);
     const events = engine.stopTake();
     b.dataset.on = "false"; b.innerHTML = "&#9679; Record take";
-    lastTake = events.length ? { events, bpm: conductor.bpm, vowel: "ah", len: engine.takeLen } : null;
+    lastTake = events.length ? { events, bpm: conductor.bpm, vowel: "ah", len: engine.takeLen, params: { ...engine.takePeak } } : null;
     $("saveWav").disabled = $("saveMid").disabled = !lastTake;
     $("takeInfo").textContent = lastTake ? `${fmt(engine.takeLen)} · ${events.length} notes` : "Nothing was played.";
   }
@@ -442,7 +447,7 @@ async function saveTake(kind) {
       return;
     }
     info.textContent = "rendering…"; $("saveWav").disabled = true;
-    const chs = await renderTake(engine, lastTake.events, { vowel: lastTake.vowel });
+    const chs = await renderTake(engine, lastTake.events, { vowel: lastTake.vowel, params: lastTake.params });
     fadeOut(chs, engine.ctx.sampleRate, 1.2); normalise(chs, -1.5);
     download(encodeWav(chs, engine.ctx.sampleRate, 16), `glowgrain-${stamp()}.wav`, "audio/wav");
     info.textContent = `saved · ${fmt(chs[0].length / engine.ctx.sampleRate)}`;
@@ -489,9 +494,10 @@ async function begin() {
   $("guideBtn").setAttribute("aria-pressed", String(S.guide));
   $("lock").setAttribute("aria-pressed", String(S.lock));
   setPadsMode(S.pads);
-  // a soft welcome: Cmaj9, spread, so the first sound you hear is the felt piano
-  const t = engine.now + 0.12;
-  [[48, 0], [64, 0.2], [67, 0.4], [74, 0.62], [71, 0.9]].forEach(([n, d], i) => engine.voices.playTimed("piano", n + S.key, 0.34 + i * 0.03, t + d, 1.4));
+  // a soft welcome: the key's own minor-ninth chord, spread low to high, so the first sound is the felt piano
+  const t = engine.now + 0.12, wc = conductor.chordNow().tones;
+  [[wc[0] - 12, 0], [wc[2] - 12, 0.24], [wc[4] - 12, 0.5], [wc[1], 0.78], [wc[3], 1.1]]
+    .forEach(([n, d], i) => engine.voices.playTimed("piano", n, 0.3 + i * 0.03, t + d, 1.8));
 }
 
 addEventListener("DOMContentLoaded", () => {

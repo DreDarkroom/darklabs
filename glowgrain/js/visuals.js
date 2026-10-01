@@ -9,7 +9,7 @@ const MAX_PARTS = 120;
 export class Sky {
   constructor(canvas) {
     this.c = canvas; this.x = canvas.getContext("2d", { alpha: false });
-    this.parts = []; this.t = 0; this.level = 0; this.bloom = 0; this.bloomShown = 0; this.w = 0; this.h = 0; this.dpr = 1;
+    this.parts = []; this.avg = 0.016; this.low = false; this.t = 0; this.level = 0; this.bloom = 0; this.bloomShown = 0; this.w = 0; this.h = 0; this.dpr = 1;
     this.reduced = typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
     this.sprite = this._sprite();
     this.resize(); addEventListener("resize", () => this.resize());
@@ -33,7 +33,8 @@ export class Sky {
   /** Lift a few motes from (px, py) in CSS pixels. */
   spawn(px, py, strength = 0.6, n = 3) {
     if (this.reduced) return;
-    for (let i = 0; i < n && this.parts.length < MAX_PARTS; i++) {
+    const cap = this.low ? 36 : MAX_PARTS;
+    for (let i = 0; i < n && this.parts.length < cap; i++) {
       this.parts.push({
         x: px + (Math.random() - 0.5) * 18, y: py, vx: (Math.random() - 0.5) * 14, vy: -(26 + Math.random() * 46) * (0.6 + strength),
         life: 0, max: 2.2 + Math.random() * 2.4, size: 10 + Math.random() * 22 * (0.5 + strength),
@@ -43,7 +44,11 @@ export class Sky {
 
   frame(dt, level, bloom) {
     dt = Math.min(dt, 0.05); this.t += dt;
-    this.level += (level - this.level) * Math.min(1, dt * 7);
+    // quality scaler: if frames stay slow (phone, headset, busy machine) shed the rays and most motes, for good
+    this.avg += (dt - this.avg) * 0.04;
+    if (!this.low && this.t > 3 && this.avg > 0.03) { this.low = true; this.parts.length = Math.min(this.parts.length, 30); }
+    this.level += ((Number.isFinite(level) ? level : 0) - this.level) * Math.min(1, dt * 7);
+    if (!Number.isFinite(this.level)) this.level = 0;
     this.bloomShown += (bloom - this.bloomShown) * Math.min(1, dt * 2.5);
     const { x, w, h } = this, b = this.bloomShown, L = clamp(this.level * 5, 0, 1);
 
@@ -63,7 +68,7 @@ export class Sky {
     x.globalCompositeOperation = "lighter"; x.fillStyle = sun; x.fillRect(0, 0, w, h);
 
     // rays
-    if (b > 0.18 && !this.reduced) {
+    if (b > 0.18 && !this.reduced && !this.low) {
       const rays = 9, a0 = this.t * 0.03;
       x.fillStyle = `rgba(255,190,110,${0.018 + 0.05 * b})`;
       for (let i = 0; i < rays; i++) {
@@ -76,7 +81,7 @@ export class Sky {
     }
 
     // ambient motes + note motes
-    if (!this.reduced && Math.random() < dt * (1.2 + 5 * b) && this.parts.length < MAX_PARTS) {
+    if (!this.reduced && Math.random() < dt * (1.2 + 5 * b) && this.parts.length < (this.low ? 14 : MAX_PARTS)) {
       this.parts.push({ x: Math.random() * w, y: h + 10, vx: (Math.random() - 0.5) * 8, vy: -(10 + Math.random() * 18), life: 0, max: 6 + Math.random() * 5, size: 8 + Math.random() * 14, amb: true });
     }
     for (let i = this.parts.length - 1; i >= 0; i--) {

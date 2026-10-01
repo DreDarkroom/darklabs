@@ -12,14 +12,14 @@ export function takeEnd(events) {
   return end;
 }
 
-export async function renderTake(engine, events, { tail = 3.5, vowel = "ah" } = {}) {
+export async function renderTake(engine, events, { tail = 3.5, vowel = "ah", params = null } = {}) {
   const sr = engine.ctx.sampleRate;
   const seconds = Math.min(MAX_SECONDS, takeEnd(events) + tail);
   const length = Math.ceil(seconds * sr);
   const OAC = window.OfflineAudioContext || window.webkitOfflineAudioContext;
   const off = new OAC(2, length, sr);
   const slow = (navigator.hardwareConcurrency || 4) <= 4;
-  const g = buildGraph(off, { ...engine.params, bank: engine.bank, irSeconds: slow ? 1.8 : 2.6 });
+  const g = buildGraph(off, { ...engine.params, ...(params || {}), bank: engine.bank, irSeconds: slow ? 1.8 : 2.6 });
   g.setVowel(vowel, 0, 0.01);
   const voices = new Voices(off, g, engine.bank, { felt: engine.params.felt });
   for (const e of events) {

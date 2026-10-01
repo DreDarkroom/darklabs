@@ -31,13 +31,18 @@ export const MODES = {
   minor: { name: "Minor", steps: [0, 2, 3, 5, 7, 8, 10] },
 };
 
-/** Progressions as scale degrees (1-based), one chord per bar. */
+/**
+ * Progressions as scale degrees (1-based); a string ending in M ("5M") is that chord with a major
+ * third (the harmonic-minor dominant: the Latin pull back home). `bars` = bars per chord, so the
+ * harmony breathes slowly under a repeating figure instead of changing every bar.
+ */
 export const PROGRESSIONS = {
-  sunrise: { name: "Sunrise", degrees: [1, 5, 6, 4] },
-  beach: { name: "Beach", degrees: [1, 4, 3, 6] },
-  glass: { name: "Glass", degrees: [6, 4, 1, 5] },
-  eno: { name: "Eno", degrees: [1, 2, 4, 1] },
-  dusk: { name: "Dusk", degrees: [6, 2, 5, 1] },
+  frahm: { name: "Frahm (i VI III VII)", degrees: [1, 6, 3, 7], bars: 2 },
+  avril: { name: "Avril (descending)", degrees: [1, 7, 6, 5], bars: 2 },
+  habana: { name: "Habana (i iv V i)", degrees: [1, 4, "5M", 1], bars: 2 },
+  airports: { name: "Airports (drifting)", degrees: [1, 4, 1, 6], bars: 2 },
+  glass: { name: "Glass (i VI iv V)", degrees: [1, 6, 4, "5M"], bars: 1 },
+  sunrise: { name: "Sunrise (I V vi IV)", degrees: [1, 5, 6, 4], bars: 1 },
 };
 
 /** MIDI note for scale degree d (1-based, may exceed 7 / go below 1) above `root` (MIDI). */
@@ -49,7 +54,18 @@ export function degreeNote(root, mode, d) {
 
 /** Diatonic chord on degree: root, 3rd, 5th, 7th, 9th as MIDI notes above `root`. */
 export function chordOn(root, mode, degree) {
-  return [0, 2, 4, 6, 8].map((o) => degreeNote(root, mode, degree + o));
+  const major = typeof degree === "string" && degree.endsWith("M");
+  const n = parseInt(degree, 10);
+  const t = [0, 2, 4, 6, 8].map((o) => degreeNote(root, mode, n + o));
+  if (major && t[1] - t[0] === 3) t[1] += 1;
+  return t;
+}
+
+/** Nearest note to `m` (within 2 semitones) whose pitch class is in `tones`; else `m`. */
+export function toChordTone(m, tones) {
+  const pcs = new Set(tones.slice(0, 4).map((n) => ((n % 12) + 12) % 12));
+  for (const d of [0, -1, 1, -2, 2]) if (pcs.has((((m + d) % 12) + 12) % 12)) return m + d;
+  return m;
 }
 
 export function inMode(m, root, mode) {
