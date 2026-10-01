@@ -1,0 +1,12 @@
+{
+  "name": "Penrose — Dre Darklabs",
+  "short_name": "Penrose",
+  "description": "An infinite staircase of sound: a felt piano that climbs through a build and a drop, then folds back one step higher. Works offline.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#03050a",
+  "theme_color": "#03050a",
+  "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
+}
