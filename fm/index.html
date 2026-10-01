@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Darklabs FM | synth-generated breaks, DnB and techno</title>
+<meta name="description" content="A radio with no recordings in it. Drum and bass, breaks and techno, synthesised live in your browser from a seed. Tell us what you think.">
+<style>
+:root{--ink:#050304;--red:#d1122b;--soft:#e8434f;--text:#eadede;--dim:#b09c9c;--line:#3a1a1f;--card:#120809}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--ink)}
+body{color:var(--text);font:17px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:radial-gradient(ellipse at 50% -10%,#2a0710,#0a0405 55%,#030203)}
+a{color:var(--soft)}
+:focus-visible{outline:2px solid #fff;outline-offset:3px;border-radius:4px}
+.wrap{max-width:60rem;margin:0 auto;padding:1rem 1.1rem 4rem}
+.top{display:flex;justify-content:space-between;align-items:center;padding:.4rem 0 1.2rem;font-size:.9rem}
+.top a{text-decoration:none;font-weight:600}
+h1{font-size:clamp(2.2rem,8vw,4.4rem);line-height:1;letter-spacing:.08em;font-weight:800;color:#fff;text-shadow:0 0 22px rgba(209,18,43,.8),0 0 70px rgba(209,18,43,.4)}
+h1 small{display:block;font-size:.32em;letter-spacing:.42em;font-weight:500;color:var(--soft);margin-top:.6rem;text-shadow:none}
+.label{display:flex;gap:.8rem;align-items:flex-start;margin:1.3rem 0;padding:.9rem 1.1rem;border:1px solid var(--soft);border-radius:4px;background:rgba(209,18,43,.08)}
+.label b{flex:none;font-size:.68rem;letter-spacing:.18em;background:var(--red);color:#fff;padding:.28rem .55rem;border-radius:3px;margin-top:.1rem}
+.label p{font-size:.95rem;color:#e6d6d6}
+.stations{display:grid;grid-template-columns:repeat(auto-fit,minmax(10.5rem,1fr));gap:.7rem;margin:1.2rem 0}
+.st{font:inherit;cursor:pointer;text-align:left;color:var(--text);background:var(--card);border:1px solid var(--line);border-radius:4px;padding:.9rem 1rem;min-height:5.2rem;transition:border-color .2s,background .2s}
+.st:hover{border-color:var(--soft)}
+.st[aria-pressed=true]{border-color:#fff;background:linear-gradient(180deg,#2c0a12,#160709);box-shadow:0 0 22px rgba(209,18,43,.4)}
+.st b{display:block;font-size:1.02rem}.st span{display:block;font-size:.78rem;color:var(--dim)}
+.st .bpm{font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--soft);margin-top:.2rem}
+.st.dnb{border-color:#5a1a24}
+.deck{border:1px solid var(--line);border-radius:4px;background:var(--card);padding:1.2rem;margin:1rem 0}
+.np{display:flex;gap:1rem;justify-content:space-between;align-items:flex-start;flex-wrap:wrap}
+.np h2{font-size:1.5rem;color:#fff}
+.np p{color:var(--dim);font-size:.9rem}
+.sec{display:inline-block;font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;padding:.2rem .5rem;border:1px solid var(--soft);color:var(--soft);border-radius:3px;margin-left:.4rem}
+canvas#vis{display:block;width:100%;height:90px;margin:1rem 0;background:#050203;border:1px solid var(--line);border-radius:3px}
+.row{display:flex;gap:.7rem;flex-wrap:wrap;align-items:center}
+button.act{font:inherit;font-weight:800;cursor:pointer;color:#fff;background:linear-gradient(180deg,#e0243a,#a50d20);border:1px solid #ff6a78;border-radius:3px;padding:.8rem 1.6rem;min-height:3rem;box-shadow:0 0 18px rgba(209,18,43,.45)}
+button.act:disabled{opacity:.6}
+button.alt{font:inherit;cursor:pointer;color:var(--text);background:transparent;border:1px solid var(--line);border-radius:3px;padding:.6rem 1rem;min-height:2.8rem}
+button.alt:hover{border-color:var(--soft)}
+button.alt[aria-pressed=true]{background:var(--red);border-color:var(--red);color:#fff}
+label.vol{display:flex;gap:.6rem;align-items:center;color:var(--dim);font-size:.85rem}
+input[type=range]{accent-color:var(--red)}
+.id{font:.8rem/1.4 ui-monospace,Consolas,monospace;color:var(--dim)}
+section.fb{margin-top:2.4rem}
+h3{font-size:1.5rem;color:#fff;margin-bottom:.4rem}
+.sub{color:var(--dim);margin-bottom:1rem;max-width:42rem}
+.chips{display:flex;flex-wrap:wrap;gap:.5rem;margin:.6rem 0 1rem}
+textarea,input[type=text]{width:100%;font:inherit;color:var(--text);background:#0b0607;border:1px solid var(--line);border-radius:3px;padding:.7rem .8rem}
+textarea{min-height:7rem;resize:vertical}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+@media(max-width:640px){.grid2{grid-template-columns:1fr}}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+.note{font-size:.82rem;color:var(--dim);margin:.8rem 0}
+#status{min-height:1.6rem;margin-top:.7rem;font-weight:600}
+.ok{color:#59f0b0}.bad{color:#ff8a8a}
+.small{font-size:.8rem;color:var(--dim)}
+footer{margin-top:3rem;padding-top:1.4rem;border-top:1px solid var(--line);color:var(--dim);font-size:.85rem}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a href="../">&larr; <span class="brand-txt">Darklabs</span></a><span class="small">breaks &middot; DnB &middot; techno</span></div>
+  <h1><span class="brand-txt">Darklabs</span> FM<small>synth-generated &middot; no recordings</small></h1>
+
+  <div class="label" role="note">
+    <b>SYNTH-GENERATED</b>
+    <p><strong>Produced in the Dark Labs.</strong> Every sound you hear is synthesised live in your browser from oscillators and noise. No samples, no recordings, no audio files. Each track is composed on the spot from a seed number, so the same seed always plays the same track.</p>
+  </div>
+
+  <div class="stations" id="stations" role="group" aria-label="Stations"></div>
+
+  <div class="deck">
+    <div class="np">
+      <div>
+        <h2 id="title" aria-live="polite">Pick a station, press play</h2>
+        <p id="meta">Drum and bass is first. Headphones or a good speaker help the low end.</p>
+      </div>
+      <div class="row"><button class="act" id="play" type="button">&#9654; Play</button><label class="vol">Volume <input id="vol" type="range" min="0" max="100" value="70" aria-label="Volume"></label></div>
+    </div>
+    <canvas id="vis" aria-hidden="true"></canvas>
+    <div class="row"><button class="alt" id="visbtn" type="button" aria-pressed="true">Visuals on</button><button class="alt" id="copyid" type="button" hidden>Copy track ID</button><span class="id" id="trackid"></span></div>
+  </div>
+
+  <section class="fb" aria-labelledby="fbh">
+    <h3 id="fbh">Tell me what you think</h3>
+    <p class="sub">This is a first version and I'd really like your ear on it. What works, what doesn't, what should it play next? Short is fine.</p>
+    <form id="fbform" autocomplete="off">
+      <div class="row" role="group" aria-label="How was it?"><button type="button" class="alt" data-r="loved it" aria-pressed="false">&#128077; Loved it</button><button type="button" class="alt" data-r="mixed" aria-pressed="false">&#128528; Mixed</button><button type="button" class="alt" data-r="not for me" aria-pressed="false">&#128078; Not for me</button></div>
+      <p class="small" style="margin-top:.9rem">More of&hellip; (pick any)</p>
+      <div class="chips" id="wants"></div>
+      <label for="msg" class="small">Your suggestion or feedback</label>
+      <textarea id="msg" maxlength="600" placeholder="e.g. the dark DnB bass is great, but the drops come too slowly"></textarea>
+      <div class="grid2" style="margin-top:.8rem">
+        <div><label for="nick" class="small">Nickname (optional)</label><input id="nick" type="text" maxlength="24" placeholder="so I know who to thank"></div>
+        <div class="row" style="align-items:flex-end"><button class="act" id="send" type="submit">Send feedback</button></div>
+      </div>
+      <input class="hp" type="text" id="website" name="website" tabindex="-1" aria-hidden="true" autocomplete="off">
+      <p class="note">Your message goes straight to my phone through a notification service (ntfy.sh), along with the station and track ID you were hearing. I don't collect your email or anything else, so please don't put personal details in it. If you leave a nickname I may mention you on stream.</p>
+      <p id="status" role="status" aria-live="polite"></p>
+    </form>
+  </section>
+
+  <footer>
+    <p>Built by Dre with AI assistance. The music is algorithmic synthesis: the arrangements are generated from a seed by code. It is not recorded, and it is not made by an audio-generating AI. Coming later: replies, and saved feedback on a proper server.</p>
+  </footer>
+</div>
+
+<script type="module">
+import { Radio, STATIONS, STATION_ORDER } from "./fm.js";
+const $ = (id) => document.getElementById(id), BRAND = "Darklabs";               // one place to change the visible spelling later (see docs/ROADMAP.md)
+document.querySelectorAll(".brand-txt").forEach((e) => (e.textContent = BRAND));
+const NTFY_TOPIC = "darklabs-fm-jhsotiuew3x9xbbjoe89ie";
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const radio = new Radio(); let station = "dnbdark", playing = false, secName = "";
+
+// stations (DnB first and given a stronger border)
+STATION_ORDER.forEach((id) => {
+  const S = STATIONS[id], b = document.createElement("button"); b.type = "button"; b.className = "st" + (id.startsWith("dnb") ? " dnb" : ""); b.dataset.id = id; b.setAttribute("aria-pressed", String(id === station));
+  b.innerHTML = "<b></b><span></span><div class='bpm'></div>"; b.querySelector("b").textContent = S.name; b.querySelector("span").textContent = S.blurb; b.querySelector(".bpm").textContent = S.bpm[0] + "-" + S.bpm[1] + " BPM";
+  b.addEventListener("click", () => { station = id; document.querySelectorAll(".st").forEach((x) => x.setAttribute("aria-pressed", String(x === b))); if (playing) radio.tune(id); else $("meta").textContent = S.name + ". Press play."; });
+  $("stations").appendChild(b);
+});
+
+radio.on("track", (t) => { secName = ""; $("title").textContent = t.title; $("meta").textContent = STATIONS[t.stationId].name + " · " + t.key + " · " + t.bpm + " BPM · about " + Math.round(t.totalBars * t.barDur / 60) + " min"; $("trackid").textContent = "Track ID: " + t.stationId + "-" + t.seed.toString(36); $("copyid").hidden = false; });
+radio.on("bar", (bar, sec) => { if (sec.name !== secName) { secName = sec.name; const m = $("meta"); m.querySelectorAll(".sec").forEach((e) => e.remove()); const s = document.createElement("span"); s.className = "sec"; s.textContent = sec.name; m.appendChild(s); } });
+$("play").addEventListener("click", async () => {
+  if (!playing) {
+    try { await radio.start(station); } catch (e) { $("meta").textContent = "Couldn't start audio: " + e.message; return; }
+    radio.M.gain.gain.value = (+$("vol").value / 100) * 1.1; playing = true; $("play").innerHTML = "&#10074;&#10074; Stop"; draw();
+  } else { radio.stop(); playing = false; $("play").innerHTML = "&#9654; Play"; }
+});
+$("vol").addEventListener("input", (e) => { if (radio.M) radio.M.gain.gain.value = (e.target.value / 100) * 1.1; });
+$("copyid").addEventListener("click", async () => { try { await navigator.clipboard.writeText($("trackid").textContent.replace("Track ID: ", "")); $("copyid").textContent = "Copied"; setTimeout(() => ($("copyid").textContent = "Copy track ID"), 1500); } catch (e) { /* clipboard blocked */ } });
+
+// visuals: a plain spectrum; off by default if you prefer reduced motion, and you can switch it off
+let vis = !reduce; $("visbtn").setAttribute("aria-pressed", String(vis)); $("visbtn").textContent = vis ? "Visuals on" : "Visuals off";
+const cv = $("vis"), cx = cv.getContext("2d"), clear = () => cx.clearRect(0, 0, cv.width, cv.height);
+$("visbtn").addEventListener("click", () => { vis = !vis; $("visbtn").setAttribute("aria-pressed", String(vis)); $("visbtn").textContent = vis ? "Visuals on" : "Visuals off"; if (vis && playing) draw(); else clear(); });
+function draw() {
+  if (!vis || !playing) return; const a = radio.analyser; if (!a) return;
+  const W = (cv.width = cv.clientWidth * (devicePixelRatio || 1)), H = (cv.height = cv.clientHeight * (devicePixelRatio || 1)), d = new Uint8Array(a.frequencyBinCount); a.getByteFrequencyData(d);
+  cx.clearRect(0, 0, W, H); const n = 56, bw = W / n, hue = STATIONS[station].hue;
+  for (let i = 0; i < n; i++) { const idx = Math.floor(Math.pow(i / n, 1.7) * d.length * 0.6), v = d[idx] / 255, h = v * H * 0.95; cx.fillStyle = "hsl(" + hue + ",80%," + (35 + v * 30) + "%)"; cx.fillRect(i * bw + 1, H - h, bw - 2, h); }
+  requestAnimationFrame(draw);
+}
+
+// feedback: rating + wishes + free text, sent to the owner's phone immediately via ntfy.sh (no database, no email collected)
+let rating = ""; const wants = new Set();
+document.querySelectorAll("[data-r]").forEach((b) => b.addEventListener("click", () => { rating = rating === b.dataset.r ? "" : b.dataset.r; document.querySelectorAll("[data-r]").forEach((x) => x.setAttribute("aria-pressed", String(x.dataset.r === rating))); }));
+["Harder", "Softer", "More melodic", "Faster", "More bass", "More variety", "Less repetitive", "Another genre"].forEach((w) => { const b = document.createElement("button"); b.type = "button"; b.className = "alt"; b.textContent = w; b.setAttribute("aria-pressed", "false"); b.addEventListener("click", () => { wants.has(w) ? wants.delete(w) : wants.add(w); b.setAttribute("aria-pressed", String(wants.has(w))); }); $("wants").appendChild(b); });
+const say = (t, ok) => { $("status").textContent = t; $("status").className = ok ? "ok" : "bad"; };
+$("fbform").addEventListener("submit", async (e) => {
+  e.preventDefault(); if ($("website").value) return;                                           // honeypot: real people never fill this in
+  const msg = $("msg").value.trim(); if (!msg && !rating && !wants.size) return say("Add a rating, a tick or a few words first.", false);
+  let last = 0; try { last = +localStorage.getItem("fm.lastfb") || 0; } catch (x) { /* storage blocked */ } if (Date.now() - last < 20000) return say("One moment, you just sent one. Try again in a few seconds.", false);
+  const t = radio.track, lines = [["Station", STATIONS[station].name], ["Heard", t ? t.title + " (" + t.key + ", " + t.bpm + " BPM, ID " + t.stationId + "-" + t.seed.toString(36) + ")" : "nothing playing yet"], ["Rating", rating || "(none)"], ["More of", [...wants].join(", ") || "(none)"], ["From", $("nick").value.trim() || "(anonymous)"]];
+  const message = lines.map(([k, v]) => k + ": " + v).join("\n") + (msg ? "\n\n" + msg : "");
+  $("send").disabled = true; say("Sending...", true);
+  try {
+    const r = await fetch("https://ntfy.sh/", { method: "POST", body: JSON.stringify({ topic: NTFY_TOPIC, title: "FM feedback: " + (rating || "note") + " on " + STATIONS[station].name, message, priority: 4, tags: ["headphones", "speech_balloon"] }) });
+    if (!r.ok) throw new Error("status " + r.status);
+    try { localStorage.setItem("fm.lastfb", String(Date.now())); } catch (x) { /* ignore */ }
+    say("Sent. Thank you, I read every one.", true); $("msg").value = ""; rating = ""; wants.clear(); document.querySelectorAll("[data-r],#wants .alt").forEach((x) => x.setAttribute("aria-pressed", "false"));
+  } catch (err) { say("That didn't go through. Please try again in a moment.", false); }
+  $("send").disabled = false;
+});
+window.__fm = { radio, STATIONS };
+</script>
+</body>
+</html>
