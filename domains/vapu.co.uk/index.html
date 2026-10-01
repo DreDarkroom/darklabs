@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>vapu</title>
+<meta name="description" content="vapu.">
+<style>
+html,body{margin:0;height:100%;background:#0b0710;color:#f4eefc;overflow:hidden;font:300 1rem ui-sans-serif,system-ui,sans-serif}
+#v{position:fixed;inset:0;width:100%;height:100%}
+h1{position:fixed;inset:0;margin:0;display:grid;place-content:center;font-weight:200;font-size:clamp(3.4rem,16vw,10rem);letter-spacing:.12em;padding-left:.12em;mix-blend-mode:screen;text-shadow:0 0 50px rgba(200,150,255,.5);pointer-events:none}
+</style>
+</head>
+<body>
+<canvas id="v" aria-hidden="true"></canvas>
+<h1>vapu</h1>
+<script>
+// soft wisps: a few hundred big, faint, blurred puffs rising and curling. Move the pointer to stir them. One still frame if you prefer reduced motion.
+const c = document.getElementById("v"), g = c.getContext("2d"), reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+let W, H, puffs = [], mx = .5, my = .5;
+const HUES = [285, 305, 255, 325];
+function init() { W = c.width = innerWidth; H = c.height = innerHeight; puffs = Array.from({ length: 70 }, () => spawn(true)); }
+function spawn(any) { return { x: Math.random() * W, y: any ? Math.random() * H : H + 120, r: 80 + Math.random() * 190, vy: -(.15 + Math.random() * .4), ph: Math.random() * 6.28, h: HUES[(Math.random() * 4) | 0], a: .03 + Math.random() * .06 }; }
+init(); addEventListener("resize", init);
+addEventListener("pointermove", (e) => { mx = e.clientX / W; my = e.clientY / H; }, { passive: true });
+let t = 0;
+function f() {
+  t += .01; g.globalCompositeOperation = "source-over"; g.fillStyle = "rgba(11,7,16,.28)"; g.fillRect(0, 0, W, H); g.globalCompositeOperation = "lighter";
+  for (let i = 0; i < puffs.length; i++) {
+    const p = puffs[i]; p.y += p.vy; p.x += Math.sin(t + p.ph) * .5 + (mx - .5) * .6;
+    const gr = g.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r); gr.addColorStop(0, `hsla(${p.h},70%,70%,${p.a})`); gr.addColorStop(1, `hsla(${p.h},70%,50%,0)`);
+    g.fillStyle = gr; g.beginPath(); g.arc(p.x, p.y, p.r, 0, 6.283); g.fill();
+    if (p.y < -p.r) puffs[i] = spawn(false);
+  }
+  if (!reduce) requestAnimationFrame(f);
+}
+if (reduce) { for (let k = 0; k < 30; k++) f(); } else f();
+</script>
+</body>
+</html>

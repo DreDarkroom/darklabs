@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AA Tek | Tech Support (est. a long time ago)</title>
+<meta name="description" content="AA Tek: tech support with a 100% satisfaction rate among the people who stopped calling.">
+<style>
+:root{--teal:#008080;--face:#c0c0c0;--hi:#fff;--lo:#808080;--dk:#000;--navy:#000080}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:var(--teal);font:16px/1.45 "MS Sans Serif",Tahoma,Verdana,Arial,sans-serif;color:#000;padding:14px 10px 60px;
+  background-image:radial-gradient(rgba(0,0,0,.12) 1px,transparent 1px);background-size:4px 4px}
+.win{max-width:640px;margin:0 auto 18px;background:var(--face);border:2px solid;border-color:var(--hi) var(--dk) var(--dk) var(--hi);box-shadow:inset -1px -1px var(--lo),inset 1px 1px #dfdfdf,6px 6px 0 rgba(0,0,0,.35);padding:3px}
+.bar{background:linear-gradient(90deg,var(--navy),#1084d0);color:#fff;font-weight:700;padding:3px 6px;display:flex;justify-content:space-between;align-items:center;letter-spacing:.02em}
+.bar i{font-style:normal;display:flex;gap:2px}
+.bar i b{width:17px;height:15px;background:var(--face);border:2px solid;border-color:var(--hi) var(--dk) var(--dk) var(--hi);color:#000;font-size:11px;line-height:11px;text-align:center}
+.body{padding:12px}
+h1{font:700 2.1rem/1 "Times New Roman",serif;margin:.2rem 0 .1rem;letter-spacing:-.01em}
+h1 em{color:#c00;font-style:normal}
+.sub{margin:0 0 .6rem;font-style:italic}
+marquee{background:#000;color:#0f0;font:14px "Courier New",monospace;padding:3px;border:2px inset var(--lo);margin:.5rem 0}
+.inset{background:#fff;border:2px solid;border-color:var(--lo) var(--hi) var(--hi) var(--lo);padding:.6rem .8rem;min-height:5.2rem}
+button{font:inherit;background:var(--face);border:2px solid;border-color:var(--hi) var(--dk) var(--dk) var(--hi);box-shadow:inset -1px -1px var(--lo);padding:.45rem 1rem;cursor:pointer;min-height:2.4rem}
+button:active{border-color:var(--dk) var(--hi) var(--hi) var(--dk);box-shadow:inset 1px 1px var(--lo);padding:.5rem .95rem .4rem 1.05rem}
+button.big{font-weight:700;font-size:1.05rem;padding:.6rem 1.3rem}
+.row{display:flex;gap:.6rem;flex-wrap:wrap;margin:.7rem 0}
+.prog{height:22px;background:#fff;border:2px solid;border-color:var(--lo) var(--hi) var(--hi) var(--lo);padding:2px;margin:.5rem 0}
+.prog div{height:100%;width:0;background:repeating-linear-gradient(90deg,var(--navy) 0 10px,transparent 10px 12px)}
+.tick{font:13px "Courier New",monospace;color:#444}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:520px){.cols{grid-template-columns:1fr}}
+.counter{font:700 18px "Courier New",monospace;background:#000;color:#f33;padding:1px 8px;letter-spacing:.2em;display:inline-block}
+a{color:#00e}a:visited{color:#551a8b}
+.uc{text-align:center;font:700 13px "Courier New",monospace;margin:.7rem 0 0;color:#a00}
+canvas{width:100%;height:96px;display:block;background:#000;border:2px inset var(--lo)}
+.mute{position:absolute;left:-999px}
+</style>
+</head>
+<body>
+<div class="win">
+  <div class="bar"><span>AA Tek Support Centre</span><i><b>_</b><b>&#9633;</b><b>x</b></i></div>
+  <div class="body">
+    <h1>AA<em>Tek</em></h1>
+    <p class="sub">Have you tried turning yourself off and on again?</p>
+    <marquee scrollamount="4">*** WELCOME TO AA TEK *** YOUR CALL IS IMPORTANT TO US *** PLEASE STAY ON THE LINE *** YOUR CALL IS NOW NUMBER 4,291 IN THE QUEUE *** ESTIMATED WAIT: UNTIL THE HEAT DEATH OF THE UNIVERSE ***</marquee>
+    <p>Tell us what's wrong. Our fully automated technician, Kevin, will fix it right away.</p>
+    <div class="inset" id="out" aria-live="polite">Kevin is ready. Press the button.</div>
+    <div class="prog" aria-hidden="true"><div id="fill"></div></div>
+    <div class="tick" id="tick">&nbsp;</div>
+    <div class="row">
+      <button class="big" id="fix">Fix my computer</button>
+      <button id="hold" aria-pressed="false">&#9835; Hold music: off</button>
+    </div>
+  </div>
+</div>
+
+<div class="cols" style="max-width:640px;margin:0 auto 18px">
+  <div class="win"><div class="bar"><span>Hold music</span></div><div class="body"><canvas id="sky" aria-label="Hold music visualiser"></canvas><p class="tick" style="margin:.4rem 0 0">&#9835; "Please Hold (Forever)", on loop.</p></div></div>
+  <div class="win"><div class="bar"><span>Our promise</span></div><div class="body">
+    <p style="margin:0 0 .5rem">100% satisfaction among the people who stopped calling.</p>
+    <p style="margin:0">You are visitor<br><span class="counter" id="count">000000</span></p>
+  </div></div>
+</div>
+
+<div class="win" style="text-align:center"><div class="body">
+  <p style="margin:0 0 .5rem">Not satisfied? Quite right. Escalate to someone who actually makes things:</p>
+  <a href="https://dredarkroom.com/"><button class="big">Escalate to a manager &rarr;</button></a>
+  <p class="uc">&#9888; THIS SITE IS PERMANENTLY UNDER CONSTRUCTION &#9888;</p>
+</div></div>
+
+<script type="module">
+import { room } from "../_shared/room.js";
+const $ = (id) => document.getElementById(id);
+
+// Kevin. Every answer is technically a reply.
+const FIXES = [
+  "Have you tried turning it off and on again? Now try that with the building.",
+  "Kevin has diagnosed the problem: it's you. Kevin is rarely wrong.",
+  "Your computer isn't broken. It has simply seen what's on your hard drive and chosen peace.",
+  "Please hold. A technician will be with you shortly. By shortly we mean a geological era.",
+  "Kevin has closed your ticket. Reason: resolved. Resolution: not applicable.",
+  "Error 404: motivation not found. Please reinstall your will to live. (Reboot required.)",
+  "Have you checked the cable? The other cable. No, the other other cable. Thank you, we'll bill you.",
+  "Kevin recommends a clean install of your entire personality. Backups not included.",
+  "Your problem has been escalated to Kevin's manager, who is also Kevin.",
+  "We found 4,291 viruses. Mostly your browser history. Mostly.",
+];
+const STAGES = ["Reticulating splines", "Asking the cloud (it is just someone else's computer)", "Blaming the router", "Defragmenting your hopes", "Nearly there"];
+let n = 0, busy = false;
+$("fix").addEventListener("click", () => {
+  if (busy) return; busy = true; $("fix").disabled = true;
+  $("out").textContent = "Kevin is working on it..."; let p = 0, stage = 0;
+  const t = setInterval(() => {
+    p = Math.min(99, p + 3 + Math.random() * 7); $("fill").style.width = p + "%";
+    stage = Math.min(STAGES.length - 1, Math.floor(p / 21)); $("tick").textContent = STAGES[stage] + "... " + Math.round(p) + "%";
+    if (p >= 99) {                                   // it always stalls at 99%, as is tradition
+      clearInterval(t); $("tick").textContent = "99%... 99%... still 99%.";
+      setTimeout(() => { $("out").textContent = FIXES[n++ % FIXES.length]; $("fill").style.width = "0%"; $("tick").textContent = "Ticket #" + (1000 + Math.floor(Math.random() * 9000)) + " closed. Satisfaction survey: lost."; busy = false; $("fix").disabled = false; }, 1400);
+    }
+  }, 140);
+});
+
+// the visitor counter, which is entirely made up (it's seeded from the date so it only ever goes up)
+const days = Math.floor(Date.now() / 864e5);
+$("count").textContent = String(4200 + (days % 5000) * 3 + Math.floor((Date.now() / 1000) % 3)).padStart(6, "0");
+
+// hold music: the same engine as the rest of the darkroom, set to something small and quietly sad
+const r = room({ canvas: $("sky"), bpm: 72, key: 7, prog: "frahm", ascent: 0.1, space: 0.55, eco: true });
+$("hold").addEventListener("click", async () => {
+  const on = !r.on; await r.sound(on);
+  $("hold").textContent = "♫ Hold music: " + (on ? "on" : "off"); $("hold").setAttribute("aria-pressed", String(on));
+});
+</script>
+</body>
+</html>

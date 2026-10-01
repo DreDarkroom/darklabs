@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>foz</title>
+<meta name="description" content="foz. A quiet room with a light in it.">
+<style>
+html,body{margin:0;height:100%;background:#04060b;color:#e8edf7;font:300 1rem/1.5 ui-sans-serif,system-ui,sans-serif;overflow:hidden}
+#sky{position:fixed;inset:0;width:100%;height:100%}
+main{position:fixed;inset:0;display:grid;place-content:center;text-align:center;gap:1.2rem;pointer-events:none}
+h1{margin:0;font-weight:200;font-size:clamp(4rem,18vw,11rem);letter-spacing:.18em;padding-left:.18em;text-shadow:0 0 60px rgba(120,170,255,.45)}
+button{pointer-events:auto;justify-self:center;font:inherit;letter-spacing:.3em;text-transform:uppercase;font-size:.75rem;color:#cfe0ff;background:rgba(10,16,30,.5);border:1px solid #2a3a5c;border-radius:2rem;padding:.8rem 1.5rem;cursor:pointer;min-height:2.8rem}
+button:hover{border-color:#8fb4ff;color:#fff}
+:focus-visible{outline:2px solid #8fb4ff;outline-offset:4px}
+</style>
+</head>
+<body>
+<canvas id="sky" aria-hidden="true"></canvas>
+<main><h1>foz</h1><button id="snd" aria-pressed="false">Sound</button></main>
+<script type="module">
+import { room } from "../_shared/room.js";
+const r = room({ canvas: document.getElementById("sky"), bpm: 70, key: 4, prog: "frahm", ascent: 0.16, space: 0.65 });
+const b = document.getElementById("snd");
+b.addEventListener("click", async () => { const on = !r.on; await r.sound(on); b.textContent = on ? "Sound on" : "Sound"; b.setAttribute("aria-pressed", String(on)); });
+// the light answers the pointer: move across the page and the room brightens a little
+addEventListener("pointermove", (e) => { r.ascent = 0.12 + 0.28 * (e.clientX / innerWidth); }, { passive: true });
+</script>
+</body>
+</html>

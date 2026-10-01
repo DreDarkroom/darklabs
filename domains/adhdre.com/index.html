@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ADHDRE | Last Seen, and UK adult ADHD signposts</title>
+<meta name="description" content="A calm, ADHD-friendly corner of the web. Last Seen remembers where you put things down, and plain-English signposts point UK adults to trusted ADHD information.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* Design rules, each from the research on the page: nothing moves; soft paper background (not glaring white);
+   one clear action per screen; big targets; no timers; every change can be undone; plain words; short chunks. */
+:root{
+  --paper:#fbf8f3; --card:#ffffff; --ink:#1d2540; --muted:#454d6b; --line:#d9d3ea;
+  --brand:#3b3fa8; --on-brand:#ffffff; --focus:#3b3fa8;
+  --lav:#e9e3fb; --mint:#dcf3e8; --peach:#ffe6d6; --sky:#dcebff; --butter:#fff4c9;
+  --fs:1.125rem;
+}
+:root[data-contrast="high"]{ --paper:#ffffff; --ink:#000; --muted:#1b1b1b; --line:#000; --brand:#1a1d80; --lav:#fff; --mint:#fff; --peach:#fff; --sky:#fff; --butter:#fff; }
+:root[data-size="l"]{--fs:1.3rem} :root[data-size="xl"]{--fs:1.5rem}
+*{box-sizing:border-box}
+html{font-size:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font:var(--fs)/1.7 "Atkinson Hyperlegible",Verdana,system-ui,sans-serif;letter-spacing:.01em}
+.wrap{max-width:46rem;margin:0 auto;padding:0 1.1rem 4rem}
+a{color:var(--brand);text-underline-offset:.18em;text-decoration-thickness:.08em}
+:focus-visible{outline:3px solid var(--focus);outline-offset:3px;border-radius:6px}
+.skip{position:absolute;left:-999px}.skip:focus{left:1rem;top:1rem;background:var(--card);padding:.6rem 1rem;z-index:9}
+header.top{display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:1.2rem 0 .4rem;flex-wrap:wrap}
+.mark{font-weight:700;font-size:1.5rem;letter-spacing:.04em;margin:0}
+.mark span{background:var(--lav);padding:.05em .4em;border-radius:.5em}
+.lead{color:var(--muted);margin:.2rem 0 1.4rem;max-width:36rem}
+h2{font-size:1.45rem;line-height:1.3;margin:0 0 .6rem}
+h3{font-size:1.1rem;margin:0 0 .5rem}
+p{margin:0 0 .9rem;max-width:40rem}
+.card{background:var(--card);border:2px solid var(--line);border-radius:1.2rem;padding:1.3rem 1.3rem 1.1rem;margin:1.1rem 0}
+.tool{border-color:var(--brand);background:linear-gradient(180deg,var(--lav),var(--card) 9rem)}
+.step{display:flex;align-items:center;gap:.6rem;margin:1.1rem 0 .6rem}
+.step b{display:grid;place-items:center;width:2rem;height:2rem;border-radius:50%;background:var(--brand);color:var(--on-brand);font-size:1rem;flex:none}
+.step h3{margin:0}
+.chips{display:flex;flex-wrap:wrap;gap:.55rem}
+button,.btn{font:inherit;cursor:pointer}
+.chip{min-height:3rem;padding:.4rem 1.05rem;border-radius:2rem;border:2px solid var(--line);background:var(--card);color:var(--ink)}
+.chip:hover{background:var(--sky)}
+.chip[aria-pressed="true"]{background:var(--brand);color:var(--on-brand);border-color:var(--brand);font-weight:700}
+.add{display:flex;gap:.5rem;margin-top:.7rem;flex-wrap:wrap}
+.add input{flex:1 1 11rem;min-height:3rem;padding:.4rem .9rem;border:2px solid var(--line);border-radius:.8rem;font:inherit;color:var(--ink);background:var(--card)}
+.btn{min-height:3rem;padding:.4rem 1.2rem;border-radius:.8rem;border:2px solid var(--brand);background:var(--card);color:var(--brand);font-weight:700}
+.btn.solid{background:var(--brand);color:var(--on-brand)}
+.btn:hover{background:var(--mint);color:var(--ink)} .btn.solid:hover{background:#2c2f86;color:#fff}
+.status{margin:1rem 0 0;padding:.8rem 1rem;border-radius:.9rem;background:var(--mint);display:flex;gap:.8rem;align-items:center;justify-content:space-between;flex-wrap:wrap;min-height:3.4rem}
+.status.idle{background:var(--butter)}
+ul.things{list-style:none;margin:0;padding:0;display:grid;gap:.6rem}
+.thing{display:flex;gap:.8rem;align-items:center;justify-content:space-between;flex-wrap:wrap;background:var(--card);border:2px solid var(--line);border-radius:1rem;padding:.7rem 1rem}
+.thing .what{font-weight:700}.thing .where{background:var(--peach);border-radius:.6rem;padding:.1rem .6rem}
+.thing small{color:var(--muted);display:block}
+.thing .acts{display:flex;gap:.4rem;flex-wrap:wrap}
+.mini{min-height:2.75rem;padding:.2rem .8rem;border-radius:.7rem;border:2px solid var(--line);background:var(--card);color:var(--ink)}
+.mini[aria-pressed="true"]{background:var(--butter);border-color:var(--ink)}
+.row{display:flex;gap:.7rem;flex-wrap:wrap;align-items:center;margin-top:1rem}
+label.chk{display:flex;gap:.6rem;align-items:center;min-height:2.75rem}
+input[type=checkbox]{width:1.5rem;height:1.5rem;accent-color:var(--brand)}
+nav.jump ul{list-style:none;display:flex;flex-wrap:wrap;gap:.5rem;padding:0;margin:.4rem 0 0}
+nav.jump a{display:inline-block;padding:.45rem 1rem;border-radius:2rem;background:var(--sky);color:var(--ink);text-decoration:none;font-weight:700}
+nav.jump a:hover{background:var(--lav)}
+.notice{background:var(--butter);border:2px solid #e7cf6a;border-radius:1rem;padding:1rem 1.2rem;font-size:.97rem}
+.card.c1{background:var(--mint)}.card.c2{background:var(--sky)}.card.c3{background:var(--peach)}.card.c4{background:var(--lav)}
+.card ul{margin:.3rem 0 0;padding-left:1.3rem}.card li{margin:.35rem 0}
+details{background:var(--card);border:2px solid var(--line);border-radius:1rem;padding:.7rem 1.1rem;margin:1.1rem 0}
+summary{cursor:pointer;font-weight:700;min-height:2.75rem;display:flex;align-items:center}
+.disp{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap}
+footer{color:var(--muted);font-size:.95rem;margin-top:2rem;max-width:40rem}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+@media (prefers-contrast:more){:root{--line:#000}}
+</style>
+</head>
+<body>
+<a class="skip" href="#tool">Skip to the tool</a>
+<div class="wrap">
+<header class="top">
+  <p class="mark"><span>ADHDRE</span></p>
+  <div class="disp" role="group" aria-label="Display settings">
+    <span class="sr">Text size</span>
+    <button class="mini" data-size="m" aria-pressed="true" aria-label="Normal text">A</button>
+    <button class="mini" data-size="l" aria-pressed="false" aria-label="Larger text" style="font-size:1.2em">A</button>
+    <button class="mini" data-size="xl" aria-pressed="false" aria-label="Largest text" style="font-size:1.4em">A</button>
+    <button class="mini" id="contrast" aria-pressed="false">More contrast</button>
+  </div>
+</header>
+<p class="lead">A calm place with one useful tool, and plain-English signposts to trusted UK information about adult ADHD. Nothing here moves, makes a sound, or runs out of time.</p>
+
+<main id="main">
+<!-- THE TOOL -->
+<section class="card tool" id="tool" aria-labelledby="tool-h">
+  <h2 id="tool-h">Last Seen: where did I put it?</h2>
+  <p>Put something down? Tap what it is, then tap where. That's it. It's saved on this device, with no account.</p>
+
+  <div class="step"><b>1</b><h3>What did you put down?</h3></div>
+  <div class="chips" id="things" role="group" aria-label="Things"></div>
+  <form class="add" id="addThing"><label class="sr" for="newThing">Add your own thing</label><input id="newThing" placeholder="Something else, e.g. Bike lock" maxlength="30"><button class="btn" type="submit">Add</button></form>
+
+  <div class="step"><b>2</b><h3>Where is it now?</h3></div>
+  <div class="chips" id="places" role="group" aria-label="Places"></div>
+  <form class="add" id="addPlace"><label class="sr" for="newPlace">Add your own place</label><input id="newPlace" placeholder="Somewhere else, e.g. Gym bag" maxlength="30"><button class="btn" type="submit">Add</button></form>
+
+  <p class="status idle" id="status" role="status" aria-live="polite"><span id="statusText">Pick a thing, then a place. I'll remember.</span><button class="btn" id="undo" hidden>Undo</button></p>
+
+  <label class="chk"><input type="checkbox" id="speak"> Say it out loud when I save (saying it helps it stick)</label>
+</section>
+
+<section class="card" aria-labelledby="find-h">
+  <h2 id="find-h">Find it</h2>
+  <ul class="things" id="list"></ul>
+  <p id="empty" style="color:var(--muted)">Nothing saved yet. Your first thing will show up here.</p>
+  <div class="row"><button class="btn solid" id="out">Heading out? Check my list</button></div>
+  <div id="outlist" hidden>
+    <h3 style="margin-top:1.1rem">Before you leave</h3>
+    <p style="color:var(--muted)">Tick each one as you pick it up. Tap the star on a thing above to add it to this list.</p>
+    <ul class="things" id="outitems"></ul>
+  </div>
+</section>
+
+<details>
+  <summary>Why is this site built like this?</summary>
+  <p>Every choice follows published guidance, not a hunch. Where something is common practice rather than proven, I've said so.</p>
+  <ul>
+    <li><b>Nothing moves.</b> Moving things pull the eye away from what you're reading. Practitioners widely advise against it, and the W3C says moving content must be pausable (<a href="https://www.w3.org/WAI/WCAG22/Understanding/pause-stop-hide.html" rel="noopener">WCAG 2.2.2</a>). Here, nothing moves at all.</li>
+    <li><b>No timers and no passwords.</b> W3C's guidance for attention and memory says not to rely on remembering things or racing a clock (<a href="https://w3c.github.io/coga/content-usable/" rel="noopener">COGA: Making content usable</a>).</li>
+    <li><b>Undo everywhere.</b> One tap reverses a mistake. It stays on screen until you choose, so you don't have to be quick.</li>
+    <li><b>Soft colours, not glare.</b> Warm paper, deep ink and pastel blocks. Text is at least 7 to 1 contrast, well above the usual minimum. There's a "More contrast" button if you want it stronger.</li>
+    <li><b>An ordinary, readable font.</b> It's Atkinson Hyperlegible, designed for clear letters. Studies haven't found that special "dyslexia fonts" beat plain ones. Spacing matters more, so lines are short and spaced generously.</li>
+    <li><b>Saying it out loud.</b> Advice for ADHD forgetfulness often includes saying where you put things, which is why that tickbox exists. It's common practice, not a clinical claim.</li>
+  </ul>
+</details>
+
+<!-- THE SIGNPOSTS (content carried over unchanged from the first version of the site) -->
+<p class="notice" id="notice">Please read: this site gives general information only. It isn't medical, legal or financial advice, and it can't diagnose ADHD or recommend treatment. Only a qualified clinician can do that. Never start, stop or change medication without medical advice. In an emergency call 999. If you're struggling emotionally, <a href="https://www.samaritans.org" rel="noopener">Samaritans</a> are on 116 123 (free, 24/7).</p>
+
+<nav class="jump" aria-label="On this page"><ul>
+  <li><a href="#assessment">Getting assessed</a></li><li><a href="#waiting">Waiting and choices</a></li><li><a href="#prepare">Preparing</a></li><li><a href="#work">ADHD at work</a></li><li><a href="#sources">Sources</a></li>
+</ul></nav>
+
+<section class="card c1" id="assessment">
+  <h2>Getting an assessment</h2>
+  <p>The NHS suggests starting with your GP if symptoms affect study, work or relationships. Your GP asks about your history and may check for other explanations. If you're referred, a specialist looks at your history across areas such as childhood, work and family.</p>
+  <p><a href="https://www.nhs.uk/conditions/adhd-adults/" rel="noopener">NHS: ADHD in adults</a> · <a href="https://adhduk.co.uk/diagnosis-pathways/" rel="noopener">ADHD UK: diagnosis pathways</a></p>
+</section>
+<section class="card c2" id="waiting">
+  <h2>Waiting and choices</h2>
+  <p>The NHS says waits vary and can be long. In England, "Right to Choose" lets you ask to be referred to a provider offering NHS-funded ADHD assessments, which can mean a shorter wait. Availability is changing, and some areas have reportedly limited referrals, so check with your GP and the provider first.</p>
+  <p>Private assessment and funding requests are other routes. They have costs and rules of their own, and a private diagnosis doesn't always mean your GP can take over prescribing.</p>
+  <p><a href="https://adhduk.co.uk/right-to-choose/" rel="noopener">ADHD UK: Right to Choose</a> · <a href="https://adhduk.co.uk/private-diagnosis/" rel="noopener">Private diagnosis</a></p>
+</section>
+<section class="card c3" id="prepare">
+  <h2>Preparing for an appointment</h2>
+  <ul>
+    <li>Write down real examples of how things show up, and where (work, home, relationships).</li>
+    <li>Note when it started. Old school reports can help if you have them.</li>
+    <li>Bring questions, and consider bringing someone who knows you.</li>
+    <li>Ask what happens next and roughly when.</li>
+  </ul>
+</section>
+<section class="card c4" id="work">
+  <h2>ADHD at work</h2>
+  <p>Acas explains that being neurodivergent often counts as a disability under the Equality Act 2010, which can mean a right to reasonable adjustments. Employers are responsible for those. Access to Work is a separate government grant that can fund extra support at work. Citizens Advice can help if you think you've been treated unfairly.</p>
+  <ul>
+    <li><a href="https://www.acas.org.uk/neurodiversity-at-work" rel="noopener">Acas: neurodiversity at work</a></li>
+    <li><a href="https://www.acas.org.uk/reasonable-adjustments" rel="noopener">Acas: reasonable adjustments</a></li>
+    <li><a href="https://www.gov.uk/access-to-work" rel="noopener">GOV.UK: Access to Work</a></li>
+    <li><a href="https://www.citizensadvice.org.uk/work/discrimination-at-work/" rel="noopener">Citizens Advice: discrimination at work</a></li>
+  </ul>
+</section>
+<section class="card" id="sources">
+  <h2>Trusted sources</h2>
+  <ul>
+    <li><a href="https://www.nhs.uk/conditions/adhd-adults/" rel="noopener">NHS</a></li>
+    <li><a href="https://www.nice.org.uk/guidance/ng87" rel="noopener">NICE guideline NG87: ADHD diagnosis and management</a></li>
+    <li><a href="https://adhduk.co.uk/" rel="noopener">ADHD UK</a></li>
+  </ul>
+</section>
+</main>
+<footer>
+  <p>ADHDRE is an independent, unofficial project. Content is for England and may differ in Scotland, Wales and Northern Ireland. Information changes, so check the linked sources for the latest. Last reviewed September 2026.</p>
+  <p>Last Seen keeps what you save on this device only. Clear your browser data and it's gone.</p>
+</footer>
+</div>
+
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id), KEY = "adhdre.lastseen.v1";
+  const DEF_THINGS = ["Keys", "Phone", "Wallet", "Glasses", "Headphones", "Bag", "Charger"];
+  const DEF_PLACES = ["By the door", "Kitchen", "Desk", "Bedroom", "Coat pocket", "Bag", "Car", "Bathroom", "Sofa"];
+  let S = { things: DEF_THINGS.slice(), places: DEF_PLACES.slice(), seen: {}, carry: {}, speak: false, size: "m", contrast: false };
+  try { Object.assign(S, JSON.parse(localStorage.getItem(KEY) || "{}")); } catch (e) { /* storage may be blocked: carry on without it */ }
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { /* ignore */ } };
+  let pick = null, last = null;                                   // the chosen thing; the last save (so it can be undone)
+
+  const ago = (ts) => {
+    const m = Math.round((Date.now() - ts) / 60000);
+    if (m < 1) return "just now"; if (m < 60) return m + " min ago";
+    const h = Math.round(m / 60); if (h < 24) return h + (h === 1 ? " hour ago" : " hours ago");
+    const d = Math.round(h / 24); return d + (d === 1 ? " day ago" : " days ago");
+  };
+  const say = (t) => { if (S.speak && "speechSynthesis" in window) { speechSynthesis.cancel(); speechSynthesis.speak(new SpeechSynthesisUtterance(t)); } };
+  const status = (t, idle = false, undo = false) => { $("statusText").textContent = t; $("status").classList.toggle("idle", idle); $("undo").hidden = !undo; };
+
+  function chips(el, list, active, onTap) {
+    el.textContent = "";
+    list.forEach((name) => {
+      const b = document.createElement("button"); b.type = "button"; b.className = "chip"; b.textContent = name;
+      b.setAttribute("aria-pressed", String(name === active)); b.addEventListener("click", () => onTap(name)); el.appendChild(b);
+    });
+  }
+  function render() {
+    chips($("things"), S.things, pick, (n) => { pick = n; status("Now tap where " + n.toLowerCase() + " is.", true); render(); });
+    chips($("places"), S.places, null, (p) => {
+      if (!pick) { status("Pick a thing first (step 1), then a place.", true); return; }
+      last = { name: pick, prev: S.seen[pick] || null };
+      S.seen[pick] = { place: p, ts: Date.now() }; save();
+      status("Saved: " + pick + " is " + p.toLowerCase() + ".", false, true); say(pick + ", " + p);
+      pick = null; render();
+    });
+    const names = Object.keys(S.seen).sort((a, b) => S.seen[b].ts - S.seen[a].ts);
+    $("empty").hidden = names.length > 0;
+    const ul = $("list"); ul.textContent = "";
+    names.forEach((n) => {
+      const s = S.seen[n], li = document.createElement("li"); li.className = "thing";
+      li.innerHTML = '<div><span class="what"></span> is <span class="where"></span><small></small></div><div class="acts"></div>';
+      li.querySelector(".what").textContent = n; li.querySelector(".where").textContent = s.place.toLowerCase();
+      li.querySelector("small").textContent = "Saved " + ago(s.ts);
+      const acts = li.querySelector(".acts");
+      const star = document.createElement("button"); star.className = "mini"; star.type = "button"; star.textContent = S.carry[n] ? "★ On my list" : "☆ Add to my list";
+      star.setAttribute("aria-pressed", String(!!S.carry[n])); star.addEventListener("click", () => { S.carry[n] = !S.carry[n]; save(); render(); });
+      const moved = document.createElement("button"); moved.className = "mini"; moved.type = "button"; moved.textContent = "I moved it";
+      moved.addEventListener("click", () => { pick = n; status("Now tap where " + n.toLowerCase() + " is now.", true); render(); $("places").scrollIntoView({ block: "center" }); });
+      const del = document.createElement("button"); del.className = "mini"; del.type = "button"; del.textContent = "Remove";
+      del.addEventListener("click", () => { last = { name: n, prev: s, removed: true }; delete S.seen[n]; save(); status("Removed " + n + ".", false, true); render(); });
+      acts.append(star, moved, del); ul.appendChild(li);
+    });
+    // the "heading out" list: just the starred things, each with where it was last seen
+    const out = $("outitems"); out.textContent = "";
+    names.filter((n) => S.carry[n]).forEach((n) => {
+      const li = document.createElement("li"); li.className = "thing";
+      const id = "o-" + n.replace(/\W/g, "");
+      li.innerHTML = '<label class="chk"><input type="checkbox"><span></span></label>';
+      li.querySelector("input").id = id; li.querySelector("span").textContent = n + " (last seen " + S.seen[n].place.toLowerCase() + ")";
+      out.appendChild(li);
+    });
+    if (!out.children.length) { const li = document.createElement("li"); li.textContent = "Nothing on your list yet. Tap “Add to my list” on a thing above."; li.style.color = "var(--muted)"; out.appendChild(li); }
+  }
+
+  $("undo").addEventListener("click", () => {
+    if (!last) return;
+    if (last.prev) S.seen[last.name] = last.prev; else delete S.seen[last.name];
+    save(); last = null; status("Undone.", true); render();
+  });
+  const addTo = (form, input, list) => form.addEventListener("submit", (e) => {
+    e.preventDefault(); const v = input.value.trim(); if (!v) return;
+    if (!S[list].some((x) => x.toLowerCase() === v.toLowerCase())) S[list].push(v);
+    input.value = ""; save();
+    if (list === "things") pick = v; status(list === "things" ? "Added. Now tap where " + v.toLowerCase() + " is." : "Added “" + v + "”.", true); render();
+  });
+  addTo($("addThing"), $("newThing"), "things"); addTo($("addPlace"), $("newPlace"), "places");
+  $("out").addEventListener("click", () => { const o = $("outlist"); o.hidden = !o.hidden; $("out").textContent = o.hidden ? "Heading out? Check my list" : "Hide my list"; });
+  $("speak").checked = !!S.speak; $("speak").addEventListener("change", (e) => { S.speak = e.target.checked; save(); });
+
+  // display settings (the user's, remembered)
+  const root = document.documentElement;
+  const setSize = (s) => { S.size = s; root.dataset.size = s; document.querySelectorAll("[data-size]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.size === s))); save(); };
+  document.querySelectorAll("button[data-size]").forEach((b) => b.addEventListener("click", () => setSize(b.dataset.size)));
+  const setContrast = (on) => { S.contrast = on; on ? root.setAttribute("data-contrast", "high") : root.removeAttribute("data-contrast"); $("contrast").setAttribute("aria-pressed", String(on)); $("contrast").textContent = on ? "Softer colours" : "More contrast"; save(); };
+  $("contrast").addEventListener("click", () => setContrast(!S.contrast));
+  setSize(S.size || "m"); setContrast(!!S.contrast);
+  render();
+  window.__lastseen = { get S() { return S; } };
+})();
+</script>
+</body>
+</html>

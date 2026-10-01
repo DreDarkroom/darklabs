@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dev Detail | Web development, support and hosting</title>
+<meta name="description" content="Web development, support and hosting. Digital design solutions from web to stills photography and video. Your problems solved.">
+<style>
+:root{--bg:#f6f7fb;--card:#fff;--ink:#0f1b33;--dim:#4b5873;--line:#dfe3ee;--brand:#2b59ff;--brand2:#0fb5a3;--night:#0b1226}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.65 ui-sans-serif,system-ui,"Segoe UI",Roboto,sans-serif}
+a{color:var(--brand)}
+:focus-visible{outline:3px solid var(--brand);outline-offset:3px;border-radius:4px}
+.wrap{max-width:68rem;margin:0 auto;padding:0 1.2rem}
+header.top{display:flex;justify-content:space-between;align-items:center;padding:1.1rem 0}
+.logo{font-weight:800;font-size:1.25rem;letter-spacing:-.02em;margin:0}
+.logo b{color:var(--brand)}
+header a.btn{margin:0}
+.btn{display:inline-block;background:var(--brand);color:#fff;text-decoration:none;font-weight:700;padding:.8rem 1.4rem;border-radius:.7rem;min-height:2.9rem}
+.btn:hover{background:#1d46d8}
+.btn.ghost{background:transparent;color:var(--ink);border:2px solid var(--line)}
+.btn.ghost:hover{border-color:var(--brand);background:#fff}
+.hero{padding:4rem 0 4.5rem;display:grid;grid-template-columns:1.2fr .8fr;gap:2.4rem;align-items:center}
+@media(max-width:820px){.hero{grid-template-columns:1fr;padding-top:2rem}}
+.eyebrow{font-weight:700;font-size:.8rem;letter-spacing:.22em;text-transform:uppercase;color:var(--brand2);margin:0 0 .8rem}
+h1{font-size:clamp(2.3rem,6vw,4rem);line-height:1.04;letter-spacing:-.03em;margin:0 0 1rem}
+h1 em{font-style:normal;background:linear-gradient(90deg,var(--brand),var(--brand2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.lede{color:var(--dim);font-size:1.2rem;max-width:34rem;margin:0 0 1.6rem}
+.row{display:flex;gap:.8rem;flex-wrap:wrap}
+/* a little "status board" for the hero: static, nothing moves */
+.board{background:var(--night);color:#cfe0ff;border-radius:1rem;padding:1.2rem 1.3rem;font:.9rem/1.7 ui-monospace,Consolas,monospace;box-shadow:0 24px 50px rgba(15,27,51,.25)}
+.board .dots{display:flex;gap:.4rem;margin-bottom:.8rem}.board .dots i{width:.7rem;height:.7rem;border-radius:50%;background:#33406b}
+.board .ok{color:#59f0c7}.board .dim{color:#7d8db8}
+section{padding:4rem 0;border-top:1px solid var(--line)}
+h2{font-size:clamp(1.7rem,4vw,2.5rem);line-height:1.1;letter-spacing:-.02em;margin:0 0 .8rem}
+.sub{color:var(--dim);max-width:36rem;margin:0 0 2rem}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+@media(max-width:820px){.cards{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:1rem;padding:1.5rem}
+.card .ic{width:2.8rem;height:2.8rem;border-radius:.8rem;display:grid;place-items:center;background:#e8eeff;color:var(--brand);font-weight:800;margin-bottom:1rem}
+.card h3{margin:0 0 .4rem;font-size:1.2rem}
+.card p{margin:0;color:var(--dim)}
+.band{background:var(--night);color:#e8eeff;border-radius:1.2rem;padding:2.4rem;display:grid;grid-template-columns:1.2fr .8fr;gap:1.6rem;align-items:center}
+@media(max-width:820px){.band{grid-template-columns:1fr}}
+.band h2{color:#fff;margin:0 0 .4rem}.band p{margin:0;color:#aab9de}
+footer{padding:2.4rem 0 3.5rem;color:var(--dim);font-size:.95rem;border-top:1px solid var(--line)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top"><p class="logo">Dev<b>Detail</b></p><a class="btn" href="#contact">Get in touch</a></header>
+
+  <div class="hero">
+    <div>
+      <p class="eyebrow">Web development, support &amp; hosting</p>
+      <h1>Your problems <em>solved.</em></h1>
+      <p class="lede">Digital design solutions from web to stills photography &amp; video. Web infrastructure to help you move fast.</p>
+      <div class="row"><a class="btn" href="#contact">A problem shared</a><a class="btn ghost" href="#services">More services</a></div>
+    </div>
+    <div class="board" aria-hidden="true">
+      <div class="dots"><i></i><i></i><i></i></div>
+      <div><span class="dim">$</span> check --site</div>
+      <div class="ok">&#10003; loads fast</div>
+      <div class="ok">&#10003; looks right on every screen</div>
+      <div class="ok">&#10003; backed up &amp; monitored</div>
+      <div class="dim">solved. next?</div>
+    </div>
+  </div>
+
+  <section id="services">
+    <h2>Solving problems for breakfast</h2>
+    <p class="sub">Process driven improvements. Building websites that reflect well on your business. With expertise in WordPress, your project is in good hands.</p>
+    <div class="cards">
+      <div class="card"><div class="ic">W</div><h3>Web Design</h3><p>Simple and effective solutions.</p></div>
+      <div class="card"><div class="ic">S</div><h3>Tech Support</h3><p>Empowering your business with support &amp; training.</p></div>
+      <div class="card"><div class="ic">H</div><h3>Web Hosting</h3><p>Secure &amp; fast-loading websites.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Meet our clients</h2>
+    <p class="sub">They believe in us. Working with a range of UK based and internationally renowned businesses, brands and local authorities.</p>
+  </section>
+
+  <section id="contact">
+    <div class="band">
+      <div><h2>A problem shared</h2><p>Get in touch to discuss your plans.</p></div>
+      <div class="row" style="justify-content:flex-end"><a class="btn" href="https://devdetail.com/contact/">Contact</a></div>
+    </div>
+  </section>
+  <footer>&copy; Dev Detail. Web development, support &amp; hosting.</footer>
+</div>
+</body>
+</html>

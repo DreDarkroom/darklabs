@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>dredevops | ship small, ship often</title>
+<meta name="description" content="How my sites go from an idea to the internet: one git push, a few seconds of checks, and a one-step undo.">
+<style>
+:root{--bg:#0a0e14;--panel:#111823;--line:#1f2a3a;--ink:#dce6f2;--dim:#7f90a8;--ok:#3ddc97;--run:#5aa9ff;--bad:#ff6b6b}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 ui-monospace,"Cascadia Mono",Consolas,monospace}
+.wrap{max-width:60rem;margin:0 auto;padding:2rem 1.1rem 4rem}
+h1{font-size:clamp(1.8rem,5vw,2.8rem);line-height:1.1;margin:0 0 .5rem;letter-spacing:-.03em}
+h1 b{color:var(--ok)}
+.sub{color:var(--dim);margin:0 0 1.6rem;max-width:38rem}
+button{font:inherit;cursor:pointer;color:#04140c;background:var(--ok);border:0;border-radius:.4rem;padding:.7rem 1.2rem;font-weight:800;min-height:2.8rem}
+button.alt{background:var(--panel);color:var(--ink);border:1px solid var(--line);font-weight:600}
+button:disabled{opacity:.55;cursor:default}
+:focus-visible{outline:2px solid var(--run);outline-offset:3px}
+.pipe{display:grid;grid-template-columns:repeat(5,1fr);gap:.5rem;margin:1.4rem 0}
+@media(max-width:640px){.pipe{grid-template-columns:1fr}}
+.st{background:var(--panel);border:1px solid var(--line);border-radius:.5rem;padding:.8rem;position:relative;overflow:hidden}
+.st h3{margin:0 0 .2rem;font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+.st .s{font-size:.95rem}
+.st i{position:absolute;left:0;bottom:0;height:3px;width:0;background:var(--run)}
+.st.run{border-color:var(--run)}.st.run i{width:100%;transition:width var(--d,1s) linear}
+.st.ok{border-color:var(--ok)}.st.ok h3{color:var(--ok)}.st.ok i{width:100%;background:var(--ok)}
+.st.bad{border-color:var(--bad)}.st.bad h3{color:var(--bad)}
+pre{background:#05080d;border:1px solid var(--line);border-radius:.5rem;padding:1rem;margin:0;min-height:13rem;max-height:18rem;overflow:auto;font-size:.88rem;white-space:pre-wrap}
+.l-ok{color:var(--ok)}.l-dim{color:var(--dim)}.l-run{color:var(--run)}
+.row{display:flex;gap:.7rem;flex-wrap:wrap;margin:1rem 0}
+.cols{display:grid;grid-template-columns:repeat(3,1fr);gap:.8rem;margin-top:2rem}
+@media(max-width:700px){.cols{grid-template-columns:1fr}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:.5rem;padding:1rem}
+.card h2{font-size:1rem;margin:0 0 .4rem;color:var(--ok)}
+.card p{margin:0;color:var(--dim);font-size:.92rem}
+a{color:var(--run)}
+.badge{display:inline-block;margin-top:1rem;padding:.2rem .6rem;border:1px solid var(--ok);color:var(--ok);border-radius:2rem;font-size:.8rem}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>dre<b>devops</b></h1>
+  <p class="sub">Ship small, ship often, and always keep a way back. This is how my sites reach the internet. Press the button; nothing here is faked except the speed.</p>
+  <div class="row"><button id="ship">git push</button><button class="alt" id="break">Push a bug on purpose</button><button class="alt" id="undo" disabled>Rollback</button></div>
+  <div class="pipe" id="pipe"></div>
+  <pre id="log" aria-live="polite" aria-label="Deployment log"><span class="l-dim">waiting for a push...</span></pre>
+  <span class="badge" id="state">live &middot; v1</span>
+
+  <div class="cols">
+    <div class="card"><h2>No build step</h2><p>Plain HTML and ES modules. What I write is what ships, so there's very little to break.</p></div>
+    <div class="card"><h2>Push to deploy</h2><p>A <code>git push</code> publishes to GitHub Pages in a minute or two. No servers to patch.</p></div>
+    <div class="card"><h2>One-step undo</h2><p>Every release is a commit, so rolling back is <code>git revert</code>, not a panic.</p></div>
+  </div>
+  <p class="sub" style="margin-top:2rem">Building something? See more at <a href="https://dredarkroom.com/">Dre Darkroom</a>.</p>
+</div>
+<script>
+const STAGES = ["commit", "build", "test", "deploy", "live"], $ = (id) => document.getElementById(id);
+const LOG = {
+  commit: ["$ git add -A && git commit -m \"small, honest change\"", "$ git push origin main"],
+  build: ["no build step. nothing to compile.", "static files only."],
+  test: ["running smoke tests...", "page loads: ok", "no console errors: ok", "links resolve: ok"],
+  deploy: ["publishing to the edge...", "cache warmed."],
+  live: ["live. rollback available: git revert HEAD"],
+};
+let ver = 1, busy = false, prev = 1, willBreak = false;
+const pipe = $("pipe");
+STAGES.forEach((s) => { pipe.insertAdjacentHTML("beforeend", `<div class="st" data-s="${s}"><h3>${s}</h3><div class="s">idle</div><i></i></div>`); });
+const el = (s) => pipe.querySelector(`[data-s="${s}"]`);
+const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+const line = (t, c = "") => { const l = $("log"); l.insertAdjacentHTML("beforeend", `\n<span class="${c}">${t}</span>`); l.scrollTop = l.scrollHeight; };
+const reset = () => STAGES.forEach((s) => { el(s).className = "st"; el(s).querySelector(".s").textContent = "idle"; });
+async function run() {
+  if (busy) return; busy = true; $("ship").disabled = $("break").disabled = $("undo").disabled = true; reset(); $("log").textContent = "";
+  for (const s of STAGES) {
+    const e = el(s); e.classList.add("run"); e.style.setProperty("--d", "0.9s"); e.querySelector(".s").textContent = "running";
+    for (const t of LOG[s]) { line(t, t.startsWith("$") ? "l-run" : "l-dim"); await wait(260); }
+    await wait(500);
+    if (s === "test" && willBreak) { e.className = "st bad"; e.querySelector(".s").textContent = "failed"; line("TypeError: cannot read properties of undefined", "l-dim"); line("tests failed. deploy blocked. nothing broke in production.", ""); $("state").textContent = "live · v" + ver + " (still safe)"; willBreak = false; busy = false; $("ship").disabled = $("break").disabled = false; $("undo").disabled = ver === 1; return; }
+    e.className = "st ok"; e.querySelector(".s").textContent = "done";
+  }
+  prev = ver; ver++; $("state").textContent = "live · v" + ver; line("v" + ver + " is live.", "l-ok");
+  busy = false; $("ship").disabled = $("break").disabled = false; $("undo").disabled = false;
+}
+$("ship").addEventListener("click", run);
+$("break").addEventListener("click", () => { willBreak = true; run(); });
+$("undo").addEventListener("click", () => { ver = Math.max(1, ver - 1); reset(); $("log").textContent = ""; line("$ git revert HEAD && git push", "l-run"); line("rolled back. v" + ver + " is live again.", "l-ok"); $("state").textContent = "live · v" + ver; $("undo").disabled = ver === 1; });
+</script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gadzooks! Events</title>
+<meta name="description" content="Gadzooks! Events. Something good is being set up. Back soon.">
+<style>
+:root{--bg:#1a1033;--ink:#fff7ea;--a:#ff5fa2;--b:#ffd23f;--c:#4de1c1;--d:#6a8dff}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:radial-gradient(120% 90% at 50% 0%,#33196b,var(--bg) 60%);color:var(--ink);font:18px/1.5 ui-rounded,"Trebuchet MS",system-ui,sans-serif;overflow:hidden}
+#fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none}
+main{position:fixed;inset:0;display:grid;place-content:center;text-align:center;padding:1.5rem;gap:.6rem}
+h1{margin:0;font-size:clamp(2.6rem,12vw,7rem);line-height:.95;font-weight:900;letter-spacing:-.03em;transform:rotate(-2deg)}
+h1 span:nth-child(1){color:var(--a)}h1 span:nth-child(2){color:var(--b)}h1 span:nth-child(3){color:var(--c)}h1 span:nth-child(4){color:var(--d)}
+.sub{font-size:1.25rem;opacity:.9;margin:.2rem 0 1.2rem}
+button{justify-self:center;font:inherit;font-weight:800;color:#1a1033;background:var(--b);border:0;border-radius:3rem;padding:.9rem 1.8rem;cursor:pointer;min-height:3rem;box-shadow:0 6px 0 #c79a00}
+button:active{transform:translateY(4px);box-shadow:0 2px 0 #c79a00}
+:focus-visible{outline:3px solid #fff;outline-offset:4px}
+.small{font-size:.85rem;opacity:.65;margin-top:1rem}
+</style>
+</head>
+<body>
+<canvas id="fx" aria-hidden="true"></canvas>
+<main>
+  <h1><span>Gad</span><span>zooks</span><span>!</span> <span>Events</span></h1>
+  <p class="sub">Something good is being set up. Back soon.</p>
+  <button id="pop">Pop something</button>
+  <p class="small">(Go on. Tap anywhere.)</p>
+</main>
+<script>
+// confetti on request only: nothing moves until you tap, and it all settles and stops
+const cv = document.getElementById("fx"), x = cv.getContext("2d"), reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const COLS = ["#ff5fa2", "#ffd23f", "#4de1c1", "#6a8dff", "#fff7ea"];
+let P = [], run = false;
+const size = () => { cv.width = innerWidth * devicePixelRatio; cv.height = innerHeight * devicePixelRatio; }; size(); addEventListener("resize", size);
+function burst(px, py) {
+  if (reduce) return;
+  for (let i = 0; i < 90; i++) { const a = Math.random() * Math.PI * 2, s = 3 + Math.random() * 9; P.push({ x: px, y: py, vx: Math.cos(a) * s, vy: Math.sin(a) * s - 5, r: 3 + Math.random() * 5, c: COLS[i % 5], rot: Math.random() * 6, vr: (Math.random() - .5) * .4, life: 1 }); }
+  if (!run) { run = true; requestAnimationFrame(step); }
+}
+function step() {
+  x.clearRect(0, 0, cv.width, cv.height); const k = devicePixelRatio;
+  P = P.filter((p) => p.life > 0 && p.y < innerHeight + 40);
+  for (const p of P) { p.vy += .28; p.vx *= .99; p.x += p.vx; p.y += p.vy; p.rot += p.vr; p.life -= .006; x.save(); x.translate(p.x * k, p.y * k); x.rotate(p.rot); x.globalAlpha = Math.max(0, p.life); x.fillStyle = p.c; x.fillRect(-p.r * k, -p.r * .5 * k, p.r * 2 * k, p.r * k); x.restore(); }
+  if (P.length) requestAnimationFrame(step); else run = false;
+}
+addEventListener("pointerdown", (e) => burst(e.clientX, e.clientY));
+document.getElementById("pop").addEventListener("click", () => burst(innerWidth / 2, innerHeight * .55));
+setTimeout(() => burst(innerWidth / 2, innerHeight * .4), 600);   // one welcome burst, then still
+</script>
+</body>
+</html>

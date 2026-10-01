@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>technote | a techno sketchpad</title>
+<meta name="description" content="Write four bars of techno in your browser. Kick, hat, clap, acid line. No sign-up.">
+<style>
+:root{--bg:#050605;--p:#0d100d;--line:#1d261d;--g:#b6ff3c;--ink:#e8f2e0;--dim:#7c8a74}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 ui-monospace,"Cascadia Mono",Consolas,monospace}
+#sky{position:fixed;inset:0;width:100%;height:100%;opacity:.35}
+.wrap{position:relative;max-width:980px;margin:0 auto;padding:1.2rem 1rem 3rem}
+h1{font:800 clamp(1.8rem,6vw,3rem)/1 ui-monospace,Consolas,monospace;margin:0;letter-spacing:-.04em}
+h1 b{color:var(--g)}
+.sub{color:var(--dim);margin:.3rem 0 1rem}
+.bar{display:flex;gap:.7rem;flex-wrap:wrap;align-items:center;margin-bottom:1rem}
+button{font:inherit;cursor:pointer;color:var(--ink);background:var(--p);border:1px solid var(--line);padding:.5rem .9rem;min-height:2.6rem;border-radius:.3rem}
+button:hover{border-color:var(--g)}
+button.go{background:var(--g);color:#0a1200;border-color:var(--g);font-weight:800}
+:focus-visible{outline:2px solid var(--g);outline-offset:2px}
+.grid{display:grid;grid-template-columns:4.4rem repeat(16,1fr);gap:3px;align-items:center}
+.lab{color:var(--dim);font-size:.8rem;text-transform:uppercase;letter-spacing:.1em}
+.step{aspect-ratio:1/1.1;min-height:1.7rem;border-radius:.2rem;border:1px solid var(--line);background:var(--p);padding:0}
+.step[aria-pressed=true]{background:var(--g);border-color:var(--g)}
+.step.beat{border-color:#3a4a33}
+.step.now{outline:2px solid #fff;outline-offset:-2px}
+.step.n{font-size:.6rem;color:var(--dim)}
+.step.acid[aria-pressed=true]{background:#ff4fd8;border-color:#ff4fd8;color:#190010;font-weight:800;font-size:.7rem}
+label{display:flex;gap:.5rem;align-items:center;color:var(--dim)}
+input[type=range]{accent-color:var(--g)}
+.foot{color:var(--dim);font-size:.85rem;margin-top:1.3rem}
+a{color:var(--g)}
+@media(max-width:640px){.grid{grid-template-columns:3.2rem repeat(16,1fr);gap:2px}.step{min-height:1.5rem}}
+</style>
+</head>
+<body>
+<canvas id="sky" aria-hidden="true"></canvas>
+<div class="wrap">
+  <h1>techno<b>te</b></h1>
+  <p class="sub">One bar, sixteen steps. Click squares. Press play.</p>
+  <div class="bar">
+    <button class="go" id="play">&#9654; Play</button>
+    <button id="rand">Surprise me</button>
+    <button id="clear">Clear</button>
+    <label>BPM <input id="bpm" type="range" min="115" max="150" value="132"><output id="bpmv">132</output></label>
+  </div>
+  <div class="grid" id="grid" role="group" aria-label="Step sequencer"></div>
+  <p class="foot">Pink squares are the acid line: click to cycle the note (a click moves it up the scale, and past the top it turns off). More at <a href="https://dredarkroom.com/">Dre Darkroom</a>.</p>
+</div>
+<script type="module">
+import { room } from "../_shared/room.js";
+const $ = (id) => document.getElementById(id);
+const r = room({ canvas: $("sky"), bpm: 132, key: 9, prog: "frahm", ascent: 0.5, space: 0.25, eco: true });
+const TRACKS = ["kick", "hat", "clap"];
+const P = { kick: Array(16).fill(0), hat: Array(16).fill(0), clap: Array(16).fill(0), acid: Array(16).fill(0) };   // acid: 0 off, 1..5 = scale degree
+const SCALE = [0, 3, 5, 7, 10];                                                                        // A minor pentatonic, from A1
+const setDefault = () => { P.kick = [1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0]; P.hat = [0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0]; P.clap = [0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0]; P.acid = [0,0,3,0,0,2,0,3,0,0,4,0,2,0,0,5]; };
+setDefault();
+
+// the grid
+const cells = {};
+function build() {
+  const g = $("grid"); g.textContent = "";
+  const head = document.createElement("div"); g.appendChild(head);
+  for (let i = 0; i < 16; i++) { const n = document.createElement("div"); n.className = "lab"; n.style.textAlign = "center"; n.textContent = i % 4 === 0 ? String(i / 4 + 1) : "·"; g.appendChild(n); }
+  [...TRACKS, "acid"].forEach((t) => {
+    const l = document.createElement("div"); l.className = "lab"; l.textContent = t; g.appendChild(l); cells[t] = [];
+    for (let i = 0; i < 16; i++) {
+      const b = document.createElement("button"); b.className = "step" + (i % 4 === 0 ? " beat" : "") + (t === "acid" ? " acid" : ""); b.type = "button"; b.setAttribute("aria-label", t + " step " + (i + 1));
+      b.addEventListener("click", () => { P[t][i] = t === "acid" ? (P[t][i] + 1) % 6 : P[t][i] ? 0 : 1; paint(); if (t !== "acid") preview(t); else if (P.acid[i]) preview("acid", P.acid[i]); });
+      cells[t].push(b); g.appendChild(b);
+    }
+  });
+  paint();
+}
+function paint() {
+  for (const t in cells) cells[t].forEach((b, i) => { const v = P[t][i]; b.setAttribute("aria-pressed", String(!!v)); b.textContent = t === "acid" && v ? v : ""; });
+}
+
+// voices: small synths into the engine's own master chain (so they share its reverb, tape and glue)
+let ctx, out, noise;
+function ensure() {
+  if (ctx) return; ctx = r.engine.ctx; out = ctx.createGain(); out.gain.value = 0.8; out.connect(r.engine.g.mix);
+  noise = r.engine.bank.noise();
+}
+const env = (g, t, a, d, peak) => { g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(peak, t + a); g.gain.exponentialRampToValueAtTime(0.0001, t + a + d); };
+function kick(t) { const o = ctx.createOscillator(), g = ctx.createGain(); o.frequency.setValueAtTime(150, t); o.frequency.exponentialRampToValueAtTime(42, t + 0.12); env(g, t, 0.004, 0.42, 1.1); o.connect(g); g.connect(out); o.start(t); o.stop(t + 0.5); r.tunnel.boom(); }
+function hat(t) { const s = ctx.createBufferSource(); s.buffer = noise; const f = ctx.createBiquadFilter(); f.type = "highpass"; f.frequency.value = 7500; const g = ctx.createGain(); env(g, t, 0.001, 0.05, 0.35); s.connect(f); f.connect(g); g.connect(out); s.start(t, Math.random()); s.stop(t + 0.08); }
+function clap(t) { const s = ctx.createBufferSource(); s.buffer = noise; const f = ctx.createBiquadFilter(); f.type = "bandpass"; f.frequency.value = 1500; f.Q.value = 1.2; const g = ctx.createGain(); for (let k = 0; k < 3; k++) { g.gain.setValueAtTime(0.0001, t + k * 0.012); g.gain.exponentialRampToValueAtTime(0.7, t + k * 0.012 + 0.002); g.gain.exponentialRampToValueAtTime(0.0001, t + k * 0.012 + 0.04); } g.gain.exponentialRampToValueAtTime(0.0001, t + 0.2); s.connect(f); f.connect(g); g.connect(out); s.start(t, Math.random()); s.stop(t + 0.25); }
+function acid(t, deg, dur) {
+  const f0 = 55 * Math.pow(2, SCALE[(deg - 1) % 5] / 12) * (deg > 3 ? 2 : 1), o = ctx.createOscillator(), lp = ctx.createBiquadFilter(), g = ctx.createGain();
+  o.type = "sawtooth"; o.frequency.value = f0; lp.type = "lowpass"; lp.Q.value = 9;
+  lp.frequency.setValueAtTime(2600, t); lp.frequency.exponentialRampToValueAtTime(260, t + dur * 0.9);
+  env(g, t, 0.005, dur * 0.95, 0.3); o.connect(lp); lp.connect(g); g.connect(out); o.start(t); o.stop(t + dur + 0.05);
+}
+let live = false;
+function preview(t, d) { if (!live) return; const n = ctx.currentTime + 0.02; ({ kick, hat, clap })[t]?.(n); if (t === "acid") acid(n, d, 0.2); }
+
+// the clock: 25 ms timer, 120 ms lookahead
+let step = 0, next = 0, timer = null;
+function tick() {
+  const spb = 60 / +$("bpm").value / 4;
+  while (next < ctx.currentTime + 0.12) {
+    const i = step % 16;
+    if (P.kick[i]) kick(next); if (P.hat[i]) hat(next); if (P.clap[i]) clap(next); if (P.acid[i]) acid(next, P.acid[i], spb * 0.9);
+    const when = (next - ctx.currentTime) * 1000, ii = i; setTimeout(() => { document.querySelectorAll(".now").forEach((e) => e.classList.remove("now")); for (const t in cells) cells[t][ii].classList.add("now"); }, Math.max(0, when));
+    next += spb; step++;
+  }
+}
+$("play").addEventListener("click", async () => {
+  if (timer) { clearInterval(timer); timer = null; $("play").innerHTML = "&#9654; Play"; live = false; document.querySelectorAll(".now").forEach((e) => e.classList.remove("now")); return; }
+  if (!r.engine.ready) await r.engine.start(); else if (r.engine.ctx.state !== "running") await r.engine.resume();
+  live = true; ensure(); step = 0; next = ctx.currentTime + 0.06; timer = setInterval(tick, 25); $("play").innerHTML = "&#10074;&#10074; Stop";
+});
+$("bpm").addEventListener("input", (e) => { $("bpmv").textContent = e.target.value; });
+$("clear").addEventListener("click", () => { for (const t in P) P[t].fill(0); paint(); });
+$("rand").addEventListener("click", () => {
+  setDefault(); const R = (p) => Math.random() < p ? 1 : 0;
+  P.hat = Array.from({ length: 16 }, (_, i) => (i % 2 === 0 ? R(0.7) : R(0.25)));
+  P.clap = Array.from({ length: 16 }, (_, i) => (i === 4 || i === 12 ? 1 : R(0.06)));
+  P.acid = Array.from({ length: 16 }, () => (Math.random() < 0.55 ? 1 + Math.floor(Math.random() * 5) : 0)); paint();
+});
+build();
+</script>
+</body>
+</html>
