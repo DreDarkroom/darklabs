@@ -1,4 +1,4 @@
-// Penrose sound generation (shared lineage with GlowGrain's felt piano). Pure functions: sample rate in, Float32Array out.
+// PenrosePulse sound generation (shared lineage with GlowGrain's felt piano). Pure functions: sample rate in, Float32Array out.
 // No Web Audio and no DOM, so the same code runs in the page, in an
 // OfflineAudioContext export and under Node for testing.
 //

@@ -1,4 +1,4 @@
-// Penrose: interface and wiring.
+// PenrosePulse: interface and wiring.
 
 import { Engine } from "./engine.js";
 import { Conductor, SECTIONS, ARC_BARS } from "./conductor.js";
@@ -13,9 +13,9 @@ const PAD_ROLE = ["root", "3rd", "5th", "7th", "octave", "3rd ↑", "5th ↑", "
 
 const DEFAULTS = { v: 2, stair: 60, cowbell: 0, eco: "auto", inst: "piano", key: 2, prog: "frahm", arc: "medium", bpm: 104, felt: 100, space: 30, echo: 15, tape: 40, guide: true, pads: false, lowC: 48, lift: "1", metro: "0", seenHelp: false };
 let S = { ...DEFAULTS };
-try { Object.assign(S, JSON.parse(localStorage.getItem("penrose.v1") || "{}")); } catch (e) { /* private mode */ }
+try { Object.assign(S, JSON.parse(localStorage.getItem("penrosepulse.v1") || localStorage.getItem("penrose.v1") || "{}")); } catch (e) { /* private mode */ }
 if (S.v !== 2) Object.assign(S, { v: 2, cowbell: 0, eco: "auto" });
-const save = () => { try { localStorage.setItem("penrose.v1", JSON.stringify(S)); } catch (e) { /* ignore */ } };
+const save = () => { try { localStorage.setItem("penrosepulse.v1", JSON.stringify(S)); } catch (e) { /* ignore */ } };
 
 const engine = new Engine();
 const conductor = new Conductor(engine);

@@ -1,6 +1,6 @@
 // The conductor: transport clock and THE ARC.
 //
-// Penrose is one long form that folds back on itself, like the staircase it is named for:
+// PenrosePulse is one long form that folds back on itself, like the staircase it is named for:
 //
 //   Intro    a felt piano alone, slow and close (Frahm)
 //   Climb    a pad breathes in, a marimba figure circles, bass, a shuffling shaker, the filter opens

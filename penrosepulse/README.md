@@ -1,6 +1,6 @@
-# Penrose
+# PenrosePulse
 
-An infinite staircase of sound. Part of Dre Darklabs. Live at **dredarkroom.github.io/darklabs/penrose/**.
+An infinite staircase of sound. Part of Dre Darklabs. (Formerly just "Penrose", after the impossible Penrose staircase: every step goes up, yet it loops back to the start. The *Pulse* is the build.) Live at **dredarkroom.github.io/darklabs/penrosepulse/**.
 
 Static files, no samples, no frameworks, no build step, no AudioWorklet. Needs `https://` or `http://localhost`.
 

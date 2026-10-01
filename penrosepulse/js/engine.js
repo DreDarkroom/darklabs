@@ -1,4 +1,4 @@
-// Penrose audio engine: sample bank, signal graph, voices. Native Web Audio nodes only
+// PenrosePulse audio engine: sample bank, signal graph, voices. Native Web Audio nodes only
 // (no AudioWorklet): nothing to fail to load, nothing allocating on the audio thread.
 //
 //   piano ─┐

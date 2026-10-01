@@ -1,4 +1,4 @@
-// Penrose visuals: an infinite zoom that never arrives.
+// PenrosePulse visuals: an infinite zoom that never arrives.
 //
 // Fifteen thin rings sit at radii R * 0.78^d, where d = (ring index + phase). Advancing `phase`
 // from 0 to 1 slides every ring into the place of the next one in (ring i at phase 1 IS ring i+1 at
