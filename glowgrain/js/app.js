@@ -17,7 +17,7 @@ const BLOOM_HINTS = [[0, "just the felt piano"], [0.1, "a pad drifts in"], [0.28
   [0.55, "hand percussion, lightly"], [0.66, "a voice joins"], [0.82, "the muse plays along"], [0.96, "in full bloom"]];
 const PERC_MIDI = { shaker: 70, tick: 76, drum: 63 };
 
-const DEFAULTS = { inst: "piano", key: 0, mode: "major", prog: "sunrise", bpm: 76, felt: 100, space: 30, tape: 45, echo: 10, harmony: "off", lock: false, lowC: 48, loopBars: 4, metro: "0" };
+const DEFAULTS = { inst: "piano", key: 0, mode: "major", prog: "sunrise", bpm: 76, felt: 100, space: 30, tape: 45, echo: 10, harmony: "off", lock: false, lowC: 48, loopBars: 4, metro: "0", snap: "1", guide: true, pads: false, seenHelp: false };
 let S = { ...DEFAULTS };
 try { Object.assign(S, JSON.parse(localStorage.getItem("glowgrain.v1") || "{}")); } catch (e) { /* private mode */ }
 const save = () => { try { localStorage.setItem("glowgrain.v1", JSON.stringify(S)); } catch (e) { /* ignore */ } };
@@ -59,14 +59,14 @@ function applyFx() {
 
 // ───────────────────────────────────────────────────────── playing
 
-function press(id, m, vel) {
+function press(id, m, vel, raw = false) {
   if (!engine.ready || held.has(id)) return;
-  m = snap(m);
-  const notes = harmonyNotes(m);
+  if (!raw) m = snap(m);
+  const notes = raw ? [m] : harmonyNotes(m);
   const inst = S.inst;
-  const voices = notes.map((n, i) => engine.voices.start(inst, n, i === notes.indexOf(m) ? vel : vel * 0.78));
-  held.set(id, { voices, notes, m });
-  const t = engine.now;
+  const t = S.snap === "1" ? conductor.snapTime(engine.now) : engine.now;          // beat snap: pull the hit onto the grid
+  const voices = notes.map((n) => engine.voices.start(inst, n, n === m ? vel : vel * 0.78, t));
+  held.set(id, { voices, notes, m, t });
   notes.forEach((n) => conductor.recordOn(id + ":" + n, inst, n, vel, t));
   lightKey(m, "down", true); burst(m, vel, 3);
 }
@@ -74,9 +74,9 @@ function press(id, m, vel) {
 function release(id) {
   const h = held.get(id); if (!h) return;
   held.delete(id);
-  for (const v of h.voices) engine.voices.noteOff(v);
-  const t = engine.now;
-  h.notes.forEach((n) => conductor.recordOff(id + ":" + n, t));
+  const tr = Math.max(engine.now, h.t + 0.07);                                       // a snapped note must have started before it ends
+  for (const v of h.voices) engine.voices.noteOff(v, tr);
+  h.notes.forEach((n) => conductor.recordOff(id + ":" + n, tr));
   if (![...held.values()].some((o) => o.m === h.m)) lightKey(h.m, "down", false);
 }
 
@@ -129,6 +129,85 @@ function paintScale() {
     el.classList.toggle("root", ((m % 12) + 12) % 12 === S.key % 12 && !isBlack(m));
     el.classList.toggle("off", S.lock && !inMode(m, root(), S.mode));
   }
+  paintTones();
+}
+
+/** Glow the keys that belong to the chord sounding now (or the tonic chord when stopped). */
+function paintTones() {
+  const keysEl = $("keys");
+  keysEl.classList.toggle("guide", S.guide);
+  const pcs = new Set(conductor.chordNow().tones.map((n) => ((n % 12) + 12) % 12));
+  for (const [m, el] of keyEls) el.classList.toggle("tone", S.guide && pcs.has(((m % 12) + 12) % 12));
+}
+
+// ───────────────────────────────────────────────────────── pads (a drum-style way in)
+
+const PAD_ORDER = [4, 5, 6, 7, 0, 1, 2, 3];                       // top row = the high notes, bottom row = root-3rd-5th-7th
+const PAD_ROLE = ["root", "3rd", "5th", "7th", "octave", "3rd \u2191", "5th \u2191", "9th"];
+
+function padNotes() {
+  const c = conductor.chordNow();
+  // root 3rd 5th 7th, then the same four an octave up (the last as the 9th), kept out of the piercing top octave
+  const raw = c.arp.map((n, i) => (i === 7 ? c.tones[4] : n));
+  const shift = Math.max(...raw) > 81 ? -12 : 0;                   // move the whole chord together so the pads stay in ascending order
+  return raw.map((m) => m + shift + (S.inst === "bass" ? -24 : 0));
+}
+
+function buildPads() {
+  const host = $("pads"); host.innerHTML = "";
+  PAD_ORDER.forEach((idx) => {
+    const d = document.createElement("div"); d.className = "pad" + (idx === 0 ? " root" : ""); d.dataset.idx = idx;
+    d.innerHTML = `<span class="n"></span><span class="r">${PAD_ROLE[idx]}</span>`;
+    host.appendChild(d);
+  });
+  const down = new Map();
+  host.addEventListener("pointerdown", (e) => {
+    const pad = e.target.closest(".pad"); if (!pad) return;
+    e.preventDefault(); engine.resume();
+    try { host.setPointerCapture(e.pointerId); } catch (err) { /* synthetic */ }
+    const r = pad.getBoundingClientRect(), vel = clamp(0.3 + 0.7 * ((e.clientY - r.top) / r.height), 0.25, 1);
+    const id = "pad" + e.pointerId, note = padNotes()[+pad.dataset.idx];
+    down.set(e.pointerId, { id, pad }); pad.classList.add("down");
+    press(id, note, vel, true);
+  });
+  const up = (e) => { const d = down.get(e.pointerId); if (!d) return; down.delete(e.pointerId); d.pad.classList.remove("down"); release(d.id); };
+  host.addEventListener("pointerup", up); host.addEventListener("pointercancel", up); host.addEventListener("lostpointercapture", up);
+  host.addEventListener("contextmenu", (e) => e.preventDefault());
+  updatePads();
+}
+
+function updatePads() {
+  const notes = padNotes();
+  $("pads").querySelectorAll(".pad").forEach((d) => { d.querySelector(".n").textContent = noteName(notes[+d.dataset.idx]); });
+}
+
+function setPadsMode(on) {
+  S.pads = on; save(); releaseAll();
+  $("pads").hidden = !on; $("keys").hidden = on;
+  $("padsBtn").setAttribute("aria-pressed", String(on));
+  document.querySelectorAll("#octDown, #octUp, #rangeLabel, #lock").forEach((el) => { el.hidden = on; });
+  if (on) updatePads();
+  updateCoach();
+}
+
+function setGuide(on) {
+  S.guide = on; S.lock = on; S.snap = on ? "1" : "0"; conductor.quantize = on; save();
+  $("guideBtn").setAttribute("aria-pressed", String(on));
+  $("lock").setAttribute("aria-pressed", String(S.lock)); $("snap").value = S.snap;
+  paintScale(); updateCoach();
+}
+
+function updateCoach() {
+  const L = conductor.loop.state;
+  let t = "";
+  if (L === "countin") t = "<b>Count-in.</b> Get ready: your loop starts on beat <b>1</b> of the next bar.";
+  else if (L === "recording") t = "<b>Recording.</b> Play your part now. It loops by itself when the bars are up.";
+  else if (L === "odwait" || L === "overdub") t = "<b>Overdub.</b> Layer another part on top. Press Loop again to stop layering.";
+  else if (S.guide && conductor.running) t = "Play the <b>glowing</b> notes: they change with each chord. Tap along with the beat dots; <b>1</b> is the big one.";
+  else if (S.guide) t = S.pads
+    ? "Tap the pads. Every pad is a note from the chord, so <b>nothing can sound wrong</b>. Slide <b>Bloom</b> up to bring the band in."
+    : "Play the <b>glowing</b> keys. They fit together, so <b>nothing can sound wrong</b>. Or press <b>Pads</b> for a drum-style layout. Slide <b>Bloom</b> up for the band.";
+  $("coach").innerHTML = t;
 }
 
 function lightKey(m, cls, on) { const el = keyEls.get(m); if (el) el.classList.toggle(cls, on); }
@@ -209,7 +288,7 @@ function buildUI() {
   INSTS.forEach((it) => {
     const b = document.createElement("button"); b.type = "button"; b.textContent = it.name; b.dataset.inst = it.id;
     b.setAttribute("role", "radio"); b.setAttribute("aria-checked", String(S.inst === it.id));
-    b.addEventListener("click", () => { S.inst = it.id; save(); releaseAll(); inst.querySelectorAll("button").forEach((x) => x.setAttribute("aria-checked", String(x === b))); });
+    b.addEventListener("click", () => { S.inst = it.id; save(); releaseAll(); inst.querySelectorAll("button").forEach((x) => x.setAttribute("aria-checked", String(x === b))); updatePads(); });
     inst.appendChild(b);
   });
 
@@ -227,9 +306,10 @@ function buildUI() {
   });
 
   const sel = (id, items, val) => { const s = $(id); items.forEach(([v, t]) => { const o = document.createElement("option"); o.value = v; o.textContent = t; s.appendChild(o); }); s.value = val; return s; };
-  sel("key", NOTE_NAMES.map((n, i) => [i, n]), S.key).onchange = (e) => { S.key = +e.target.value; conductor.key = S.key; save(); paintScale(); };
-  sel("mode", Object.entries(MODES).map(([k, v]) => [k, v.name]), S.mode).onchange = (e) => { S.mode = e.target.value; conductor.mode = S.mode; save(); paintScale(); };
-  sel("prog", Object.entries(PROGRESSIONS).map(([k, v]) => [k, v.name]), S.prog).onchange = (e) => { S.prog = e.target.value; conductor.prog = S.prog; save(); };
+  const harmonyChanged = () => { conductor.cur = null; save(); paintScale(); updatePads(); };
+  sel("key", NOTE_NAMES.map((n, i) => [i, n]), S.key).onchange = (e) => { S.key = +e.target.value; conductor.key = S.key; harmonyChanged(); };
+  sel("mode", Object.entries(MODES).map(([k, v]) => [k, v.name]), S.mode).onchange = (e) => { S.mode = e.target.value; conductor.mode = S.mode; harmonyChanged(); };
+  sel("prog", Object.entries(PROGRESSIONS).map(([k, v]) => [k, v.name]), S.prog).onchange = (e) => { S.prog = e.target.value; conductor.prog = S.prog; harmonyChanged(); };
   $("metro").value = S.metro; $("metro").onchange = (e) => { S.metro = e.target.value; conductor.metro = S.metro === "1"; save(); };
   conductor.key = S.key; conductor.mode = S.mode; conductor.prog = S.prog; conductor.metro = S.metro === "1"; conductor.bpm = S.bpm;
 
@@ -245,6 +325,14 @@ function buildUI() {
   lock.onclick = () => { S.lock = !S.lock; lock.setAttribute("aria-pressed", String(S.lock)); save(); paintScale(); };
   $("octDown").onclick = () => shiftOct(-1); $("octUp").onclick = () => shiftOct(1);
   $("sustain").onclick = (e) => { const on = e.currentTarget.getAttribute("aria-pressed") !== "true"; e.currentTarget.dataset.latched = on ? "1" : ""; if (!on) delete e.currentTarget.dataset.latched; setPedal(on); };
+
+  $("padsBtn").onclick = () => setPadsMode(!S.pads);
+  $("guideBtn").onclick = () => setGuide(!S.guide);
+  $("snap").value = S.snap; conductor.quantize = S.snap === "1";
+  $("snap").onchange = (e) => { S.snap = e.target.value; conductor.quantize = S.snap === "1"; save(); };
+  if (!S.seenHelp && S.guide) S.lock = true;                  // first visit: Guide means the key is locked too
+  $("howto").open = !S.seenHelp; S.seenHelp = true; save();
+  $("lock").setAttribute("aria-pressed", String(S.lock));
 
   const bloom = $("bloom");
   const onBloom = () => {
@@ -267,9 +355,21 @@ function buildUI() {
 
   conductor.on("bar", (b) => {
     const delay = Math.max(0, (b.t - engine.now) * 1000);
-    setTimeout(() => { $("chordLine").textContent = `${b.label}  ·  ${b.roman}`; }, delay);
+    setTimeout(() => {
+      $("chordLine").textContent = `${b.label}  ·  ${b.roman}`;
+      paintTones(); updatePads(); updateCoach();
+      if (S.guide && engine.voices.pedal) engine.voices.liftPedal();       // the pedal clears itself at each chord change
+    }, delay);
   });
-  conductor.on("transport", (on) => { if (!on) $("chordLine").innerHTML = "&nbsp;"; });
+  conductor.on("beat", (b) => {
+    const dots = [...$("beats").children], delay = Math.max(0, (b.t - engine.now) * 1000);
+    setTimeout(() => { dots.forEach((d, i) => d.classList.toggle("on", i === b.beat)); setTimeout(() => dots[b.beat].classList.remove("on"), 140); }, delay);
+  });
+  conductor.on("transport", (on) => {
+    if (!on) { $("chordLine").innerHTML = "&nbsp;"; [...$("beats").children].forEach((d) => d.classList.remove("on")); }
+    paintTones(); updatePads(); updateCoach();
+  });
+  conductor.on("loop", updateCoach);
   conductor.on("note", (n) => {
     if (n.inst === "perc") return;
     const delay = Math.max(0, (n.t - engine.now) * 1000), m = n.midi;
@@ -385,7 +485,10 @@ async function begin() {
   engine.setParam("bpm", S.bpm); applyFx();
   $("app").hidden = false; $("start").classList.add("gone");
   setTimeout(() => $("start").remove(), 800);
-  buildKeys();
+  buildKeys(); buildPads();
+  $("guideBtn").setAttribute("aria-pressed", String(S.guide));
+  $("lock").setAttribute("aria-pressed", String(S.lock));
+  setPadsMode(S.pads);
   // a soft welcome: Cmaj9, spread, so the first sound you hear is the felt piano
   const t = engine.now + 0.12;
   [[48, 0], [64, 0.2], [67, 0.4], [74, 0.62], [71, 0.9]].forEach(([n, d], i) => engine.voices.playTimed("piano", n + S.key, 0.34 + i * 0.03, t + d, 1.4));
@@ -402,4 +505,4 @@ addEventListener("DOMContentLoaded", () => {
   if ("serviceWorker" in navigator && location.protocol.startsWith("http")) navigator.serviceWorker.register("sw.js").catch(() => {});
 });
 
-window.__gg = { engine, conductor, get S() { return S; }, press, release, setPedal, buildKeys, renderTake, encodeWav, noteName };
+window.__gg = { engine, conductor, setGuide, setPadsMode, padNotes, paintTones, get S() { return S; }, press, release, setPedal, buildKeys, renderTake, encodeWav, noteName };

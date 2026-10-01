@@ -46,7 +46,7 @@ export class Conductor {
     this.e = engine;
     this.bpm = 76; this.key = 0; this.mode = "major"; this.prog = "sunrise"; this.bloom = 0;
     this.pin = {};                       // layer id -> true/false to override the Bloom automation
-    this.metro = false;
+    this.metro = false; this.quantize = true;
     this.running = false; this.step = 0; this.nextT = 0;
     this.rnd = mulberry32((Date.now() & 0xffff) + 11);
     this.cur = null; this.prevPad = null;
@@ -93,7 +93,7 @@ export class Conductor {
 
   stop() {
     if (!this.running) return;
-    this.running = false;
+    this.running = false; this.cur = null;
     if (this.timer) this.timer.stop();
     this.emit("transport", false);
   }
@@ -109,6 +109,25 @@ export class Conductor {
     this.loopPlay(this.loop.cursor, horizon);       // events slightly in the past play at once rather than being dropped
     this.loop.cursor = horizon;
     if (!this.need()) this.stop();
+  }
+
+  /**
+   * Live beat snap: if you are a hair EARLY for a 16th-note grid line (under ~45 ms), the note is
+   * held back onto it. Anything later is left alone: delaying every hit to the next grid line would
+   * add up to a whole step of latency, which no drummer could play with.
+   */
+  snapTime(t) {
+    if (!this.running) return t;
+    const ss = this.stepSec, k = Math.ceil((t - this.nextT) / ss), T = this.nextT + k * ss;
+    return T - t <= Math.min(0.045, ss * 0.3) ? T : t;
+  }
+
+  /** The chord the ensemble is playing now, or the tonic chord of the progression when stopped. */
+  chordNow() {
+    if (this.cur) return this.cur;
+    const deg = PROGRESSIONS[this.prog].degrees[0], root = 60 + this.key;
+    const tones = chordOn(root, this.mode, deg);
+    return { deg, tones, arp: [tones[0], tones[1], tones[2], tones[3], tones[0] + 12, tones[1] + 12, tones[2] + 12, tones[4] + 12], third: tones[1] - tones[0] };
   }
 
   nextBarTime(minAhead = 0) {
@@ -164,6 +183,7 @@ export class Conductor {
   scheduleStep(step, t) {
     const s = step % 16, bar = Math.floor(step / 16);
     if (s === 0) this.newBar(bar, t);
+    if (s % 4 === 0) this.emit("beat", { beat: s / 4, t });
     const c = this.cur; if (!c) return;
     const V = this.e.voices, ss = this.stepSec, a = {};
     for (const l of LAYERS) a[l.id] = this.amt(l.id);
@@ -191,9 +211,9 @@ export class Conductor {
     // marimba: a Euclidean ostinato over the chord tones
     if (a.marimba > 0.02 && this.marPat[s]) {
       let n = c.arp[this.arpIdx++ % c.arp.length] + 12;
-      while (n > 96) n -= 12;
-      const acc = s % 4 === 0 ? 0.12 : 0;
-      if (mn(0.55 + 0.45 * a.marimba)) this.note("marimba", n, 0.4 + acc + this.rnd() * 0.14, this.humanise(t, 9), 0.5);
+      while (n > 86) n -= 12;
+      const acc = s % 4 === 0 ? 0.1 : 0;
+      if (mn(0.55 + 0.45 * a.marimba)) this.note("marimba", n, 0.3 + acc + this.rnd() * 0.12, this.humanise(t, 9), 0.5);
     }
 
     // hand percussion, deliberately sparse
@@ -210,7 +230,7 @@ export class Conductor {
       const pos = s / 2, idx = this.museShape[pos % 8];
       const n = c.arp[clamp(idx, 0, c.arp.length - 1)];
       const dens = lerp(0.55, 1, smooth(0.8, 1, this.bloom));
-      if (pos % 4 === 0 || mn(dens)) this.note("piano", clamp(n, 48, 90), (pos % 4 === 0 ? 0.5 : 0.36) + this.rnd() * 0.12, this.humanise(t, 10), 0.6);
+      if (pos % 4 === 0 || mn(dens)) this.note("piano", clamp(n, 48, 79), (pos % 4 === 0 ? 0.42 : 0.3) + this.rnd() * 0.1, this.humanise(t, 10), 0.6);
     }
   }
 
@@ -290,7 +310,9 @@ export class Conductor {
     if (!this.recording) return;
     const L = this.loop, w0 = this.windowStart();
     if (t < w0 || t >= w0 + L.len) return;
-    const ev = { pos: (t - w0) / L.stepSec, inst, midi, vel, dur: null, absT: t };
+    let pos = (t - w0) / L.stepSec;
+    if (this.quantize) pos = clamp(Math.round(pos), 0, L.bars * 16 - 1);      // loops are tightened to the 16th grid
+    const ev = { pos, inst, midi, vel, dur: null, absT: t };
     L.rec.push(ev); L.open.set(id, ev);
   }
 

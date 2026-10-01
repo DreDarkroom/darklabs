@@ -31,7 +31,7 @@
     </div>
     <input id="bloom" type="range" min="0" max="100" value="0" aria-describedby="bloomHint">
     <ul class="layers" id="layers" aria-label="Ensemble layers"></ul>
-    <p class="chord" id="chordLine" aria-live="off">&nbsp;</p>
+    <div class="beatrow"><div class="beats" id="beats" aria-hidden="true"><i></i><i></i><i></i><i></i></div><p class="chord" id="chordLine" aria-live="off">&nbsp;</p></div>
   </section>
 
   <section class="inst" id="inst" role="radiogroup" aria-label="Instrument you are playing"></section>
@@ -52,9 +52,13 @@
           <option value="open">Open voicing</option>
         </select>
       </label>
-      <button class="btn sm toggle" id="lock" type="button" aria-pressed="false" title="Snap to the key and mode">Key lock</button>
+      <button class="btn sm toggle" id="lock" type="button" aria-pressed="false" title="Only play notes that are in the key">Key lock</button>
+      <button class="btn sm toggle" id="padsBtn" type="button" aria-pressed="false" title="Switch between piano keys and drum-style pads">Pads</button>
+      <button class="btn sm toggle" id="guideBtn" type="button" aria-pressed="false" title="Glowing keys, key lock and beat snap, all at once">Guide</button>
     </div>
     <div id="keys" class="keys" role="group" aria-label="Piano keys"></div>
+    <div id="pads" class="pads" role="group" aria-label="Pads" hidden></div>
+    <p class="coach" id="coach" aria-live="polite"></p>
   </section>
 
   <section class="looper" aria-label="Loop and record">
@@ -72,6 +76,18 @@
     <span class="hint" id="takeInfo" aria-live="polite"></span>
   </section>
 
+  <details class="howto" id="howto">
+    <summary>How to play (start here)</summary>
+    <ol>
+      <li><b>Think pads, not piano.</b> Press <b>Pads</b>: eight pads, and <em>every one sounds good</em> because they only play notes from the current chord. Tap rhythms on them exactly as you would on a kit. Low pads are your kick-and-floor-tom (root, third, fifth); high pads are the cymbals-and-toms of the melody.</li>
+      <li><b>Turn on Guide.</b> On the keys, the <span class="glowdot"></span> glowing ones are the notes that fit the chord right now. Other notes are dimmed, and anything outside the key is nudged to the nearest note that is in it, so you can't hit a wrong one. The four dots by <i>Bloom</i> are the beat: <b>1</b> is the big one.</li>
+      <li><b>Slide Bloom up slowly.</b> A band builds underneath you: pad, bass, marimba, percussion, voice. You play over the top. Stay on the glowing notes and it will always sound intentional.</li>
+      <li><b>Play the rhythm you already know.</b> Steady quarter notes on one note is a great first part. <b>Beat snap</b> (in Tone &amp; harmony; Guide turns it on) nudges a hit that's a hair early onto the beat, and <b>tightens everything you record in a loop onto the grid</b>, like a quantised pad. Your groove, made tidy.</li>
+      <li><b>Loop it.</b> Press <b>Loop</b>, wait out the count-in, play 4 bars, and it repeats. Press again to layer a second part on top, like overdubbing a groove, then a melody.</li>
+      <li><b>Sustain</b> (or hold <kbd>Space</kbd>) keeps piano and marimba ringing; it lets go by itself at each new chord so it never gets muddy.</li>
+    </ol>
+  </details>
+
   <details class="tone" id="tone">
     <summary>Tone &amp; harmony</summary>
     <div class="grid">
@@ -83,6 +99,7 @@
       <label class="sel"><span>Key</span><select id="key"></select></label>
       <label class="sel"><span>Mode</span><select id="mode"></select></label>
       <label class="sel"><span>Progression</span><select id="prog"></select></label>
+      <label class="sel"><span>Beat snap</span><select id="snap"><option value="0">Off</option><option value="1">On (tidy loops, nudge early hits)</option></select></label>
       <label class="sel"><span>Click</span><select id="metro"><option value="0">Count-in only</option><option value="1">Always</option></select></label>
     </div>
   </details>

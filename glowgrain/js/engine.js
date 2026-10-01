@@ -75,7 +75,7 @@ export class SampleBank {
 const SENDS = { piano: [0.5, 0.2], marimba: [0.5, 0.3], pad: [0.55, 0.16], choir: [0.7, 0.3], bass: [0.08, 0], perc: [0.35, 0.12] };
 // Balanced by offline renders of one chord per instrument: the piano leads (peak ~0.5),
 // marimba sits just behind it, pad / voice / bass lie underneath (peaks ~0.25-0.3).
-const BUS_GAIN = { piano: 1.9, marimba: 1.7, pad: 0.45, choir: 0.5, bass: 0.5, perc: 1.6 };
+const BUS_GAIN = { piano: 1.9, marimba: 2.0, pad: 0.45, choir: 0.5, bass: 0.5, perc: 1.6 };
 
 export function buildGraph(ctx, o = {}) {
   const G = (v = 1) => { const n = ctx.createGain(); n.gain.value = v; return n; };
@@ -126,7 +126,7 @@ export function buildGraph(ctx, o = {}) {
 
   // tape: saturation + tone + a whisper of wow/flutter, blended with the dry mix
   const shaper = ctx.createWaveShaper(); shaper.curve = tapeCurve(0.55);
-  const tLo = F("lowshelf", 140, 0.7, 1.4), tHi = F("highshelf", 7200, 0.7, -2.6);
+  const tLo = F("lowshelf", 150, 0.7, 1.4), tHi = F("highshelf", 5200, 0.7, -4.5);
   g.flutter = ctx.createDelay(0.05); g.flutter.delayTime.value = 0.008;
   g.tapeDry = G(1 - tape * 0.6); g.tapeWet = G(tape);
   g.post = G(1);
@@ -160,7 +160,7 @@ export function buildGraph(ctx, o = {}) {
   g.choirIn = G(1);
   const vibDelay = ctx.createDelay(0.02); vibDelay.delayTime.value = 0.004;
   g.choirIn.connect(vibDelay);
-  g.formants = [[7, 1.0], [9, 0.55], [11, 0.32]].map(([q, gain], i) => {
+  g.formants = [[7, 1.0], [9, 0.42], [11, 0.2]].map(([q, gain], i) => {
     const bp = F("bandpass", VOWELS.ah[i], q), out = G(gain * 4.2);
     vibDelay.connect(bp); bp.connect(out); out.connect(g.buses.choir);
     return bp;
@@ -205,6 +205,8 @@ export class Voices {
     t = Math.max(t, this.ctx.currentTime - 0.001);
     vel = clamp(vel, 0.02, 1);
     const arr = this.list[inst];
+    // striking a key again re-damps its own string: don't let identical pitches stack under the pedal
+    for (const o of arr) if (o.midi === midi && o.pending && !o.released) this._release(o, t);
     if (arr.length >= CAPS[inst]) this._steal(arr, t);
     const v = inst === "piano" || inst === "marimba" ? this._sampled(inst, midi, vel, t)
       : inst === "pad" ? this._pad(midi, vel, t)
@@ -219,13 +221,25 @@ export class Voices {
   /** Release now (or at t), honouring the sustain pedal. */
   noteOff(v, t = this.ctx.currentTime) {
     if (!v || v.released) return;
-    if (this.pedal) { v.pending = true; return; }
+    // the pedal lifts the dampers of piano and marimba only: pads, voices and bass must still end
+    // when you let go, or drones stack up until the voice cap starts cutting notes
+    if (this.pedal && (v.inst === "piano" || v.inst === "marimba")) {
+      v.pending = true;
+      const pend = this.list[v.inst].filter((o) => o.pending && !o.released);
+      if (pend.length > 10) this._release(pend.sort((a, b) => a.t0 - b.t0)[0], t);   // never more than ~10 ringing
+      return;
+    }
     this._release(v, t);
   }
 
   setPedal(on, t = this.ctx.currentTime) {
     this.pedal = on;
-    if (!on) for (const k in this.list) for (const v of this.list[k]) if (v.pending && !v.released) this._release(v, t);
+    if (!on) this.liftPedal(t);
+  }
+
+  /** Dampers down for an instant: everything the pedal was holding stops ringing. */
+  liftPedal(t = this.ctx.currentTime) {
+    for (const k in this.list) for (const v of this.list[k]) if (v.pending && !v.released) this._release(v, t);
   }
 
   /** A note with a known length (generative layers, loop playback, export). Not affected by the pedal. */
@@ -285,9 +299,10 @@ export class Voices {
     const src = ctx.createBufferSource(); src.buffer = buf; src.playbackRate.value = rate;
     const lp = ctx.createBiquadFilter(); lp.type = "lowpass"; lp.Q.value = 0.35;
     // velocity -> brightness: a soft touch is muffled felt (~1 kHz), a firm one opens up (~8 kHz)
-    const base = inst === "piano" ? 300 + 5200 * Math.pow(vel, 1.4) : 1600 + 9000 * vel;
+    const base = inst === "piano" ? 260 + 3900 * Math.pow(vel, 1.4) : 700 + 4300 * Math.pow(vel, 1.2);   // soft mallet / soft felt
     lp.frequency.value = clamp(base * this.tone.felt * (1 + clamp((midi - 60) / 60, -0.4, 0.8)), 300, 18000);
-    const amp = inst === "piano" ? 0.2 + 0.8 * Math.pow(vel, 1.3) : 0.3 + 0.7 * vel;
+    let amp = inst === "piano" ? 0.2 + 0.8 * Math.pow(vel, 1.3) : 0.3 + 0.7 * vel;
+    if (inst === "marimba") amp *= 1 + clamp((midi - 72) / 24, 0, 1) * 0.9;     // the top bars are naturally quieter
     const gn = ctx.createGain(); gn.gain.value = amp;
     // the keyboard sweeps across the stereo field like a piano seen from the player's seat
     const pn = ctx.createStereoPanner(); pn.pan.value = clamp((midi - 66) / 34, -1, 1) * 0.72;
@@ -317,7 +332,7 @@ export class Voices {
     const ctx = this.ctx, f = mtof(midi), v = {};
     const o1 = ctx.createOscillator(); o1.type = "triangle"; o1.frequency.value = f;
     const o2 = ctx.createOscillator(); o2.type = "sawtooth"; o2.frequency.value = f; o2.detune.value = 5 + this.rnd() * 5;
-    const m2 = ctx.createGain(); m2.gain.value = 0.3;
+    const m2 = ctx.createGain(); m2.gain.value = 0.2;
     const env = this._env(t, 0.1 + 0.09 * vel, 0.34);
     o1.connect(env); o2.connect(m2); m2.connect(env); env.connect(this.g.padIn);
     o1.start(t); o2.start(t);
@@ -343,7 +358,7 @@ export class Voices {
     const ctx = this.ctx, f = mtof(midi), v = {};
     const o1 = ctx.createOscillator(); o1.type = "sawtooth"; o1.frequency.value = f; o1.detune.value = -5;
     const o2 = ctx.createOscillator(); o2.type = "sawtooth"; o2.frequency.value = f; o2.detune.value = 6;
-    const lp = ctx.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 3000; lp.Q.value = 0.4;
+    const lp = ctx.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 2400; lp.Q.value = 0.4;
     const mix = ctx.createGain(); mix.gain.value = 0.5;
     const nz = ctx.createBufferSource(); nz.buffer = this.bank.noise(ctx); nz.loop = true;
     const nbp = ctx.createBiquadFilter(); nbp.type = "bandpass"; nbp.frequency.value = 1900; nbp.Q.value = 0.7;

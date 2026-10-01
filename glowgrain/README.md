@@ -27,7 +27,18 @@ pinned on or muted. You play over the top with touch, mouse, computer keys or a 
   tone, a whisper of wow/flutter), a soft clip and a glue compressor.
 - Everything is native Web Audio nodes, so the same graph renders offline for export.
 
-## Playing
+## Playing (and getting started)
+
+- **Guide** (on by default): the keys that fit the current chord glow, everything else dims, the key is
+  locked, and a coach line says what to do next. Four beat dots pulse with the groove (1 = the big one).
+- **Pads**: eight big pads (root / 3rd / 5th / 7th, then the same up an octave) that only ever play
+  notes of the current chord, so nothing can sound wrong. Made for tapping rhythms like on a kit.
+- **Beat snap**: nudges a hit that's a hair early (< 45 ms) onto the 16th grid, and tightens everything
+  recorded in a loop onto the grid. Never delays a hit by a whole step.
+- **Sustain** affects piano and marimba only, caps held notes, replaces a re-struck pitch, and lets go
+  by itself at each new chord when Guide is on.
+- A "How to play" panel opens on first visit.
+
 
 - Touch/mouse: slide across keys for glissando; press lower on a key to play louder.
 - Computer keys: `A`..`'` (white and black rows), `Z`/`X` octave, `Space` sustain.
