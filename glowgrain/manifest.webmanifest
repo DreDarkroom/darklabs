@@ -1,0 +1,12 @@
+{
+  "name": "GlowGrain — Dre Darklabs",
+  "short_name": "GlowGrain",
+  "description": "A felt piano that blooms into marimba, warm pads, bass and voices. Works offline.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#160b08",
+  "theme_color": "#160b08",
+  "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
+}

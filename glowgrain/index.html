@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>GlowGrain — Dre Darklabs</title>
+<meta name="description" content="A felt piano that blooms into marimba, warm pads, bass, hand percussion and voices. A sunlit browser instrument with loops and tape warmth. Part of Dre Darklabs.">
+<meta name="theme-color" content="#160b08">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<canvas id="sky" aria-hidden="true"></canvas>
+
+<main id="app" hidden>
+  <header class="top">
+    <a class="labs-link" href="../">&larr; Darklabs</a>
+    <h1 class="logo"><svg class="sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="5"/><g stroke-linecap="round"><path d="M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3M4.6 4.6l2.1 2.1M17.3 17.3l2.1 2.1M4.6 19.4l2.1-2.1M17.3 6.7l2.1-2.1"/></g></svg>GlowGrain</h1>
+    <p class="tag">felt piano &middot; marimba &middot; warm light</p>
+    <div class="chips">
+      <button class="chip" id="midiBtn" type="button" title="Connect a MIDI keyboard">MIDI</button>
+      <span class="chip ghost" id="stateChip" hidden>tap to resume</span>
+    </div>
+  </header>
+
+  <section class="bloom" aria-label="Bloom">
+    <div class="bloom-head">
+      <label for="bloom">Bloom</label>
+      <span class="hint" id="bloomHint">just the felt piano</span>
+    </div>
+    <input id="bloom" type="range" min="0" max="100" value="0" aria-describedby="bloomHint">
+    <ul class="layers" id="layers" aria-label="Ensemble layers"></ul>
+    <p class="chord" id="chordLine" aria-live="off">&nbsp;</p>
+  </section>
+
+  <section class="inst" id="inst" role="radiogroup" aria-label="Instrument you are playing"></section>
+
+  <section class="board" aria-label="Keyboard">
+    <div class="tools">
+      <div class="grp" role="group" aria-label="Octave">
+        <button class="btn sm" id="octDown" type="button" aria-label="Octave down">&#9664;</button>
+        <span class="range-label" id="rangeLabel">C3&ndash;B5</span>
+        <button class="btn sm" id="octUp" type="button" aria-label="Octave up">&#9654;</button>
+      </div>
+      <button class="btn sm toggle" id="sustain" type="button" aria-pressed="false" title="Sustain pedal (hold Space)">Sustain</button>
+      <label class="sel"><span>Harmony</span>
+        <select id="harmony" aria-label="Harmony">
+          <option value="off">Single notes</option>
+          <option value="oct">Octave</option>
+          <option value="triad">Triad in key</option>
+          <option value="open">Open voicing</option>
+        </select>
+      </label>
+      <button class="btn sm toggle" id="lock" type="button" aria-pressed="false" title="Snap to the key and mode">Key lock</button>
+    </div>
+    <div id="keys" class="keys" role="group" aria-label="Piano keys"></div>
+  </section>
+
+  <section class="looper" aria-label="Loop and record">
+    <button class="btn big loopbtn" id="loopBtn" type="button">&#9679; Loop</button>
+    <div class="loopprog" aria-hidden="true"><i id="loopFill"></i></div>
+    <button class="btn" id="undoBtn" type="button" disabled>Undo</button>
+    <button class="btn" id="clearBtn" type="button" disabled>Clear</button>
+    <label class="sel"><span>Bars</span>
+      <select id="loopBars" aria-label="Loop length in bars"><option>2</option><option selected>4</option><option>8</option></select>
+    </label>
+    <span class="sep"></span>
+    <button class="btn rec" id="recBtn" type="button">&#9679; Record take</button>
+    <button class="btn" id="saveWav" type="button" disabled>Save WAV</button>
+    <button class="btn" id="saveMid" type="button" disabled>Save MIDI</button>
+    <span class="hint" id="takeInfo" aria-live="polite"></span>
+  </section>
+
+  <details class="tone" id="tone">
+    <summary>Tone &amp; harmony</summary>
+    <div class="grid">
+      <label>Felt<input id="felt" type="range" min="35" max="170" value="100"></label>
+      <label>Space<input id="space" type="range" min="0" max="100" value="30"></label>
+      <label>Tape<input id="tape" type="range" min="0" max="100" value="45"></label>
+      <label>Echo<input id="echo" type="range" min="0" max="100" value="10"></label>
+      <label>Tempo <output id="bpmOut">76</output><input id="bpm" type="range" min="50" max="120" value="76"></label>
+      <label class="sel"><span>Key</span><select id="key"></select></label>
+      <label class="sel"><span>Mode</span><select id="mode"></select></label>
+      <label class="sel"><span>Progression</span><select id="prog"></select></label>
+      <label class="sel"><span>Click</span><select id="metro"><option value="0">Count-in only</option><option value="1">Always</option></select></label>
+    </div>
+  </details>
+
+  <footer class="foot">
+    <span id="midiLine" class="hint"></span>
+    <p class="hint">Play with touch, mouse, your keyboard (<kbd>A</kbd>&ndash;<kbd>'</kbd>, <kbd>Z</kbd>/<kbd>X</kbd> octave, <kbd>Space</kbd> sustain) or a MIDI keyboard. Slide across keys for glissando; press lower on a key to play louder.</p>
+  </footer>
+</main>
+
+<div id="start" class="start">
+  <button id="startBtn" class="startbtn" type="button" aria-label="Start GlowGrain">
+    <svg class="bigsun" viewBox="0 0 120 120" aria-hidden="true"><defs><radialGradient id="g1"><stop offset="0" stop-color="#fff2cf"/><stop offset=".45" stop-color="#ffb454"/><stop offset="1" stop-color="#ff8a5c" stop-opacity="0"/></radialGradient></defs><circle cx="60" cy="60" r="58" fill="url(#g1)"/></svg>
+    <span class="title">GlowGrain</span>
+    <span class="sub">tap to begin</span>
+  </button>
+  <p class="hint" id="startErr" role="alert"></p>
+  <p class="hint small">A felt piano that blooms. Headphones or good speakers recommended.</p>
+</div>
+<noscript><p style="padding:2rem;color:#fbeedd">GlowGrain needs JavaScript and Web Audio.</p></noscript>
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
