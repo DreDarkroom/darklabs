@@ -1,6 +1,6 @@
 // BlueHeronBass service worker: installable and playable offline. Network-first
 // (updates land straight away), cache as fallback.
-const CACHE = "blueheronbass-v1";
+const CACHE = "blueheronbass-v2";
 const CORE = ["./", "index.html", "style.css", "manifest.webmanifest", "icon.svg", "js/app.js", "js/bass-worklet.js", "js/heron.js", "js/files.js", "samples/manifest.json"];
 self.addEventListener("install", (e) => { e.waitUntil(caches.open(CACHE).then((c) => c.addAll(CORE)).then(() => self.skipWaiting()).catch(() => {})); });
 self.addEventListener("activate", (e) => {

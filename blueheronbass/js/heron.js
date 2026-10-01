@@ -12,6 +12,7 @@ export const CALLS = [
   { id: "rattle", name: "Rattle", dur: 0.90, f0: [150, 120], harsh: 0.35, fl: 26, flD: 0.55, f1: [420, 520],  f2: [1200, 1300], f3: [2400, 2400], drive: 2.5 },
   { id: "shriek", name: "Shriek", dur: 0.42, f0: [700, 380], harsh: 0.40, fl: 14, flD: 0.08, f1: [900, 1300], f2: [2200, 1900], f3: [3600, 3300], drive: 2.4 },
   { id: "clack",  name: "Clack",  clack: true },
+  { id: "cowbell", name: "Cowbell", cowbell: true },
 ];
 
 export function synthCall(c, sr = HERON_SR) {
@@ -19,7 +20,19 @@ export function synthCall(c, sr = HERON_SR) {
   const rnd = () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 2147483648 - 1; };
   let out;
 
-  if (c.clack) {
+  if (c.cowbell) {
+    // 808-style cowbell: two detuned squares through a bandpass, punchy two-stage decay
+    out = new Float32Array(Math.floor(0.55 * sr));
+    let low = 0, band = 0, p1 = 0, p2 = 0;
+    const f1 = 2 * Math.sin(Math.PI * 1000 / sr), q = 0.45;
+    for (let i = 0; i < out.length; i++) {
+      const t = i / sr;
+      p1 += 562 / sr; p2 += 845 / sr;
+      const x = ((p1 % 1) < 0.5 ? 1 : -1) + ((p2 % 1) < 0.5 ? 1 : -1);
+      low += f1 * band; const high = x - low - q * band; band += f1 * high;
+      out[i] = band * (0.65 * Math.exp(-t / 0.012) + 0.35 * Math.exp(-t / 0.13));
+    }
+  } else if (c.clack) {
     // bill clacks: three short resonant noise bursts
     out = new Float32Array(Math.floor(0.3 * sr));
     let low = 0, band = 0;

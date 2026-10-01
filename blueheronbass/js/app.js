@@ -50,6 +50,7 @@ const KNOBS = [
   { id: "env",    label: "Env filter", min: 0, max: 1, step: 0.01, def: 0, fmt: (v) => Math.round(v * 100) + "%" },
   { id: "envq",   label: "Env squelch", min: 1, max: 9, step: 0.1, def: 3.5, fmt: (v) => "Q " + v.toFixed(1) },
   { id: "growl",  label: "Heron growl", min: 0, max: 1, step: 0.01, def: 0.25, fmt: (v) => Math.round(v * 100) + "%" },
+  { id: "cowbell", label: "More cowbell", min: 0, max: 1, step: 0.01, def: 0, fmt: (v) => Math.round(v * 100) + "%" },
   { id: "bass",   label: "Bass",      min: -12, max: 12, step: 0.5, def: 0, fmt: (v) => (v > 0 ? "+" : "") + v + " dB" },
   { id: "mid",    label: "Mid",       min: -12, max: 12, step: 0.5, def: 0, fmt: (v) => (v > 0 ? "+" : "") + v + " dB" },
   { id: "treble", label: "Treble",    min: -12, max: 12, step: 0.5, def: 0, fmt: (v) => (v > 0 ? "+" : "") + v + " dB" },
@@ -163,6 +164,7 @@ const applyKnob = {
   env: (v) => bass.port.postMessage({ t: "fx", fx: { envAmt: v } }),
   envq: (v) => bass.port.postMessage({ t: "fx", fx: { envQ: v } }),
   growl: () => {},
+  cowbell: () => {},
   bass: (v) => { nodes.lo.gain.value = v; },
   mid: (v) => { nodes.mid.gain.value = v; },
   treble: (v) => { nodes.hi.gain.value = v; },
@@ -224,6 +226,7 @@ function noteOn(s, fret, vel, art, yy = 0.5) {
   strVoice[s] = id;
   bass.port.postMessage({ t: "on", id, f, h, vel, style });
   growlHit(mtof(midi), vel, style);
+  cowbellHit(vel);
   if (midiOut) midiOut.send([0x90, midi & 127, Math.max(1, Math.round(vel * 127))]);
   const t = ctx.currentTime;
   if (takeT0 != null) noteLog.push({ t: t - takeT0, d: 0.25, midi, vel, open: true });
@@ -267,6 +270,14 @@ function growlHit(f, vel, style) {
   env.gain.exponentialRampToValueAtTime(0.001, t + dur);
   src.connect(env).connect(nodes.heronBus);
   src.start(t); src.stop(t + dur + 0.05);
+}
+
+/** "More cowbell": a quiet 808 cowbell on every note, scaled by the knob. */
+function cowbellHit(vel) {
+  const g = S.cowbell; if (g < 0.02 || !heronBufs[5]) return;
+  const src = new AudioBufferSourceNode(ctx, { buffer: heronBufs[5] });
+  const gn = new GainNode(ctx, { gain: g * (0.4 + 0.6 * vel) * 0.8 });
+  src.connect(gn).connect(nodes.heronBus); src.start();
 }
 
 function playPad(i) {

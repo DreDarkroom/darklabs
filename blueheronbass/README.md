@@ -14,7 +14,7 @@ Static files, no samples, no frameworks, no build step. Needs `https://` or `htt
   dead notes, natural harmonics (the burst is tiled so only every h-th partial rings) and
   **Heron** — the string is excited by a slice of a croak instead of noise. An envelope-following
   resonant filter (the "squelch") sits after the strings.
-- `js/heron.js` — five synthesised heron calls (croak, squawk, rattle, shriek, bill clack): a jittery
+- `js/heron.js` — five synthesised heron calls (croak, squawk, rattle, shriek, bill clack) plus a cowbell: a jittery
   pulsed source with noise, three sweeping formant filters and soft clipping. They play as pads, grow
   out of every note (Heron growl), and pad 1 is the string exciter.
 - `js/app.js` — amp chain (compressor → blended fuzz where the lows stay clean → 3-band EQ → cab
@@ -29,11 +29,11 @@ format as ChungusCello) · Web MIDI in/out (CC1 = growl, CC74 = env filter) · o
 
 ## Real heron recordings
 
-Put audio files in `samples/` and list them in `samples/manifest.json` (up to five, in pad order:
-croak, squawk, rattle, shriek, clack):
+Put audio files in `samples/` and list them in `samples/manifest.json` (up to six, in pad order:
+croak, squawk, rattle, shriek, clack, cowbell):
 
 ```json
-{ "slots": ["croak.wav", "squawk.wav", "rattle.wav", "shriek.wav", "clack.wav"] }
+{ "slots": ["croak.wav", "squawk.wav", "rattle.wav", "shriek.wav", "clack.wav", "cowbell.wav"] }
 ```
 
 Slot 1 also becomes the string exciter and the growl layer. You can also load a file into any pad from
