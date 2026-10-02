@@ -104,6 +104,25 @@ footer a{color:var(--red-soft);text-decoration:none}
 .knobs label input{width:7.5rem}.knobs output{min-width:3.2rem;color:#fff;letter-spacing:.08em}
 .mixer .btn{padding:.5rem 1rem;font-size:.8rem}
 .mixer.idle .stems,.mixer.idle .knobs{opacity:.45;pointer-events:none}
+/* how it was made + timeline */
+.how{align-items:stretch;min-height:0;padding-top:4rem}
+.how h2{font-size:clamp(1.6rem,4.4vw,2.6rem)}
+.how .lede{max-width:62ch}
+.tech{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:.8rem;margin:1.4rem 0 2.4rem}
+.tech details{border:1px solid #4a0c12;border-radius:3px;background:rgba(20,6,8,.8);padding:.2rem 1rem}
+.tech summary{cursor:pointer;padding:.7rem 0;font-weight:700;letter-spacing:.04em;color:#fff;list-style:none}
+.tech summary::-webkit-details-marker{display:none}
+.tech summary::after{content:"+";float:right;color:#e0434f}
+.tech details[open] summary::after{content:"\2212"}
+.tech summary:focus-visible{outline:2px solid #fff;outline-offset:3px}
+.tech p{font-size:.9rem;color:#d9c8c8;padding-bottom:.8rem}
+.tech p a{color:#ff8a96}
+.tl{list-style:none;position:relative;margin:1.2rem 0 0;padding-left:1.4rem;border-left:2px solid #5a0c12}
+.tl li{position:relative;padding:0 0 1.15rem .4rem}
+.tl li::before{content:"";position:absolute;left:-1.78rem;top:.45rem;width:.7rem;height:.7rem;border-radius:50%;background:#690000;border:2px solid #e0434f}
+.tl time{display:block;font-size:.68rem;letter-spacing:.24em;text-transform:uppercase;color:var(--red-soft)}
+.tl b{color:#fff}.tl span{color:#c9b8b8;font-size:.92rem}.tl a{color:#fff;text-decoration:underline;text-decoration-color:#690000;text-underline-offset:3px}
+.tl-note{font-size:.82rem;color:var(--dim);max-width:62ch;margin-top:.4rem}
 @media (max-width:700px){.deck{width:96px}.deck .tag{display:none}}
 @media (max-width:700px){.bar nav{display:none}.card.hero{flex-direction:column;align-items:flex-start}.meter{display:none}}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
@@ -179,6 +198,33 @@ footer a{color:var(--red-soft);text-decoration:none}
     </div>
   </div>
   <div class="row" style="justify-content:center"><a class="btn" href="/darklabs/">Enter Darklabs</a><a class="btn ghost" href="https://dredarkroom.github.io/DevelopDrop/" rel="noopener">Play DevelopDrop</a><a class="btn ghost" href="#top">&uarr; Back to the start (it loops)</a></div>
+</section>
+<section class="screen how" id="how">
+  <p class="eyebrow">05 &middot; Under the hood</p>
+  <h2>How this was made</h2>
+  <p class="lede">Everything here is plain web pages: no app store, no build step, no frameworks, and no recordings in the music you hear on this page, which is synthesised live in your browser. Tap anything below if you want to know how a piece works.</p>
+  <div class="tech">
+    <details><summary>The music: Web Audio</summary><p>The tune is not a file. Your browser's <a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API" rel="noopener">Web Audio API</a> is a patch bay of oscillators, filters and delays. A small program writes each bar just before it plays (a &ldquo;look-ahead scheduler&rdquo; on a worker timer so it keeps time even if the page is busy), and your scroll position decides how much of the arrangement is switched on.</p></details>
+    <details><summary>The bells and the bass: FM and subtractive synthesis</summary><p>The bells are <a href="https://en.wikipedia.org/wiki/Frequency_modulation_synthesis" rel="noopener">FM synthesis</a>: one sine wave wobbling the pitch of another. The bass is a filtered sawtooth, the &ldquo;neuro&rdquo; bass is two of them talking through moving filters, and the drums are built from noise, short sine sweeps and distortion. The patterns use odd cycle lengths (3, 5 and 7 steps) so they keep drifting against the bar.</p></details>
+    <details><summary>The picture: canvas and WebGL</summary><p>The tunnel behind the page is drawn on a canvas that listens to the music's loudness. The little 3D icons in Darklabs use <a href="https://threejs.org" rel="noopener">three.js</a>, a library that wraps <a href="https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API" rel="noopener">WebGL</a>, and the code for it is bundled in the repository rather than loaded from somewhere else.</p></details>
+    <details><summary>The VR bit: WebXR</summary><p><a href="https://developer.mozilla.org/en-US/docs/Web/API/WebXR_Device_API" rel="noopener">WebXR</a> lets a web page run in a headset's browser. The IDEA game uses it for a tabletop view you can lean over. It is a prototype: it has not been tested on every headset.</p></details>
+    <details><summary>The hosting: GitHub Pages</summary><p>The site is a folder of files on <a href="https://pages.github.com" rel="noopener">GitHub Pages</a>. Every page is hand-readable: view source and it is all there. The project's history is in the commit log, which is where the dates below come from.</p></details>
+    <details><summary>The feedback button: ntfy</summary><p>The &ldquo;tell me what you think&rdquo; form on Darklabs FM sends a message through <a href="https://ntfy.sh" rel="noopener">ntfy</a>, a free notification service, straight to a phone. No account, no email address is collected.</p></details>
+    <details><summary>The sound tests: Python</summary><p>Some of the sound design was measured rather than guessed: small Python scripts (numpy, scipy) slice recordings, score them and draw spectrograms, so a sound can be compared with another by numbers as well as by ear.</p></details>
+    <details><summary>Who wrote the code</summary><p>The ideas, the taste and every decision are Dre's. Much of the code was written with AI coding assistants (Claude Code in particular, with others used for review and research), directed and tested by Dre, and then checked in a browser. Nothing here claims otherwise.</p></details>
+  </div>
+  <h2>Timeline</h2>
+  <p class="tl-note">Dates come from the project's commit history: the day each thing first landed on the live site. Ideas come before code, so the real start of each is earlier than the date shown.</p>
+  <ol class="tl" id="timeline">
+    <li><time datetime="2026-09-19">19 Sep 2026</time><b>The first commit</b> <span>&middot; <a href="/darklabs/meowsynth/">MeowSynth</a>, a tiny synth built from human &lsquo;meow&rsquo; impressions, is the first page in the repository.</span></li>
+    <li><time datetime="2026-09-21">21 Sep 2026</time><b>Three toys</b> <span>&middot; <a href="/darklabs/monkeybeat/">MonkeyBeat</a> (a drum machine built from monkey impressions), <a href="/darklabs/throattapper/">ThroatTapper</a> (percussion from throat taps) and MeowSynth and MonkeyBeat side by side.</span></li>
+    <li><time datetime="2026-09-23">23 Sep 2026</time><b>CircuitStomp</b> <span>&middot; <a href="/darklabs/circuitstomp/">a drum &amp; bass machine</a> built from synthesised robot voices.</span></li>
+    <li><time datetime="2026-09-24">24 Sep 2026</time><b>The darkroom opens</b> <span>&middot; <a href="/darklabs/obscura/">Obscura</a> (a camera obscura with hidden frames), <a href="/darklabs/safelight/">Safelight // Slow Future</a>, a deck of transmissions from 2133.</span></li>
+    <li><time datetime="2026-09-28">28 Sep 2026</time><b>The big instruments</b> <span>&middot; <a href="/darklabs/chunguscello/">ChungusCello</a> (a physically modelled cello) and <a href="/darklabs/drumdj/">DarkDeck</a> (drums, a two-deck DJ mixer, a sampler and an SFX maker).</span></li>
+    <li><time datetime="2026-09-30">30 Sep 2026</time><b>BlueHeronBass and DevelopDrop</b> <span>&middot; <a href="/darklabs/blueheronbass/">a five-string bass with a heron in its voice</a>; the <a href="https://dredarkroom.github.io/DevelopDrop/" rel="noopener">DevelopDrop</a> repository is created.</span></li>
+    <li><time datetime="2026-10-01">1 Oct 2026</time><b>Radio, pulses and the new front door</b> <span>&middot; <a href="/darklabs/fm/">Darklabs FM</a>, <a href="/darklabs/penrosepulse/">PenrosePulse</a>, <a href="/darklabs/glowgrain/">GlowGrain</a> (a felt piano that blooms into marimba) and this homepage.</span></li>
+    <li><time datetime="2026-10-02">2 Oct 2026</time><b>IDEA</b> <span>&middot; <a href="/darklabs/idea/">a quick parody game of drunk bots in a flat-pack maze</a>, with a tabletop VR mode. And the homepage learns to play itself with a tonearm.</span></li>
+  </ol>
 </section>
 </main>
 <footer><p>&copy; Dre Darkroom &middot; <a href="https://github.com/DreDarkroom">GitHub</a> &middot; <a href="https://twitch.tv/dredarkroom" rel="noopener">Twitch</a> &middot; <a href="https://soundcloud.com/dredarkroom" rel="noopener">SoundCloud</a> &middot; <a href="https://mixcloud.com/darkroom" rel="noopener">Mixcloud</a></p></footer>

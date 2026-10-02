@@ -434,6 +434,18 @@ export function scheduleAscentBar(a, bar, t0, V, trk = ASCENT_TRK, opts = {}) {
   const L = { amb: 1 - 0.55 * sm(0.45, 0.9), pulse: sm(0.1, 0.3), half: sm(0.2, 0.38), brk: sm(0.4, 0.58), dnb: sm(0.62, 0.78), drop: sm(0.88, 0.96), hat: sm(0.3, 0.5), arp: sm(0.05, 0.2), grain: 1 - sm(0.5, 0.85) };
   if (opts.full) { L.grain = 0.8; L.amb = 1; }                                                       // the end of the page: every part at once
   const stage = a >= 0.62 ? "dnb" : a >= 0.4 ? "brk" : "half";
+  // the groove (the opening "pop"): a swung, rolling 16-step bass line over a soft kick, backbeat and offbeat hats, in the spirit of a looping instrument. It carries the intro, then hands over to the drums.
+  const G = opts.full ? 0 : (0.55 + 0.45 * sm(0, 0.15)) * (1 - sm(0.52, 0.72));
+  if (G > 0.02) {
+    const GP = [0, -1, 0, 2, -1, 4, -1, 3, 0, -1, 5, -1, 4, 2, -1, 7], sw = 0.22 * 2 * sd;
+    for (let k = 0; k < 8; k++) {
+      const i = (bar % 2) * 8 + k, t = T(k * 2) + (k % 2 ? sw : 0), deg = GP[i];
+      if (deg >= 0) { const f = mtof(scaleNote(root + 12, deg)); V.acid(t, f, sd * 2 * 0.85, { sq: true, q: 6, top: 1500 + 1800 * a, bot: 240, v: 0.17 * G }); if (deg === 0) V.sub(t, f, sd * 2 * 0.9, { v: 0.2 * G }); }
+      if (k % 2) V.hat(t, { v: 0.1 * G, open: k === 3 });
+      if (k === 2 || k === 6) V.clap(t, { v: 0.22 * G, rev: 0.4 });
+    }
+    if (stage === "half" && L.half < 0.6) for (const kk of [0, 8]) V.kick(T(kk), { f0: 118, f1: 46, len: 0.28, v: 0.55 * G * (1 - L.half), duckAmt: 0.3, duckRel: 0.2 });
+  }
   // harmony: a slow cloud of pad, one chord per two bars
   if (bar % 2 === 0) V.pad(T(0), chord.map(mtof), trk.barDur * 2.04, { v: 0.05 * L.amb + 0.012, cut: 500 + 1500 * a, att: 1.0, rel: 1.0, rev: 0.55, dly: 0.1 });
   // the granular cloud (it thins out as the drums arrive)
