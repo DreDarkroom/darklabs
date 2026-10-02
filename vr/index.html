@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta name="darkreader-lock">
+<title>VR Lab | learn to make VR in the browser</title>
+<meta name="description" content="A short, honest course in making VR apps for the web with three.js and WebXR, with a live example you can step into. Plus where to put your support: Hero Drop and the Hyper Dash community.">
+<meta name="theme-color" content="#040203">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2214%22 fill=%22%23060607%22/><text x=%2250%22 y=%2268%22 font-size=%2250%22 font-family=%22monospace%22 font-weight=%22700%22 text-anchor=%22middle%22 fill=%22%23d1122b%22>VR</text></svg>">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--brand:#690000;--red:#d1122b;--red-soft:#e8434f;--ink:#040203;--text:#eadede;--dim:#b09c9c;--line:#4a0c12}
+html{background:var(--ink)}
+body{color:var(--text);font:16px/1.65 system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:radial-gradient(ellipse at 50% -10%,#2a0509,var(--ink) 60%) fixed}
+::selection{background:#690000;color:#fff1de}
+a{color:#ff8a96}
+a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible{outline:2px solid #fff;outline-offset:3px}
+.bar{display:flex;align-items:center;gap:1.2rem;padding:.9rem 1.2rem;max-width:62rem;margin:0 auto}
+.bar a{color:#fff;text-decoration:none;font-weight:800;letter-spacing:.3em;font-size:.8rem}
+.bar nav{margin-left:auto;display:flex;gap:1.1rem;flex-wrap:wrap}
+.bar nav a{font-weight:500;letter-spacing:.2em;text-transform:uppercase;font-size:.68rem;color:var(--dim)}
+.bar nav a:hover{color:#fff}
+main{max-width:62rem;margin:0 auto;padding:0 1.2rem 4rem}
+section{padding:3rem 0 1rem}
+.eyebrow{font-size:.74rem;letter-spacing:.36em;text-transform:uppercase;color:var(--red-soft);margin-bottom:.7rem}
+h1{font-size:clamp(2.4rem,9vw,5.4rem);line-height:.95;letter-spacing:-.02em;color:#fff;text-shadow:0 0 40px rgba(209,18,43,.6)}
+h2{font-size:clamp(1.5rem,4.4vw,2.3rem);line-height:1.1;letter-spacing:.06em;text-transform:uppercase;color:#fff;margin-bottom:.8rem}
+h3{font-size:1rem;letter-spacing:.06em;color:#fff}
+p{margin:.6rem 0;max-width:68ch}
+.lede{font-size:1.15rem;color:#d9c8c8;margin:1.2rem 0 1.6rem}
+.btn{display:inline-block;font:inherit;font-weight:700;color:#fff;text-decoration:none;background:linear-gradient(180deg,#8a0a0a,#690000);padding:.75rem 1.4rem;border-radius:3px;border:1px solid #b3262e;box-shadow:0 0 18px rgba(105,0,0,.7);cursor:pointer}
+.btn:hover{filter:brightness(1.25)}
+.btn.ghost{background:rgba(105,0,0,.22);border-color:#8a1a22;box-shadow:none}
+.btn[disabled],.btn[aria-disabled=true]{opacity:.55;cursor:not-allowed;filter:none}
+.row{display:flex;flex-wrap:wrap;gap:.8rem;align-items:center;margin:1rem 0}
+.demo{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:1.2rem;align-items:start;margin-top:1.2rem}
+@media (max-width:820px){.demo{grid-template-columns:1fr}}
+.stage{position:relative;border:1px solid var(--line);border-radius:4px;overflow:hidden;background:#07030a;aspect-ratio:16/10}
+.stage canvas{display:block;width:100%;height:100%}
+.stage .msg{position:absolute;left:.7rem;bottom:.6rem;right:.7rem;font-size:.78rem;color:var(--dim);pointer-events:none}
+pre{background:#0b0406;border:1px solid var(--line);border-radius:4px;padding:1rem;overflow:auto;font:13px/1.5 ui-monospace,Consolas,monospace;color:#f3cfd4;max-height:23rem}
+.lessons{display:grid;gap:.7rem;margin-top:1.2rem}
+.lessons details{border:1px solid var(--line);border-radius:4px;background:rgba(20,6,8,.8);padding:.1rem 1.1rem}
+.lessons summary{cursor:pointer;padding:.85rem 0;font-weight:700;color:#fff;list-style:none}
+.lessons summary::-webkit-details-marker{display:none}
+.lessons summary b{color:var(--red-soft);margin-right:.6rem;letter-spacing:.1em}
+.lessons summary::after{content:"+";float:right;color:#e0434f}
+.lessons details[open] summary::after{content:"\2212"}
+.lessons details>div{padding:0 0 1rem}
+.lessons .ex{margin-top:.6rem;padding:.6rem .8rem;border-left:3px solid #690000;background:rgba(105,0,0,.18);font-size:.92rem}
+.lessons code,p code{background:#1a0a0d;padding:.05rem .35rem;border-radius:3px;font:.88em ui-monospace,Consolas,monospace;color:#ffd8dc}
+.panel{border:1px solid #5a0c12;border-radius:4px;padding:1.3rem;background:linear-gradient(180deg,rgba(40,6,9,.7),rgba(14,5,7,.85));margin-top:1.2rem}
+.panel.big{border-color:#a01a22;box-shadow:0 0 50px rgba(105,0,0,.4)}
+.quote{font-size:clamp(1.25rem,3.2vw,1.7rem);line-height:1.3;color:#fff;max-width:30ch;margin:.4rem 0 1rem;text-shadow:0 0 24px rgba(209,18,43,.5)}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));gap:1rem;margin-top:1rem}
+.cols .panel{margin-top:0}
+.count{font-size:2.4rem;font-weight:800;color:#fff;letter-spacing:.02em}
+.count small{font-size:.8rem;letter-spacing:.2em;text-transform:uppercase;color:var(--dim);font-weight:500;margin-left:.4rem}
+.fine{font-size:.82rem;color:var(--dim)}
+.yt{position:relative;aspect-ratio:16/9;border:1px solid var(--line);border-radius:4px;overflow:hidden;background:#07030a}
+.yt iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.yt button.play{position:absolute;inset:0;width:100%;height:100%;display:grid;place-items:center;align-content:center;gap:.5rem;background:radial-gradient(ellipse at 50% 40%,#3a0a10,#0a0406);color:#fff;border:0;cursor:pointer;font:inherit;text-align:center;padding:1rem}
+.yt button.play b{display:grid;place-items:center;width:4.2rem;height:3rem;border-radius:.8rem;background:#690000;border:1px solid #b3262e;font-size:1.4rem}
+.tabs{display:flex;gap:.5rem;flex-wrap:wrap;margin:.8rem 0}
+.tabs button{font:inherit;font-size:.82rem;color:var(--text);background:rgba(105,0,0,.25);border:1px solid #5a0c12;border-radius:999px;padding:.35rem .9rem;cursor:pointer}
+.tabs button[aria-pressed=true]{background:var(--brand);border-color:#e0434f;color:#fff}
+#feed{list-style:none;margin:.8rem 0 0;display:grid;gap:.5rem}
+#feed li{border-left:3px solid #690000;background:rgba(105,0,0,.15);padding:.45rem .8rem;font-size:.92rem}
+#feed time{display:block;font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;color:var(--dim)}
+#banner{position:sticky;top:0;z-index:30;display:none;background:#690000;color:#fff;padding:.7rem 1.2rem;text-align:center;border-bottom:1px solid #e0434f}
+#banner.on{display:block}
+footer{max-width:62rem;margin:0 auto;padding:1rem 1.2rem 3rem;color:#7a6a6a;font-size:.85rem}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div id="banner" role="status" aria-live="polite"></div>
+<header class="bar"><a href="/darklabs/">DARKLABS</a><nav aria-label="On this page"><a href="#hello">Try it</a><a href="#course">Course</a><a href="#support">Support</a><a href="#hyperdash">Hyper Dash</a><a href="#alerts">Alerts</a></nav></header>
+<main>
+
+<section id="top">
+  <p class="eyebrow">Darklabs &middot; VR Lab</p>
+  <h1>Make VR<br>in a browser tab.</h1>
+  <p class="lede">No engine to install, no store to get through: a VR app can be a web page. This is a short, honest course in how, with a tiny example you can step into right now. It is what I have learned building the little VR bits in Darklabs, so it is not a complete manual, and I say where I have not tested something.</p>
+  <div class="row"><a class="btn" href="#hello">Try the example</a><a class="btn ghost" href="#support">Where to put your support</a></div>
+</section>
+
+<section id="hello">
+  <p class="eyebrow">01 &middot; Try it</p>
+  <h2>Hello, VR</h2>
+  <p>This is a real WebXR scene, about forty lines. On a headset browser (Meta Quest Browser, for example) the button puts you inside it. On a normal computer you see it as a 3D page; move the pointer to look around. Trigger on a controller changes a cube's colour.</p>
+  <div class="demo">
+    <div class="stage"><canvas id="gl" aria-label="A ring of cubes, rotating slowly"></canvas><div class="msg" id="xrmsg">Checking for VR support&hellip;</div></div>
+    <div>
+      <div class="row" style="margin-top:0"><button class="btn" id="enterVR" type="button" disabled>Enter VR</button><button class="btn ghost" id="spin" type="button" aria-pressed="true">Spin: on</button></div>
+<pre><code>const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+renderer.xr.enabled = true;               // 1. tell three.js to talk to the headset
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(70, 1.6, 0.1, 50);
+camera.position.set(0, 1.6, 2.6);         // eye height, in metres
+
+// a ring of cubes, 1.5 m from the middle
+for (let i = 0; i &lt; 8; i++) { /* add a cube at angle i/8 * 2π */ }
+
+renderer.setAnimationLoop((t) => {        // 2. NOT requestAnimationFrame:
+  ring.rotation.y = t / 4000;             //    the headset sets the pace
+  renderer.render(scene, camera);
+});
+
+button.onclick = async () =&gt; {            // 3. a user gesture starts the session
+  const s = await navigator.xr.requestSession("immersive-vr",
+    { optionalFeatures: ["local-floor"] });
+  renderer.xr.setSession(s);
+};
+
+const c = renderer.xr.getController(0);   // 4. a controller's pointing ray
+c.addEventListener("selectstart", () =&gt; { /* raycast from c, recolour the cube */ });
+scene.add(c);</code></pre>
+    </div>
+  </div>
+</section>
+
+<section id="course">
+  <p class="eyebrow">02 &middot; The course</p>
+  <h2>Eight small lessons</h2>
+  <p>Each one is a few lines to read and one thing to try. They go from easiest to hardest. The code is three.js with no build step; the same copy of three.js that runs the rest of Darklabs is used here.</p>
+  <div class="lessons">
+    <details><summary><b>1</b> A cube, a loop and a button</summary><div><p>Turn on <code>renderer.xr.enabled</code>, drive everything from <code>renderer.setAnimationLoop</code> (the headset sets the frame timing, so <code>requestAnimationFrame</code> is the wrong loop), and start the session from a button, because browsers only allow it after a user gesture. WebXR also needs a secure page: HTTPS, or <code>localhost</code> while developing. Check <code>navigator.xr.isSessionSupported("immersive-vr")</code> before showing the button.</p><p class="ex"><b>Try:</b> change the cube ring above to a different shape and make it spin the other way.</p></div></details>
+    <details><summary><b>2</b> Spaces, metres and scale</summary><div><p>Everything is in metres. Ask for <code>local-floor</code> as an optional feature and y = 0 is the floor. To make something huge feel like a tabletop model, scale the world, not the camera: the IDEA game scales a whole store down to 0.026 and sits it on a virtual table.</p><p class="ex"><b>Try:</b> put one cube exactly 1 m in front of you at eye height and check it feels like a metre.</p></div></details>
+    <details><summary><b>3</b> Controllers and pointing</summary><div><p><code>renderer.xr.getController(i)</code> gives a pointing ray. It fires <code>selectstart</code> and <code>selectend</code> for the trigger and <code>squeezestart</code> for the grip. To pick things, raycast from the controller's world matrix. One bug worth knowing: add controller objects and listeners once. If you add them each time a session starts, every re-entry adds another ray and another handler (a review caught exactly this in the IDEA game).</p><p class="ex"><b>Try:</b> make the cube you point at glow, and clear the glow on <code>selectend</code>.</p></div></details>
+    <details><summary><b>4</b> Comfort comes first</summary><div><p>Do not move the player's view unless they are driving it. Keep the horizon steady, prefer snap turns to smooth ones, keep text and buttons about one to two metres away, and protect the frame rate: a stutter is what makes people feel unwell. If a thing can be a stationary tabletop, let it be one.</p><p class="ex"><b>Try:</b> add a snap turn of 30 degrees on the thumbstick and see how it feels compared with a smooth turn.</p></div></details>
+    <details><summary><b>5</b> Performance: the budget</summary><div><p>A headset renders twice, at a high refresh rate, on a phone-class chip. So: few draw calls (merge or <code>InstancedMesh</code> repeated things, as the IDEA game does for its route arrows), few lights, no new objects inside the frame loop, and test early on the real device. <code>renderer.xr.setFoveation()</code> and <code>setFramebufferScaleFactor()</code> trade sharpness for speed.</p><p class="ex"><b>Try:</b> draw 2,000 cubes as separate meshes, then as one instanced mesh, and compare the frame rate.</p></div></details>
+    <details><summary><b>6</b> Sound in space</summary><div><p>Web Audio has 3D sound built in: a <code>PannerNode</code> with the HRTF model places a sound in space, and you move the audio listener to match the player's head every frame. Start the <code>AudioContext</code> from the same click that enters VR, so the browser lets it play.</p><p class="ex"><b>Try:</b> attach a quiet tone to one cube so it hums from where it sits.</p></div></details>
+    <details><summary><b>7</b> Test without a headset, then with one</summary><div><p>Browser extensions that emulate a headset and controllers (Meta's Immersive Web Emulator is one) let you test the logic at a desk. They will not tell you about comfort or real performance, so always finish on a real device. On a Quest, open the page in its browser, and use USB debugging if you need the console.</p><p class="ex"><b>Try:</b> run this page in an emulator, then on a headset if you have one, and note what differs.</p></div></details>
+    <details><summary><b>8</b> Ship it kindly</summary><div><p>Feature-detect and keep a flat-screen fallback, as IDEA does. Say what is untested. Put a short comfort note on the page. If your page makes sound, never start it before a click.</p><p class="ex"><b>Try:</b> publish a one-file example on GitHub Pages and open it on your phone.</p></div></details>
+  </div>
+  <h3 style="margin-top:1.4rem">Good places to keep learning</h3>
+  <p class="fine">Official pages, not mine: <a href="https://developer.mozilla.org/en-US/docs/Web/API/WebXR_Device_API" rel="noopener">MDN: the WebXR Device API</a> &middot; <a href="https://immersive-web.github.io/webxr-samples/" rel="noopener">Immersive Web samples</a> &middot; <a href="https://threejs.org/examples/?q=xr" rel="noopener">three.js WebXR examples</a> &middot; <a href="https://developers.meta.com/vr/documentation/web/webxr-overview/" rel="noopener">Meta's WebXR documentation</a>.</p>
+  <p class="fine" style="margin-top:1rem">See a larger working example: <a href="/darklabs/idea/">IDEA: Drunk Bots</a>, a quick parody game with a tabletop VR mode. It is a prototype and has not been tested on every headset.</p>
+</section>
+
+<section id="support">
+  <p class="eyebrow">03 &middot; Support</p>
+  <h2>Where your support should go</h2>
+  <div class="panel big">
+    <p class="quote">&ldquo;If there's one project you're going to support, make it this one.&rdquo;</p>
+    <h3>Hero Drop</h3>
+    <p>Hero Drop is the VR game I am building. It is the thing all of this is practice for.</p>
+    <div class="row"><a class="btn" id="patreon" href="#" rel="noopener" hidden>Support Hero Drop on Patreon</a><span class="fine" id="patreonNote">The Patreon link is being added.</span></div>
+    <p>I am not looking for direct support for Darklabs right now. If you want to give money, time or attention to anything, please give it to Hero Drop's development, and to the small community around Hyper Dash, whose game is being switched off on <b>1 November 2026</b>.</p>
+  </div>
+</section>
+
+<section id="hyperdash">
+  <p class="eyebrow">04 &middot; Hyper Dash</p>
+  <h2>Last chance to play it online</h2>
+  <div class="demo" style="margin-top:.4rem">
+    <div>
+      <p><b>Hyper Dash</b> is a free-to-play team shooter for VR, made by Triangle Factory, on Meta Quest and Steam. Its developers have announced that the online servers shut down on <b>1 November 2026</b>. A final update lets the game be played offline afterwards, but the online matches, the part that makes it what it is, end then.</p>
+      <p>I think of playing Hyper Dash as a kind of prerequisite for Hero Drop: it is where I learned what I want that kind of game to feel like. A lot is going on there right now, the servers are busy and the community is very active, and that includes the competitive scene: <b>Dash League</b>, an independent league that has played Hyper Dash matches for years and streams them. If you have ever been curious, this is the last stretch to play it with other people.</p>
+      <div class="row"><a class="btn" href="https://store.steampowered.com/app/1386890/Hyper_Dash/" rel="noopener">Hyper Dash on Steam</a><a class="btn ghost" href="https://www.meta.com/experiences/hyper-dash/3070239359662935/" rel="noopener">On Meta Quest</a><a class="btn ghost" href="https://dashleague.games/" rel="noopener">Dash League</a></div>
+      <p class="fine">I do not know the developers personally. This page is not made, endorsed or approved by Triangle Factory or by Dash League, and the names belong to their owners. Links go to their own official pages; there are no images or text copied from them. Sources: <a href="https://x.com/HyperDashVR/status/2081677254484967454" rel="noopener">the developers' announcement</a> and <a href="https://www.uploadvr.com/futuristic-vr-fps-hyper-dash-shutting-down-this-november/" rel="noopener">UploadVR's report</a>.</p>
+    </div>
+    <div class="panel" style="margin-top:0">
+      <div class="count" id="days" aria-live="off">&nbsp;<small>days left</small></div>
+      <p class="fine" id="dayNote">Counting to 1 November 2026 (check the official post for the exact hour).</p>
+      <div class="tabs" role="group" aria-label="Choose a video"><button type="button" data-v="8zasFLZaj10" aria-pressed="true">Official trailer</button><button type="button" data-v="nEmV8ClFNdY" aria-pressed="false">A Dash League match</button></div>
+      <div class="yt" id="yt"></div>
+      <p class="fine">The video loads from YouTube only when you press play (in its privacy-friendly mode), so nothing is sent to YouTube before that.</p>
+    </div>
+  </div>
+</section>
+
+<section id="alerts">
+  <p class="eyebrow">05 &middot; Alerts</p>
+  <h2>Get an alert, no account needed</h2>
+  <p>Three ways, pick any. None of them asks for your email or name.</p>
+  <div class="cols">
+    <div class="panel"><h3>1. Notifications from me</h3>
+      <p>Announcements (a Hero Drop update, a reminder before the servers go) are sent to a free notification channel. Subscribe in the <a href="https://ntfy.sh" rel="noopener">ntfy</a> app or on the web, and your phone or browser will buzz.</p>
+      <div class="row"><a class="btn" id="subscribe" href="#" rel="noopener">Subscribe</a></div>
+      <p class="fine">Channel name: <code id="topicName"></code></p></div>
+    <div class="panel"><h3>2. Alert me while this page is open</h3>
+      <p>Allow notifications here and a message arrives on this screen the moment one is sent. It only works while this tab is open.</p>
+      <div class="row"><button class="btn" id="watch" type="button" aria-pressed="false">Turn on</button></div>
+      <p class="fine" id="watchNote">Off. Turning it on connects this tab to ntfy.sh, which sees your IP address, as any website would.</p></div>
+    <div class="panel"><h3>3. Put it in your calendar</h3>
+      <p>Two reminders, with nothing sent anywhere: a week before the Hyper Dash servers close, and the day itself.</p>
+      <div class="row"><button class="btn" id="ics" type="button">Download .ics</button><a class="btn ghost" id="gcal" href="#" rel="noopener">Google Calendar</a></div></div>
+  </div>
+  <div class="panel">
+    <div class="row" style="margin:0"><button class="btn ghost" id="check" type="button">Show the latest announcements</button><span class="fine" id="checkNote">Loads from ntfy.sh when you press it.</span></div>
+    <ul id="feed" aria-live="polite"></ul>
+    <p class="fine">Anyone who knows the channel name can post to it, so treat a message as a note, not a verdict. Links are never made clickable here.</p>
+  </div>
+</section>
+
+</main>
+<footer><p>Darklabs VR Lab &middot; <a href="/darklabs/">back to Darklabs</a> &middot; <a href="https://dredarkroom.github.io/">Dre Darkroom</a></p></footer>
+
+<script type="module">
+import * as THREE from "../chunguscello/vendor/three.module.min.js";
+const $ = (id) => document.getElementById(id), reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* ---------- settings the owner can change ---------- */
+const HERO_DROP_PATREON = "";                                   // paste the Hero Drop Patreon address here and the button appears
+const TOPIC = "darklabs-vr-x28jfn9ctdxsuleotnk", NTFY = "https://ntfy.sh/";
+const SHUTDOWN = Date.UTC(2026, 10, 1);                          // 1 Nov 2026 (months are 0-based)
+
+if (HERO_DROP_PATREON) { $("patreon").href = HERO_DROP_PATREON; $("patreon").hidden = false; $("patreonNote").hidden = true; }
+
+/* ---------- 1. the Hello, VR scene ---------- */
+const canvas = $("gl"), renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2)); renderer.setClearColor(0x07030a); renderer.xr.enabled = true;
+const scene = new THREE.Scene(), camera = new THREE.PerspectiveCamera(70, 1.6, 0.1, 50); camera.position.set(0, 1.6, 2.6);
+scene.add(new THREE.HemisphereLight(0xffd8dc, 0x220408, 1.4)); const sun = new THREE.DirectionalLight(0xffffff, 1.6); sun.position.set(2, 4, 3); scene.add(sun);
+const floor = new THREE.Mesh(new THREE.CircleGeometry(3, 48), new THREE.MeshStandardMaterial({ color: 0x14070a, roughness: 1 })); floor.rotation.x = -Math.PI / 2; scene.add(floor);
+const ring = new THREE.Group(); ring.position.y = 1.3; scene.add(ring);
+const cubes = [], BASE = new THREE.Color(0x690000), HOT = new THREE.Color(0xff8a96);
+for (let i = 0; i < 8; i++) { const a = (i / 8) * Math.PI * 2, m = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.3, 0.3), new THREE.MeshStandardMaterial({ color: BASE, roughness: 0.4, metalness: 0.2 })); m.position.set(Math.cos(a) * 1.5, Math.sin(i * 1.7) * 0.25, Math.sin(a) * 1.5); ring.add(m); cubes.push(m); }
+const ray = new THREE.Raycaster(), tmpM = new THREE.Matrix4();
+const pick = (origin, dir) => { ray.set(origin, dir); const h = ray.intersectObjects(cubes, false)[0]; return h && h.object; };
+const flash = (m) => { if (m) m.userData.hot = 1; };
+for (let i = 0; i < 2; i++) {                                    // controllers: added once, here, never inside the session-start handler
+  const c = renderer.xr.getController(i); c.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(), new THREE.Vector3(0, 0, -3)]), new THREE.LineBasicMaterial({ color: 0xffffff })));
+  c.addEventListener("selectstart", () => { tmpM.identity().extractRotation(c.matrixWorld); flash(pick(new THREE.Vector3().setFromMatrixPosition(c.matrixWorld), new THREE.Vector3(0, 0, -1).applyMatrix4(tmpM))); });
+  scene.add(c);
+}
+let spin = !reduce, look = 0, lookT = 0;
+$("spin").setAttribute("aria-pressed", String(spin)); $("spin").textContent = "Spin: " + (spin ? "on" : "off");
+$("spin").onclick = () => { spin = !spin; $("spin").setAttribute("aria-pressed", String(spin)); $("spin").textContent = "Spin: " + (spin ? "on" : "off"); };
+canvas.addEventListener("pointermove", (e) => { const r = canvas.getBoundingClientRect(); lookT = ((e.clientX - r.left) / r.width - 0.5) * 1.2; }, { passive: true });
+canvas.addEventListener("pointerdown", (e) => { const r = canvas.getBoundingClientRect(), p = new THREE.Vector2(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1); ray.setFromCamera(p, camera); const h = ray.intersectObjects(cubes, false)[0]; if (h) flash(h.object); });
+function size() { if (renderer.xr.isPresenting) return; const w = canvas.clientWidth, h = canvas.clientHeight; if (canvas.width !== Math.floor(w * renderer.getPixelRatio()) || canvas.height !== Math.floor(h * renderer.getPixelRatio())) { renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); } }
+let vis = true; new IntersectionObserver((es) => { vis = es[0].isIntersecting; }).observe(canvas);
+renderer.setAnimationLoop((t) => {
+  if (!vis && !renderer.xr.isPresenting) return;                  // nothing to draw when scrolled away
+  size(); if (spin) ring.rotation.y = t / 4000;
+  look += (lookT - look) * 0.05; if (!renderer.xr.isPresenting) { camera.position.x = Math.sin(look) * 2.6; camera.position.z = Math.cos(look) * 2.6; camera.lookAt(0, 1.3, 0); }
+  for (const m of cubes) { const h = m.userData.hot || 0; m.material.color.lerpColors(BASE, HOT, h); m.userData.hot = Math.max(0, h - 0.02); m.rotation.y = t / 1500; }
+  renderer.render(scene, camera);
+});
+const msg = $("xrmsg"), btn = $("enterVR"); let session = null;
+if (navigator.xr) navigator.xr.isSessionSupported("immersive-vr").then((ok) => { msg.textContent = ok ? "VR is available. Press Enter VR." : "No VR headset found here. This is the flat view: move the pointer, click a cube."; btn.disabled = !ok; }).catch(() => { msg.textContent = "VR support could not be checked. Flat view only."; });
+else msg.textContent = "This browser has no WebXR. Flat view only: move the pointer, click a cube.";
+btn.onclick = async () => {
+  try { if (session) { await session.end(); return; } session = await navigator.xr.requestSession("immersive-vr", { optionalFeatures: ["local-floor"] }); await renderer.xr.setSession(session); btn.textContent = "Exit VR"; session.addEventListener("end", () => { session = null; btn.textContent = "Enter VR"; }); }
+  catch (e) { msg.textContent = "VR could not start: " + (e && e.message ? e.message : e); session = null; }
+};
+
+/* ---------- 2. the shutdown countdown ---------- */
+{ const d = Math.ceil((SHUTDOWN - Date.now()) / 864e5); $("days").firstChild.textContent = d > 0 ? String(d) : "0"; if (d <= 0) $("dayNote").textContent = "The servers are scheduled to be off by now: check the official post for what is left."; }
+
+/* ---------- 3. the click-to-load video ---------- */
+let curVid = "8zasFLZaj10";
+function facade() { const box = $("yt"); box.innerHTML = ""; const b = document.createElement("button"); b.className = "play"; b.type = "button"; b.setAttribute("aria-label", "Load and play the video from YouTube"); b.innerHTML = "<b>&#9654;</b><span>Press to load the video from YouTube</span>"; b.onclick = () => { const f = document.createElement("iframe"); f.src = "https://www.youtube-nocookie.com/embed/" + curVid + "?autoplay=1&rel=0"; f.title = "Hyper Dash video"; f.allow = "autoplay; encrypted-media; picture-in-picture; fullscreen"; f.referrerPolicy = "strict-origin-when-cross-origin"; f.allowFullscreen = true; box.innerHTML = ""; box.appendChild(f); }; box.appendChild(b); }
+facade();
+document.querySelectorAll(".tabs button").forEach((b) => b.addEventListener("click", () => { curVid = b.dataset.v; document.querySelectorAll(".tabs button").forEach((x) => x.setAttribute("aria-pressed", String(x === b))); facade(); }));
+
+/* ---------- 4. the alert system ---------- */
+$("topicName").textContent = TOPIC; $("subscribe").href = NTFY + TOPIC;
+const banner = $("banner"), seen = new Set();
+const when = (s) => new Date(s * 1000).toLocaleString([], { dateStyle: "medium", timeStyle: "short" });
+function show(m, loud) {
+  if (m.event !== "message" || seen.has(m.id)) return; seen.add(m.id);
+  const text = String(m.message || "").slice(0, 400), li = document.createElement("li"), tm = document.createElement("time"); tm.textContent = when(m.time || Date.now() / 1000); li.append(tm, document.createTextNode(text)); $("feed").prepend(li);
+  if (loud) { banner.textContent = "Alert: " + text; banner.classList.add("on"); setTimeout(() => banner.classList.remove("on"), 15000); try { if ("Notification" in window && Notification.permission === "granted") new Notification("Darklabs VR", { body: text }); } catch (e) { /* notifications blocked */ } }
+}
+$("check").onclick = async () => {
+  $("checkNote").textContent = "Loading…";
+  try { const r = await fetch(NTFY + TOPIC + "/json?poll=1&since=all"); const lines = (await r.text()).split("\n").filter(Boolean).map((l) => JSON.parse(l)).filter((m) => m.event === "message").slice(-6); $("feed").innerHTML = ""; seen.clear(); lines.forEach((m) => show(m, false)); $("checkNote").textContent = lines.length ? "Newest at the top." : "No announcements yet."; }
+  catch (e) { $("checkNote").textContent = "Could not reach ntfy.sh just now."; }
+};
+let es = null;
+$("watch").onclick = async () => {
+  if (es) { es.close(); es = null; $("watch").textContent = "Turn on"; $("watch").setAttribute("aria-pressed", "false"); $("watchNote").textContent = "Off."; return; }
+  try { if ("Notification" in window && Notification.permission === "default") await Notification.requestPermission(); } catch (e) { /* ignore */ }
+  es = new EventSource(NTFY + TOPIC + "/sse"); es.onmessage = (e) => { try { show(JSON.parse(e.data), true); } catch (err) { /* ignore a malformed line */ } };
+  es.onerror = () => { $("watchNote").textContent = "Connection lost; the browser will retry."; }; es.onopen = () => { $("watchNote").textContent = "On. Keep this tab open."; };
+  $("watch").textContent = "Turn off"; $("watch").setAttribute("aria-pressed", "true");
+};
+const EVENTS = [{ d: [2026, 10, 25], t: "Hyper Dash: one week until the servers close", n: "The online servers close on 1 November 2026. Last week to play with others." }, { d: [2026, 11, 1], t: "Hyper Dash servers close today", n: "Last day for online play. A final update keeps the game playable offline." }];
+const ymd = (d, add = 0) => { const x = new Date(Date.UTC(d[0], d[1] - 1, d[2] + add)); return x.toISOString().slice(0, 10).replace(/-/g, ""); };
+$("ics").onclick = () => {
+  const L = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Darklabs VR Lab//EN", "CALSCALE:GREGORIAN"];
+  EVENTS.forEach((e, i) => L.push("BEGIN:VEVENT", "UID:darklabs-vr-" + i + "@dredarkroom.github.io", "DTSTAMP:" + new Date().toISOString().replace(/[-:]/g, "").slice(0, 15) + "Z", "DTSTART;VALUE=DATE:" + ymd(e.d), "DTEND;VALUE=DATE:" + ymd(e.d, 1), "SUMMARY:" + e.t, "DESCRIPTION:" + e.n, "BEGIN:VALARM", "TRIGGER:-PT0M", "ACTION:DISPLAY", "DESCRIPTION:" + e.t, "END:VALARM", "END:VEVENT"));
+  L.push("END:VCALENDAR"); const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([L.join("\r\n")], { type: "text/calendar" })); a.download = "hyper-dash-reminders.ics"; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+};
+{ const e = EVENTS[1]; $("gcal").href = "https://calendar.google.com/calendar/render?action=TEMPLATE&text=" + encodeURIComponent(e.t) + "&dates=" + ymd(e.d) + "/" + ymd(e.d, 1) + "&details=" + encodeURIComponent(e.n); }
+</script>
+</body>
+</html>
