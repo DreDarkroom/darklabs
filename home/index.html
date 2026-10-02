@@ -155,21 +155,18 @@ footer a{color:var(--red-soft);text-decoration:none}
   /__.-'|_|--|_|</pre><p>Frame 04 wasn't blank. It never was a bug.</p><p style="margin-top:.8rem"><button type="button" id="dinoX">Close</button></p></dialog>
 
 <script type="module">
-import { Engine } from "../kit/engine.js";
-import { Conductor } from "../kit/conductor.js";
+import { Ascent } from "../kit/fm.js";
 import { Tunnel } from "../kit/visuals.js";
 import { arcColor } from "../kit/visuals.js";
 
 const $ = (id) => document.getElementById(id), root = document.documentElement;
 const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-const engine = new Engine(), conductor = new Conductor(engine);
-Object.assign(conductor, { key: 2, prog: "frahm", bpm: 96, autoLift: true });
-engine.params.bpm = 96;
+const music = new Ascent();                                                       // the scroll-driven music: Max Cooper at the top, Noisia at the bottom
 const tunnel = new Tunnel($("sky"));
 tunnel.setEco(((navigator.hardwareConcurrency || 4) <= 4));
 let soundOn = false, a = 0.03, peaked = false;
 
-/* scroll position IS the ascent: the top of the page is the felt-piano intro, the bottom is the drop */
+/* scroll position IS the ascent: the top of the page is the spacious Max Cooper-style intro, the bottom is the Noisia-style drop */
 const progress = () => { const m = root.scrollHeight - innerHeight; return m > 0 ? Math.min(1, Math.max(0, scrollY / m)) : 0; };
 const ascentFor = (p) => 0.03 + 0.96 * Math.pow(p, 1.08);
 
@@ -179,20 +176,17 @@ addEventListener("pointermove", (e) => { st.tx = e.clientX; st.ty = e.clientY; s
 addEventListener("touchmove", (e) => { const t = e.touches[0]; if (t) { st.tx = t.clientX; st.ty = t.clientY; st.idle = 0; } }, { passive: true });
 
 async function turnOn() {
-  try { await engine.start(); } catch (e) { $("hint").textContent = e.message; return; }
-  engine.setParam("bpm", 96); engine.setParam("space", 0.4); engine.setParam("echo", 0.18);
-  soundOn = true; conductor.setManual(a);
+  try { await music.start(); } catch (e) { $("hint").textContent = e.message; return; }
+  soundOn = true; music.setAscent(a);
   $("snd").textContent = "Sound on"; $("snd").setAttribute("aria-pressed", "true"); $("enter").textContent = "Sound on. Now scroll.";
-  const wc = conductor.chordNow().tones, t = engine.now + 0.1;                  // a soft welcome chord
-  [[wc[0] - 12, 0], [wc[2] - 12, 0.25], [wc[4] - 12, 0.5], [wc[1], 0.8]].forEach(([n, d], i) => engine.voices.playTimed("piano", n, 0.3 + i * 0.03, t + d, 2));
 }
-function turnOff() { soundOn = false; conductor.stop(); if (engine.voices) engine.voices.panic(); $("snd").textContent = "Sound off"; $("snd").setAttribute("aria-pressed", "false"); }
-$("enter").addEventListener("click", () => { engine.ready ? (soundOn ? null : (soundOn = true, conductor.setManual(a), $("snd").textContent = "Sound on", $("snd").setAttribute("aria-pressed", "true"))) : turnOn(); });
-$("snd").addEventListener("click", () => { if (soundOn) turnOff(); else if (engine.ready) { soundOn = true; conductor.setManual(a); $("snd").textContent = "Sound on"; $("snd").setAttribute("aria-pressed", "true"); } else turnOn(); });
+function turnOff() { soundOn = false; music.stop(); $("snd").textContent = "Sound off"; $("snd").setAttribute("aria-pressed", "false"); }
+$("enter").addEventListener("click", () => { if (!soundOn) turnOn(); });
+$("snd").addEventListener("click", () => { soundOn ? turnOff() : turnOn(); });
 
 /* hover a card, hear a note (a marimba pluck in the key) */
 document.querySelectorAll("[data-n]").forEach((el) => {
-  const play = () => { if (!soundOn || !engine.ready) return; engine.voices.playTimed("pluck", +el.dataset.n, 0.55, engine.now, 0.6); tunnel.ping(+el.dataset.n % 12, 0.8); };
+  const play = () => { if (!soundOn || !music.ready) return; music.pluck(+el.dataset.n); tunnel.ping(+el.dataset.n % 12, 0.8); };
   el.addEventListener("pointerenter", play); el.addEventListener("focus", play);
 });
 
@@ -208,11 +202,10 @@ function frame(now) {
   const p = progress(), target = reduce ? 0.03 : ascentFor(p);
   a += (target - a) * Math.min(1, dt * 2.2);                                     // the music follows your scroll, a beat behind
   if (soundOn) {
-    conductor.setManual(a);
+    music.setAscent(a);
     // the drop: crossing into the last stretch of the page once per visit
-    if (p > 0.9 && !peaked && engine.voices) { peaked = true; engine.voices.impact(engine.now + 0.05); tunnel.boom(); }
+    if (p > 0.9 && !peaked) { peaked = true; music.boom(); tunnel.boom(); }
     if (p < 0.78) peaked = false;
-    if (conductor.running) { engine.setParam("space", Math.min(1, 0.4 + 0.3 * a)); }
   }
   let tx = st.tx, ty = st.ty;
   if (st.idle > 5 && !reduce) { tx = innerWidth * (.5 + .3 * Math.sin(st.t * .3)); ty = innerHeight * (.45 + .25 * Math.sin(st.t * .23 + 1)); }
@@ -222,18 +215,18 @@ function frame(now) {
     const [r, g, b] = arcColor(a); root.style.setProperty("--acc", `rgb(${r | 0},${g | 0},${b | 0})`);
     $("meterFill").style.height = (p * 100).toFixed(0) + "%";
   }
-  tunnel.frame(dt, { a, level: engine.level() });
+  tunnel.frame(dt, { a, level: music.level() });
   $("hint").style.opacity = scrollY > 60 ? 0 : 1;
   requestAnimationFrame(frame);
 }
 requestAnimationFrame(frame);
-addEventListener("pointerdown", () => { if (engine.ctx && engine.ctx.state !== "running") engine.resume(); }, true);
+addEventListener("pointerdown", () => { music.resume(); }, true);
 /* easter eggs: the roll of film, a dinosaur, and the Konami negative */
 const toast = (t) => { const e = $("toast"); e.textContent = t; e.classList.add("on"); clearTimeout(toast.t); toast.t = setTimeout(() => e.classList.remove("on"), 3400); };
 const FRAMES = { 1: "Exposure: you, looking.", 2: "Stop bath. Nothing here is moving.", 3: "A drummer, on a break.", 4: null, 5: "Fixer. Do not open the door.", 6: "A contact sheet, but real.", 7: "Dust. Always dust.", 8: "There is no ninth frame. Try: ↑ ↑ ↓ ↓ ← → ← → B A" };
 let found = new Set(); try { found = new Set(JSON.parse(localStorage.getItem("dd.frames") || "[]")); } catch (e) { /* storage may be blocked */ }
 const showFound = () => { $("found").textContent = "Frames developed: " + found.size + " / 8" + (found.size === 8 ? " · roll complete" : ""); document.querySelectorAll(".frame").forEach((f) => { const on = found.has(+f.dataset.f); f.classList.toggle("found", on); f.setAttribute("aria-label", "Film frame " + f.textContent + (on ? ", developed" : ", undeveloped")); }); };
-const shutter = () => { if (soundOn && engine.ready && engine.voices) engine.voices.perc("snap", 0.55, engine.now); };
+const shutter = () => { if (soundOn && music.ready) music.tick(); };
 function negative(on) { const next = on === undefined ? !root.classList.contains("neg") : on; root.classList.toggle("neg", next); shutter(); toast(next ? "Negative developed. Same again to reverse it." : "Back to positive."); }
 document.querySelectorAll(".frame").forEach((f) => f.addEventListener("click", () => {
   const n = +f.dataset.f; shutter(); const wasNew = !found.has(n); found.add(n); try { localStorage.setItem("dd.frames", JSON.stringify([...found])); } catch (e) { /* ignore */ }
@@ -249,7 +242,7 @@ addEventListener("keydown", (e) => {
 });
 let taps = 0, tapT = 0; document.querySelector(".logo").addEventListener("click", () => { const now = performance.now(); taps = now - tapT < 900 ? taps + 1 : 1; tapT = now; if (taps >= 7) { taps = 0; negative(); } });   // mobile: tap the logo seven times
 showFound();
-window.__home = { engine, conductor, tunnel, progress, get a() { return a; } };
+window.__home = { music, tunnel, progress, get a() { return a; } };
 console.log("%cDRE DARKROOM", "color:#d1122b;font:700 22px monospace", "\nscroll is the music.");
 </script>
 </body>
