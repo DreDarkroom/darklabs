@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<title>IDEA: Drunk Bots | a flat-pack maze</title>
+<meta name="description" content="Two teams of identical, very drunk bots try to find the exit of a big flat-pack store. Shout directions to your team. Quick game, with a tabletop VR mode.">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--ink:#14091d;--purple:#6a2fa8;--soft:#b98af0;--text:#f1e8fa;--red:#e5384a;--blue:#3a7bf2}
+html,body{height:100%;background:var(--ink);color:var(--text);font:16px/1.5 ui-rounded,"Trebuchet MS",system-ui,sans-serif;overflow:hidden;touch-action:none}
+canvas#gl{position:fixed;inset:0;width:100%;height:100%;display:block}
+.ov{position:fixed;inset:0;z-index:10;display:grid;place-items:center;background:radial-gradient(ellipse at 50% 30%,rgba(60,24,96,.86),rgba(12,5,20,.96));padding:1rem;overflow:auto}
+.ov[hidden]{display:none}
+.card{max-width:34rem;text-align:center}
+.logo{display:inline-block;background:var(--purple);color:#fff;font-weight:900;letter-spacing:.18em;padding:.1em .5em .1em .68em;border-radius:.2em;font-size:clamp(2.6rem,10vw,4.4rem);box-shadow:0 8px 0 #3d1a66}
+h1{font-size:1.5rem;margin:1.1rem 0 .4rem}
+p{margin:.4rem 0;color:#d8c8ec}
+.teams{display:flex;gap:1rem;justify-content:center;margin:1.3rem 0 .8rem}
+button{font:inherit;cursor:pointer;color:var(--text);background:rgba(255,255,255,.08);border:2px solid rgba(255,255,255,.25);border-radius:.8rem;padding:.7rem 1.3rem;min-height:3rem}
+button:hover{border-color:#fff}
+button:focus-visible{outline:3px solid #fff;outline-offset:3px}
+button.team{display:flex;flex-direction:column;align-items:center;gap:.3rem;min-width:8.5rem;font-weight:800}
+button.team i{display:block;width:2.2rem;height:2.2rem;border-radius:50%}
+button.team[aria-pressed=true]{border-color:#fff;background:rgba(255,255,255,.18);box-shadow:0 0 0 3px rgba(255,255,255,.18)}
+button.go{background:var(--purple);border-color:var(--soft);font-weight:900;font-size:1.15rem;padding:.9rem 2rem}
+.small{font-size:.78rem;color:#a995c4}
+.hud{position:fixed;left:0;right:0;top:0;z-index:5;display:flex;gap:.6rem;align-items:center;justify-content:space-between;padding:.6rem .8rem;pointer-events:none;flex-wrap:wrap}
+.hud>*{pointer-events:auto}
+.score{display:flex;gap:.5rem;align-items:center;font-weight:900;font-size:1.1rem;background:rgba(10,4,16,.7);border-radius:.7rem;padding:.35rem .8rem}
+.score b{display:inline-block;width:.9rem;height:.9rem;border-radius:50%;vertical-align:middle;margin-right:.3rem}
+.pill{background:rgba(10,4,16,.7);border-radius:.7rem;padding:.35rem .7rem;font-size:.9rem}
+.cool{width:6rem;height:.5rem;background:rgba(255,255,255,.15);border-radius:.3rem;overflow:hidden;display:inline-block;vertical-align:middle;margin-left:.4rem}.cool i{display:block;height:100%;background:var(--soft);width:100%}
+.hint{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);z-index:5;background:rgba(10,4,16,.7);border-radius:.7rem;padding:.4rem .9rem;font-size:.85rem;pointer-events:none;text-align:center;max-width:92vw}
+.row{display:flex;gap:.5rem;flex-wrap:wrap}
+.win{font-size:2rem;font-weight:900;margin:.4rem 0}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<canvas id="gl"></canvas>
+
+<div class="hud" id="hud" hidden>
+  <div class="score" id="score"></div>
+  <div class="row"><span class="pill" id="clock">0:00</span><span class="pill">Shout <span class="cool"><i id="cool"></i></span></span></div>
+  <div class="row"><button id="view" class="pill" type="button">View: overview</button><button id="muz" class="pill" type="button" aria-pressed="false">Muzak: off</button><button id="vr" class="pill" type="button" hidden>Enter VR</button></div>
+</div>
+<div class="hint" id="hint" hidden>Tap or click near a bot on your team to <b>shout directions</b> at it. It sobers up for a few seconds.</div>
+
+<div class="ov" id="intro">
+  <div class="card">
+    <div class="logo">IDEA</div>
+    <h1>Drunk Bots</h1>
+    <p>Two teams of identical bots have wandered into a very large flat-pack maze and are quite, quite sure they know the way out.</p>
+    <p>Pick a team. Shout directions. First team to get <b>4 bots</b> to the checkout wins.</p>
+    <div class="teams" role="group" aria-label="Choose your team">
+      <button class="team" id="tRed" aria-pressed="true"><i style="background:var(--red)"></i>Team Red</button>
+      <button class="team" id="tBlue" aria-pressed="false"><i style="background:var(--blue)"></i>Team Blue</button>
+    </div>
+    <div class="row" style="justify-content:center"><button class="go" id="start" type="button">Let them in</button><button id="vr2" type="button" hidden>Play in VR</button></div>
+    <p class="small" style="margin-top:1rem">VR is a simple tabletop view: the whole store sits on a table in front of you, and you point a controller at a bot and squeeze to shout.</p>
+    <p class="small">A parody. Not affiliated with, endorsed by, or related to any real furniture retailer, living or flat-packed. All shelves, hex keys and bots are made up.</p>
+  </div>
+</div>
+
+<div class="ov" id="end" hidden>
+  <div class="card"><div class="win" id="winner"></div><p id="endsub"></p><div class="row" style="justify-content:center;margin-top:1rem"><button class="go" id="again" type="button">Go again</button></div></div>
+</div>
+
+<script type="module" src="game.js"></script>
+</body>
+</html>
