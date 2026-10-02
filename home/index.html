@@ -103,7 +103,9 @@ footer a{color:var(--red-soft);text-decoration:none}
 .knobs label{display:flex;align-items:center;gap:.6rem;font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--dim)}
 .knobs label input{width:7.5rem}.knobs output{min-width:3.2rem;color:#fff;letter-spacing:.08em}
 .mixer .btn{padding:.5rem 1rem;font-size:.8rem}
-.mixer.idle .stems,.mixer.idle .knobs{opacity:.45;pointer-events:none}
+.mixer.idle .stems,.mixer.idle .knobs{opacity:.45}
+.mixer button:disabled,.mixer input:disabled{cursor:not-allowed}
+.stem button:focus-visible,.stem input:focus-visible,.knobs input:focus-visible,.knobs button:focus-visible,.tl a:focus-visible{outline:2px solid #fff;outline-offset:2px}
 /* how it was made + timeline */
 .how{align-items:stretch;min-height:0;padding-top:4rem}
 .how h2{font-size:clamp(1.6rem,4.4vw,2.6rem)}
@@ -272,9 +274,11 @@ const st = { mx: innerWidth * .5, my: innerHeight * .4, tx: innerWidth * .5, ty:
 addEventListener("pointermove", (e) => { st.tx = e.clientX; st.ty = e.clientY; st.idle = 0; }, { passive: true });
 addEventListener("touchmove", (e) => { const t = e.touches[0]; if (t) { st.tx = t.clientX; st.ty = t.clientY; st.idle = 0; } }, { passive: true });
 
+let turning = false;
 async function turnOn() {
-  try { await music.start(); } catch (e) { $("hint").textContent = e.message; return; }
-  soundOn = true; music.setAscent(a); $("mixer").classList.remove("idle"); setDeck(); mixSay();
+  if (turning) return; turning = true;
+  try { await music.start(); } catch (e) { $("hint").textContent = e.message; turning = false; return; }
+  turning = false; soundOn = true; music.setAscent(a); $("mixer").classList.remove("idle"); setDeck(); mixSay();
   $("snd").textContent = "Sound on"; $("snd").setAttribute("aria-pressed", "true"); $("enter").textContent = "Sound on. Needle down.";
 }
 function turnOff() { soundOn = false; music.full = false; music.stop(); $("mixer").classList.add("idle"); $("mixSay").textContent = "Turn the sound on to mix."; setDeck(); $("snd").textContent = "Sound off"; $("snd").setAttribute("aria-pressed", "false"); }
@@ -319,7 +323,7 @@ function frame(now) {
   const armDeg = auto.on || (soundOn && scrollY > 0 && p < 0.995) ? ARM_OUT + (ARM_IN - ARM_OUT) * p : (soundOn && p >= 0.995 ? ARM_IN : ARM_REST);
   if (Math.abs(armDeg - (armDeg0 ?? 999)) > 0.05) { $("arm").style.transform = `translate(196px,26px) rotate(${armDeg.toFixed(2)}deg)`; armDeg0 = armDeg; }
   const drop = $("drop").getBoundingClientRect().top < innerHeight * 0.4;          // the end of the page: every part playing at once
-  if (soundOn && drop !== music.full) { music.full = drop; if (drop) { music.boom(); tunnel.boom(); mixSay(); } }
+  if (soundOn && drop !== music.full) { music.full = drop; if (drop) { music.boom(); tunnel.boom(); } mixSay(); }
   a += (target - a) * Math.min(1, dt * 2.2);                                     // the music follows your scroll, a beat behind
   if (soundOn) {
     music.setAscent(a);
@@ -342,11 +346,12 @@ addEventListener("pointerdown", () => { music.resume(); }, true);
 /* the mixing desk at the end of the page */
 const NOTE = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
 function mixSay() {
-  const el = $("mixSay"); if (!soundOn) { el.textContent = "Turn the sound on to mix."; return; }
-  if (!music.full) { el.textContent = "Keep going: at the bottom every part plays at once."; return; }
+  const el = $("mixSay"); if (!soundOn) { mixLock(); el.textContent = "Turn the sound on to mix."; return; }
+  if (!music.full) { mixLock(); el.textContent = "Keep going: at the bottom every part plays at once."; return; }
   const so = [...music.solo].map((id) => ASCENT_STEMS.find((s) => s.id === id).label), mu = [...music.mute].map((id) => ASCENT_STEMS.find((s) => s.id === id).label);
-  el.textContent = so.length ? "Soloing " + so.join(" + ") + "." : mu.length ? "Muted: " + mu.join(", ") + "." : "Everything is playing. Solo a part, mute one, or bend the key and tempo.";
+  mixLock(); el.textContent = so.length ? "Soloing " + so.join(" + ") + "." : mu.length ? "Muted: " + mu.join(", ") + "." : "Everything is playing. Solo a part, mute one, or bend the key and tempo.";
 }
+const mixLock = () => document.querySelectorAll("#mixer button, #mixer input").forEach((e) => (e.disabled = !(soundOn && music.full)));
 function paintStems() { document.querySelectorAll(".stem").forEach((el) => { const id = el.dataset.id, off = music.stemGain(id) === 0; el.classList.toggle("off", off); el.classList.toggle("solo", music.solo.has(id)); el.querySelector(".s").setAttribute("aria-pressed", String(music.solo.has(id))); el.querySelector(".m").setAttribute("aria-pressed", String(music.mute.has(id))); }); mixSay(); }
 $("stems").innerHTML = ASCENT_STEMS.map((s) => `<div class="stem" data-id="${s.id}"><b>${s.label}</b><div class="sm"><button class="s" type="button" aria-pressed="false" aria-label="Solo ${s.label}">S</button><button class="m" type="button" aria-pressed="false" aria-label="Mute ${s.label}">M</button></div><input type="range" min="0" max="150" value="100" aria-label="${s.label} level"></div>`).join("");
 $("stems").addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return; const id = b.closest(".stem").dataset.id; if (b.classList.contains("s")) music.setSolo(id, !music.solo.has(id)); else music.setMute(id, !music.mute.has(id)); paintStems(); });
@@ -356,7 +361,7 @@ $("mixKey").addEventListener("input", (e) => { music.setKey(+e.target.value); ke
 $("mixTempo").addEventListener("input", (e) => { music.setTempo(+e.target.value); $("mixTempoO").textContent = music.tempo; });
 $("mixShuffle").addEventListener("click", () => { music.reshuffle(); toast("Reshuffled: same parts, new pattern."); });
 $("mixReset").addEventListener("click", () => { music.resetMix(); $("mixKey").value = 0; $("mixTempo").value = 174; $("mixTempoO").textContent = 174; keyO(); document.querySelectorAll(".stem input").forEach((i) => (i.value = 100)); paintStems(); });
-keyO();
+keyO(); mixSay();
 
 /* easter eggs: the roll of film, a dinosaur, and the Konami negative */
 const toast = (t) => { const e = $("toast"); e.textContent = t; e.classList.add("on"); clearTimeout(toast.t); toast.t = setTimeout(() => e.classList.remove("on"), 3400); };

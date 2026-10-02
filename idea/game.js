@@ -22,7 +22,7 @@ const MAP = [
 ];
 const TILE = 2, H = MAP.length, W = MAP[0].length, WALL_H = 2.6, TEAM_SIZE = 6, TO_WIN = 4;
 const COLORS = { red: 0xe5384a, blue: 0x3a7bf2 };
-const q = new URLSearchParams(location.search), TIMESCALE = +q.get("speed") || 1;
+const q = new URLSearchParams(location.search), TIMESCALE = Math.min(4, Math.max(0.25, +q.get("speed") || 1));
 const mulberry = (a) => () => { a |= 0; a = (a + 0x6D2B79F5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
 let R = mulberry(+q.get("seed") || (Math.random() * 1e9) | 0);
 const $ = (id) => document.getElementById(id);
@@ -161,7 +161,7 @@ function showEnd() { $("end").dataset.shown = "1"; $("end").hidden = false; cons
 function begin() { resetGame(); $("end").hidden = true; delete $("end").dataset.shown; $("intro").hidden = true; $("hud").hidden = false; $("hint").hidden = false; setTimeout(() => ($("hint").hidden = true), 9000); state = "play"; audio(); }
 for (const [id, tm] of [["tRed", "red"], ["tBlue", "blue"]]) $(id).onclick = () => { team = tm; $("tRed").setAttribute("aria-pressed", String(tm === "red")); $("tBlue").setAttribute("aria-pressed", String(tm === "blue")); };
 $("start").onclick = begin; $("again").onclick = begin;
-$("view").onclick = () => { view = view === "overview" ? "chase" : "overview"; $("view").textContent = "View: " + view; }; addEventListener("keydown", (e) => { if (e.key === "c" || e.key === "C" || e.key === "Tab") { e.preventDefault(); $("view").click(); } });
+$("view").onclick = () => { view = view === "overview" ? "chase" : "overview"; $("view").textContent = "View: " + view; }; addEventListener("keydown", (e) => { if (e.key === "c" || e.key === "C") { e.preventDefault(); $("view").click(); } });
 let radio = null; $("muz").onclick = async () => { const on = $("muz").getAttribute("aria-pressed") !== "true"; $("muz").setAttribute("aria-pressed", String(on)); $("muz").textContent = "Muzak: " + (on ? "on" : "off"); try { if (on) { if (!radio) { const m = await import("../fm/fm.js"); radio = new m.Radio(); } await radio.start("technosoft"); radio.M.gain.gain.value = 0.28; } else if (radio) radio.stop(); } catch (e) { $("muz").textContent = "Muzak: unavailable"; } };
 
 // ---------- basic VR: the whole store sits on a table in front of you
@@ -170,7 +170,7 @@ if (navigator.xr) navigator.xr.isSessionSupported("immersive-vr").then((ok) => {
 const board = (() => { const c = document.createElement("canvas"); c.width = 512; c.height = 128; const tex = new THREE.CanvasTexture(c); const s = new THREE.Mesh(new THREE.PlaneGeometry(14, 3.5), new THREE.MeshBasicMaterial({ map: tex, transparent: true })); s.position.set(0, 7, -H * TILE / 2 - 3); s.rotation.x = -0.6; s.visible = false; world.add(s); return { c, tex, s }; })();
 function drawBoard() { const g = board.c.getContext("2d"); g.clearRect(0, 0, 512, 128); g.fillStyle = "rgba(10,4,16,.8)"; g.fillRect(0, 0, 512, 128); g.font = "900 64px ui-rounded,sans-serif"; g.fillStyle = "#ff7a88"; g.fillText(`${finished.red}`, 40, 84); g.fillStyle = "#fff"; g.font = "800 44px ui-rounded,sans-serif"; g.fillText("RED  /  BLUE", 130, 80); g.fillStyle = "#7aa8ff"; g.font = "900 64px ui-rounded,sans-serif"; g.fillText(`${finished.blue}`, 430, 84); board.tex.needsUpdate = true; }
 async function enterVR() { try { if (state === "intro") begin(); vrSession = await navigator.xr.requestSession("immersive-vr", { optionalFeatures: ["local-floor"] }); await renderer.xr.setSession(vrSession); world.scale.setScalar(0.026); world.position.set(0, 0.9, -0.95); table.visible = true; board.s.visible = true;
-    for (let i = 0; i < 2; i++) { const c = renderer.xr.getController(i); c.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(), new THREE.Vector3(0, 0, -2)]), new THREE.LineBasicMaterial({ color: 0xffffff }))); scene.add(c); c.addEventListener("selectstart", () => { if (state !== "play" || cooldown > 0) return; const o = new THREE.Vector3(), d = new THREE.Vector3(0, 0, -1); c.getWorldPosition(o); d.transformDirection(c.matrixWorld); const p = floorPoint(o, d); if (p) { const b = pickBot(p.x, p.z); if (b) shoutAt(b); } }); }
+    for (let i = 0; i < 2; i++) { const c = renderer.xr.getController(i); if (c.userData.armed) continue; c.userData.armed = true; c.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(), new THREE.Vector3(0, 0, -2)]), new THREE.LineBasicMaterial({ color: 0xffffff }))); scene.add(c); c.addEventListener("selectstart", () => { if (state !== "play" || cooldown > 0) return; const o = new THREE.Vector3(), d = new THREE.Vector3(0, 0, -1); c.getWorldPosition(o); d.transformDirection(c.matrixWorld); const p = floorPoint(o, d); if (p) { const b = pickBot(p.x, p.z); if (b) shoutAt(b); } }); }
     vrSession.addEventListener("end", () => { world.scale.setScalar(1); world.position.set(0, 0, 0); table.visible = false; board.s.visible = false; vrSession = null; fitCamera(); }); } catch (e) { console.warn("VR could not start:", e); } }
 vrBtns.forEach((b) => (b.onclick = enterVR));
 

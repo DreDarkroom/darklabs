@@ -262,7 +262,7 @@ export class Radio {
   }
   _clock() {
     if (this.worker) return;
-    try { this.worker = new Worker(URL.createObjectURL(new Blob(["setInterval(()=>postMessage(0),40)"], { type: "text/javascript" }))); this.worker.onmessage = () => this._tick(); }
+    try { const u = URL.createObjectURL(new Blob(["setInterval(()=>postMessage(0),40)"], { type: "text/javascript" })); this.worker = new Worker(u); URL.revokeObjectURL(u); this.worker.onmessage = () => this._tick(); }
     catch (e) { this.timer = setInterval(() => this._tick(), 40); }                    // no Worker: fall back to a normal timer
   }
   _tick() {
@@ -418,7 +418,7 @@ export class Journey {
   }
   pluck(midi) { if (!this.live) return; const pc = ((midi - JOURNEY.root) % 12 + 12) % 12, near = PHRYG.reduce((b, n) => (Math.abs(n - pc) < Math.abs(b - pc) ? n : b), 0); this.V.fmbell(this.ctx.currentTime + 0.01, mtof(midi - pc + near), { v: 0.11, len: 0.7, rev: 0.6 }); }
   tick() { if (this.live) this.V.rim(this.ctx.currentTime + 0.01, { v: 0.3 }); }
-  stop() { this.live = false; if (this.worker) { this.worker.terminate(); this.worker = null; } clearInterval(this.timer); if (this.ctx) { this.M.gain.gain.cancelScheduledValues(this.ctx.currentTime); this.M.gain.gain.setTargetAtTime(0, this.ctx.currentTime, 0.08); } }
+  stop() { this.live = false; if (this.worker) { this.worker.terminate(); this.worker = null; } clearInterval(this.timer); if (this.ctx) { this._stopAt = this.ctx.currentTime; this.M.gain.gain.cancelScheduledValues(this.ctx.currentTime); this.M.gain.gain.setTargetAtTime(0, this.ctx.currentTime, 0.08); } }
   level() { const an = this.analyser; if (!an) return 0; const b = new Uint8Array(an.fftSize); an.getByteTimeDomainData(b); let s = 0; for (const x of b) { const d = (x - 128) / 128; s += d * d; } return Math.sqrt(s / b.length); }
 }
 
@@ -509,8 +509,9 @@ export class Ascent {
       this.B = makeBuses(this.ctx, this.M, ASCENT_TRK.bpm, 1.0); this.V = createVoices(this.ctx, this.B); this.VM = mixProxy(this.V, this);
     }
     if (this.ctx.state !== "running") await this.ctx.resume();
-    this.M.gain.gain.cancelScheduledValues(this.ctx.currentTime); this.M.gain.gain.setTargetAtTime(0.9, this.ctx.currentTime, 0.05);
-    this.live = true; this.nextT = this.ctx.currentTime + 0.12; this.bar = 0; this.last = performance.now(); this._clock();
+    const wait = this._stopAt && this.ctx.currentTime - this._stopAt < 1.0 ? 1.0 : 0;           // a quick off/on: let the old look-ahead notes finish first
+    this.M.gain.gain.cancelScheduledValues(this.ctx.currentTime); this.M.gain.gain.setTargetAtTime(0.9, this.ctx.currentTime + wait, 0.05);
+    this.live = true; this.nextT = this.ctx.currentTime + 0.12 + wait; this.bar = 0; this.last = performance.now(); this._clock();
   }
   setAscent(a) { this.target = clamp(a, 0, 1); }
   stemGain(id) { if (this.solo.size && !this.solo.has(id)) return 0; if (this.mute.has(id)) return 0; return this.vol[id] ?? 1; }
@@ -536,9 +537,9 @@ export class Ascent {
       this.nextT += bd; this.bar++;
     }
   }
-  boom() { if (!this.live) return; const t = this.ctx.currentTime + 0.05; this.V.impact(t, { v: 0.9 }); this.V.sweep(t, 0.9, { f0: 9000, f1: 300, v: 0.1 }); }
-  pluck(midi) { if (!this.live) return; const pc = ((midi - ASCENT_TRK.root) % 12 + 12) % 12, MIN = [0, 2, 3, 5, 7, 8, 10], near = MIN.reduce((b, n) => (Math.abs(n - pc) < Math.abs(b - pc) ? n : b), 0); this.V.fmbell(this.ctx.currentTime + 0.01, mtof(midi - pc + near), { v: 0.12, len: 0.6, rev: 0.5 }); }
-  tick() { if (this.live) this.V.rim(this.ctx.currentTime + 0.01, { v: 0.3 }); }
+  boom() { if (!this.live) return; const t = this.ctx.currentTime + 0.05; const W = this.full ? this.VM : this.V; W.impact(t, { v: 0.9 }); W.sweep(t, 0.9, { f0: 9000, f1: 300, v: 0.1 }); }
+  pluck(midi) { if (!this.live) return; const pc = ((midi - ASCENT_TRK.root) % 12 + 12) % 12, MIN = [0, 2, 3, 5, 7, 8, 10], near = MIN.reduce((b, n) => (Math.abs(n - pc) < Math.abs(b - pc) ? n : b), 0); (this.full ? this.VM : this.V).fmbell(this.ctx.currentTime + 0.01, mtof(midi - pc + near), { v: 0.12, len: 0.6, rev: 0.5 }); }
+  tick() { if (this.live) (this.full ? this.VM : this.V).rim(this.ctx.currentTime + 0.01, { v: 0.3 }); }
   stop() { this.live = false; if (this.worker) { this.worker.terminate(); this.worker = null; } clearInterval(this.timer); if (this.ctx) { this.M.gain.gain.cancelScheduledValues(this.ctx.currentTime); this.M.gain.gain.setTargetAtTime(0, this.ctx.currentTime, 0.06); } }
   level() { const an = this.analyser; if (!an) return 0; const b = new Uint8Array(an.fftSize); an.getByteTimeDomainData(b); let s = 0; for (const x of b) { const d = (x - 128) / 128; s += d * d; } return Math.sqrt(s / b.length); }
 }
