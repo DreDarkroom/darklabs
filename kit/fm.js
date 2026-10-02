@@ -421,3 +421,112 @@ export class Journey {
   stop() { this.live = false; if (this.worker) { this.worker.terminate(); this.worker = null; } clearInterval(this.timer); if (this.ctx) { this.M.gain.gain.cancelScheduledValues(this.ctx.currentTime); this.M.gain.gain.setTargetAtTime(0, this.ctx.currentTime, 0.08); } }
   level() { const an = this.analyser; if (!an) return 0; const b = new Uint8Array(an.fftSize); an.getByteTimeDomainData(b); let s = 0; for (const x of b) { const d = (x - 128) / 128; s += d * d; } return Math.sqrt(s / b.length); }
 }
+
+// ───────────────────────────────────────────────── Ascent: the homepage music. One number (0..1) is the whole arrangement.
+// Low = spacious, Max Cooper-ish: polyrhythmic FM bells, a granular cloud, sparse half-time pulse.
+// Rising = breaks, then hard two-step drum & bass. The top = a Noisia-ish drop with a talking neuro bass.
+export const ASCENT_TRK = { bpm: 174, stepDur: 60 / 174 / 4, barDur: 240 / 174, root: 29, trim: 1 };
+
+export function scheduleAscentBar(a, bar, t0, V, trk = ASCENT_TRK, opts = {}) {
+  const sd = trk.stepDur, T = (s) => t0 + s * sd, rnd = mulberry32(((bar + (opts.seed || 0) * 977) * 2654435761 + 12345) >>> 0), ph = bar % 8, ch = Math.floor(bar / 2) % 4;
+  const off = [0, -4, -9, -2][ch], qual = [[0, 3, 7, 10], [0, 4, 7, 11], [0, 4, 7, 11], [0, 4, 7, 10]][ch], root = trk.root + off, chord = qual.map((i) => root + 24 + i);
+  const sm = (lo, hi) => sstep(clamp((a - lo) / (hi - lo), 0, 1));
+  const L = { amb: 1 - 0.55 * sm(0.45, 0.9), pulse: sm(0.1, 0.3), half: sm(0.2, 0.38), brk: sm(0.4, 0.58), dnb: sm(0.62, 0.78), drop: sm(0.88, 0.96), hat: sm(0.3, 0.5), arp: sm(0.05, 0.2), grain: 1 - sm(0.5, 0.85) };
+  if (opts.full) { L.grain = 0.8; L.amb = 1; }                                                       // the end of the page: every part at once
+  const stage = a >= 0.62 ? "dnb" : a >= 0.4 ? "brk" : "half";
+  // harmony: a slow cloud of pad, one chord per two bars
+  if (bar % 2 === 0) V.pad(T(0), chord.map(mtof), trk.barDur * 2.04, { v: 0.05 * L.amb + 0.012, cut: 500 + 1500 * a, att: 1.0, rel: 1.0, rev: 0.55, dly: 0.1 });
+  // the granular cloud (it thins out as the drums arrive)
+  if (L.grain > 0.03) for (let k = 0; k < 7; k++) if (rnd() < 0.85 * L.grain) { const deg = Math.floor(rnd() * 7), n = scaleNote(root + 36 + 12 * Math.floor(rnd() * 2), deg); V.grain(T(Math.floor(rnd() * 16)), mtof(n), 0.07 + rnd() * 0.12, { v: 0.032 * (0.5 + L.grain), pan: (rnd() - 0.5) * 1.6, type: rnd() < 0.3 ? "triangle" : "sine" }); }
+  // Max Cooper: three cycles of different lengths against the bar (3, 5 and 7 steps), so the pattern keeps shifting
+  if (L.arp > 0.03) {
+    const cyc = [[3, [0, 2, 4, 2], 36], [5, [1, 3, 5, 4, 2], 48], [7, [4, 6, 3, 5, 2, 6, 1], 36]];
+    for (let s = 0; s < 16; s++) { const gs = bar * 16 + s; cyc.forEach(([len, degs, oct], ci) => { if (gs % len === 0) { if (ci > 0 && L.dnb > 0.5 && L.drop < 0.5 && rnd() < 0.5) return; const deg = degs[Math.floor(gs / len) % degs.length]; V.fmbell(T(s), mtof(scaleNote(root + oct, deg)), { v: (0.085 - 0.02 * ci) * L.arp * (1 - 0.35 * L.drop), len: 0.32 + 0.2 * (ci === 1), rev: 0.5, dly: 0.45 }); } }); }
+  }
+  // sparse half-time pulse, then breaks, then two-step drum & bass
+  if (L.half > 0.04 && stage === "half") { V.kick(T(0), { f0: 120, f1: 44, len: 0.3, v: 0.62 * L.half, duckAmt: 0.35, duckRel: 0.2 }); if (rnd() < 0.5) V.kick(T(10), { f0: 110, f1: 44, len: 0.25, v: 0.4 * L.half, duck: false }); V.rim(T(8), { v: 0.2 * L.half }); for (const s of [4, 12]) if (rnd() < 0.6) V.rim(T(s), { v: 0.1 * L.half }); }
+  if (stage === "brk") { for (const s of [0, 10]) V.kick(T(s), { f0: 135, f1: 46, len: 0.26, v: 0.88, duckAmt: 0.5, duckRel: 0.15 }); V.snare(T(8), { v: 0.85, tone: 190 }); for (const s of [7, 15]) if (rnd() < 0.45) V.snare(T(s), { v: 0.2, ghost: true }); }
+  if (stage === "dnb") {
+    const fill = ph === 7;
+    for (const s of [0, 10, ...(rnd() < 0.3 ? [7] : [])]) V.kick(T(s), { f0: 155, f1: 46, len: 0.26, v: 0.95, dist: L.drop > 0.5, duckAmt: 0.6, duckRel: 0.15 });
+    if (!fill) for (const s of [4, 12]) V.snare(T(s), { v: 1.0, tone: 175, noiseF: 2000 });
+    for (const s of [7, 9, 14, 15]) if (rnd() < 0.3 + 0.2 * L.drop) V.snare(T(s), { v: 0.22, ghost: true });
+    if (fill) for (let s = 8; s < 16; s++) V.snare(T(s), { v: 0.3 + (s - 8) * 0.1, tone: 210 + s * 4 });
+  }
+  if (L.hat > 0.04) for (let s = 0; s < 16; s++) if (s % 2 === 0 || rnd() < 0.45 * L.hat) V.hat(T(s), { v: (s % 4 === 2 ? 0.28 : 0.13) * L.hat, open: stage === "dnb" && (s === 6 || s === 14) && rnd() < 0.4 });
+  // a stutter of glitch clicks now and then (the micro-edits)
+  if (a > 0.18 && rnd() < 0.18 + 0.2 * L.brk) V.glitch(T(8 + Math.floor(rnd() * 6)), 5 + Math.floor(rnd() * 5), sd * 0.55, { v: 0.14 });
+  // the low end: a soft sine pulse, then a rolling reese, then the Noisia neuro drop
+  if (a > 0.1 && stage !== "dnb") V.sub(T(0), mtof(root + 12), trk.barDur * 0.85, { v: 0.3 * (0.4 + 0.6 * L.pulse) });
+  if (stage === "brk") for (const s of [0, 3, 6, 10, 11, 14]) { const nx = { 0: 3, 3: 6, 6: 10, 10: 11, 11: 14, 14: 16 }[s]; V.reese(T(s), mtof(root + 12), (nx - s) * sd * 0.9, { cut: 300 + 900 * a, det: 12, v: 0.15 * L.brk, drive: true }); }
+  if (stage === "dnb") {
+    const pat = [[0, 6, 10, 14], [0, 3, 6, 10, 12], [0, 4, 8, 11, 14]][ch % 3];
+    for (let i = 0; i < pat.length; i++) {
+      const s = pat[i], nx = pat[i + 1] ?? 16, dur = (nx - s) * sd * 0.92, n = root + 12 + (i === pat.length - 1 && rnd() < 0.4 ? 7 : 0) + (rnd() < 0.15 ? 12 : 0);
+      if (L.drop > 0.3) V.neuro(T(s), mtof(n), dur, { v: 0.2 * L.drop + 0.04, rate: 2.5 + rnd() * 6, f1: 300 + rnd() * 500, f2: 900 + rnd() * 900, index: 1 + rnd() * 0.9, ratio: rnd() < 0.5 ? 2 : 1.5 });
+      V.reese(T(s), mtof(n), dur, { cut: 400 + 800 * a, det: 14, v: 0.18 * (1 - 0.6 * L.drop), drive: true }); V.sub(T(s), mtof(n), dur, { v: 0.4 });
+    }
+    if (L.drop > 0.3 && ph % 2 === 1) V.stab(T(3), chord.slice(0, 3).map((m) => mtof(m + 12)), 0.2, { v: 0.1 * L.drop });
+  }
+  // movement: a sweep at the start of each phrase, a riser through the second half of every phrase while it is building
+  if (a > 0.45 && ph === 0) V.sweep(T(0), trk.barDur, { f0: 6500, f1: 400, v: 0.06 });
+  if (a > 0.5 && a < 0.92 && ph === 6) V.riser(T(0), trk.barDur * 2, { v: 0.12 * sm(0.5, 0.8) });
+}
+
+// The parts a listener can solo, mute and turn up at the end of the page. Every voice belongs to one stem.
+export const ASCENT_STEMS = [
+  { id: "drums", label: "Drums", voices: ["kick", "snare", "clap", "rim", "tom"] }, { id: "hats", label: "Hats", voices: ["hat", "shaker"] },
+  { id: "bass", label: "Bass", voices: ["sub", "reese", "acid"] }, { id: "neuro", label: "Neuro", voices: ["neuro"] },
+  { id: "bells", label: "Bells", voices: ["fmbell", "pluck", "lead"] }, { id: "pad", label: "Pad", voices: ["pad", "stab"] },
+  { id: "texture", label: "Texture", voices: ["grain", "glitch", "dust"] }, { id: "fx", label: "FX", voices: ["sweep", "riser", "impact"] },
+];
+const STEM_OF = Object.fromEntries(ASCENT_STEMS.flatMap((s) => s.voices.map((v) => [v, s.id])));
+function mixProxy(V, ctl) {
+  return new Proxy(V, { get(t, k) {
+    const f = t[k], id = STEM_OF[k]; if (typeof f !== "function" || !id) return f;
+    return (...args) => { const m = ctl.stemGain(id); if (m <= 0) return; const o = args[args.length - 1]; if (m !== 1 && o && typeof o === "object" && typeof o.v === "number") args[args.length - 1] = { ...o, v: o.v * m }; return f(...args); };
+  } });
+}
+
+export class Ascent {
+  constructor() { this.ctx = null; this.target = 0.03; this.a = 0.03; this.live = false; this.bar = 0; this.last = 0; this.full = false; this.solo = new Set(); this.mute = new Set(); this.vol = {}; this.keyShift = 0; this.tempo = 174; this.seed = 0; }
+  get ready() { return !!this.ctx; }
+  async start() {
+    if (!this.ctx) {
+      this.ctx = new (window.AudioContext || window.webkitAudioContext)({ latencyHint: "playback" }); this.M = makeMaster(this.ctx); this.analyser = this.M.analyser;
+      this.B = makeBuses(this.ctx, this.M, ASCENT_TRK.bpm, 1.0); this.V = createVoices(this.ctx, this.B); this.VM = mixProxy(this.V, this);
+    }
+    if (this.ctx.state !== "running") await this.ctx.resume();
+    this.M.gain.gain.cancelScheduledValues(this.ctx.currentTime); this.M.gain.gain.setTargetAtTime(0.9, this.ctx.currentTime, 0.05);
+    this.live = true; this.nextT = this.ctx.currentTime + 0.12; this.bar = 0; this.last = performance.now(); this._clock();
+  }
+  setAscent(a) { this.target = clamp(a, 0, 1); }
+  stemGain(id) { if (this.solo.size && !this.solo.has(id)) return 0; if (this.mute.has(id)) return 0; return this.vol[id] ?? 1; }
+  setSolo(id, on) { on ? this.solo.add(id) : this.solo.delete(id); }
+  setMute(id, on) { on ? this.mute.add(id) : this.mute.delete(id); }
+  setVol(id, v) { this.vol[id] = clamp(v, 0, 1.5); }
+  setKey(semis) { this.keyShift = clamp(Math.round(semis), -6, 6); }
+  setTempo(bpm) { this.tempo = clamp(Math.round(bpm), 140, 190); if (this.B && this.B.setBpm) this.B.setBpm(this.tempo); }
+  reshuffle() { this.seed = (this.seed + 1) % 1000; }
+  resetMix() { this.solo.clear(); this.mute.clear(); this.vol = {}; this.keyShift = 0; this.setTempo(174); this.seed = 0; }
+  resume() { if (this.ctx && this.ctx.state !== "running") this.ctx.resume(); }
+  _clock() {
+    if (this.worker) return;
+    try { this.worker = new Worker(URL.createObjectURL(new Blob(["setInterval(()=>postMessage(0),40)"], { type: "text/javascript" }))); this.worker.onmessage = () => this._tick(); }
+    catch (e) { this.timer = setInterval(() => this._tick(), 40); }
+  }
+  _tick() {
+    if (!this.live) return; const now = performance.now(), dt = Math.min(0.2, (now - this.last) / 1000); this.last = now;
+    this.a += (this.target - this.a) * Math.min(1, dt * 1.6);                                   // the music follows you, a beat behind
+    while (this.nextT < this.ctx.currentTime + 0.9) {
+      const bd = 240 / this.tempo, trk = { ...ASCENT_TRK, bpm: this.tempo, stepDur: bd / 16, barDur: bd, root: ASCENT_TRK.root + this.keyShift };
+      try { scheduleAscentBar(this.full ? 1 : this.a, this.bar, this.nextT, this.full ? this.VM : this.V, trk, { full: this.full, seed: this.seed }); } catch (e) { console.error("Ascent bar failed (skipped):", e); }       // never replay a bad bar
+      this.nextT += bd; this.bar++;
+    }
+  }
+  boom() { if (!this.live) return; const t = this.ctx.currentTime + 0.05; this.V.impact(t, { v: 0.9 }); this.V.sweep(t, 0.9, { f0: 9000, f1: 300, v: 0.1 }); }
+  pluck(midi) { if (!this.live) return; const pc = ((midi - ASCENT_TRK.root) % 12 + 12) % 12, MIN = [0, 2, 3, 5, 7, 8, 10], near = MIN.reduce((b, n) => (Math.abs(n - pc) < Math.abs(b - pc) ? n : b), 0); this.V.fmbell(this.ctx.currentTime + 0.01, mtof(midi - pc + near), { v: 0.12, len: 0.6, rev: 0.5 }); }
+  tick() { if (this.live) this.V.rim(this.ctx.currentTime + 0.01, { v: 0.3 }); }
+  stop() { this.live = false; if (this.worker) { this.worker.terminate(); this.worker = null; } clearInterval(this.timer); if (this.ctx) { this.M.gain.gain.cancelScheduledValues(this.ctx.currentTime); this.M.gain.gain.setTargetAtTime(0, this.ctx.currentTime, 0.06); } }
+  level() { const an = this.analyser; if (!an) return 0; const b = new Uint8Array(an.fftSize); an.getByteTimeDomainData(b); let s = 0; for (const x of b) { const d = (x - 128) / 128; s += d * d; } return Math.sqrt(s / b.length); }
+}

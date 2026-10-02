@@ -6,15 +6,17 @@
 <meta name="color-scheme" content="dark">
 <meta name="darkreader-lock">
 <title>Dre Darkroom | DJ / Photography / Livestream</title>
-<meta name="description" content="Dre Darkroom: DJ, photography and livestream, plus instruments and games you can play in the browser. Turn the sound on: it climbs from dark ambience to a drum and bass crescendo.">
+<meta name="description" content="Dre Darkroom: DJ, photography and livestream, plus instruments and games you can play in the browser. Press play: the music climbs as you scroll.">
 <meta name="theme-color" content="#040203">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2214%22 fill=%22%23060607%22/><text x=%2250%22 y=%2268%22 font-size=%2258%22 font-family=%22monospace%22 font-weight=%22700%22 text-anchor=%22middle%22 fill=%22%23d1122b%22>DD</text></svg>">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--red:#d1122b;--red-soft:#e8434f;--ink:#040203;--text:#eadede;--dim:#b09c9c;--acc:rgb(150,205,255);--mx:50vw;--my:40vh;--beam:360px}
+:root{--brand:#690000;--red:#d1122b;--red-soft:#e8434f;--ink:#040203;--text:#eadede;--dim:#b09c9c;--acc:rgb(150,205,255);--mx:50vw;--my:40vh;--beam:360px}
 html{background:var(--ink);scroll-behavior:smooth}
 body{color:var(--text);font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;overflow-x:hidden}
 a{color:inherit}
+::selection{background:#690000;color:#fff1de}
+::-moz-selection{background:#690000;color:#fff1de}
 #sky{position:fixed;inset:0;width:100%;height:100%;z-index:0;display:block}
 #dark{position:fixed;inset:0;z-index:5;pointer-events:none;background:radial-gradient(circle var(--beam) at var(--mx) var(--my),rgba(2,0,0,0),rgba(2,0,0,.03) 34%,rgba(2,0,0,.55) 100%)}
 #glow{position:fixed;inset:0;z-index:6;pointer-events:none;mix-blend-mode:screen;background:radial-gradient(circle calc(var(--beam)*.85) at var(--mx) var(--my),rgba(209,18,43,.26),rgba(209,18,43,.07) 46%,transparent 74%)}
@@ -23,12 +25,8 @@ a{color:inherit}
 .bar nav{display:flex;gap:1.1rem;margin-left:auto}
 .bar nav a{font-size:.72rem;letter-spacing:.26em;text-transform:uppercase;text-decoration:none;color:var(--dim);padding:.3rem 0;border-bottom:1px solid transparent;transition:color .2s,border-color .2s}
 .bar nav a:hover,.bar nav a.on{color:#fff;border-color:var(--red)}
-.snd{font:inherit;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:#fff;background:rgba(209,18,43,.18);border:1px solid rgba(209,18,43,.7);border-radius:999px;padding:.4rem .9rem;cursor:pointer}
-.snd[aria-pressed=true]{background:var(--red)}
-.jr{display:flex;gap:.55rem;align-items:center;font-size:.66rem;letter-spacing:.22em;text-transform:uppercase;color:var(--dim)}
-.jr[hidden]{display:none}
-.jr input{width:7.5rem;accent-color:var(--red)}
-@media (max-width:700px){.jr span{display:none}.jr input{width:5rem}}
+.snd{font:inherit;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:#fff;background:rgba(105,0,0,.55);border:1px solid #a01a22;border-radius:999px;padding:.4rem .9rem;cursor:pointer}
+.snd[aria-pressed=true]{background:var(--brand);border-color:#e0434f;box-shadow:0 0 14px rgba(160,20,30,.6)}
 .snd:focus-visible,.bar a:focus-visible,.card:focus-visible,.btn:focus-visible{outline:2px solid #fff;outline-offset:3px}
 main{position:relative;z-index:10}
 .screen{min-height:100vh;display:flex;flex-direction:column;justify-content:center;max-width:1080px;margin:0 auto;padding:6rem 1.3rem 4rem}
@@ -37,9 +35,9 @@ h1{font-size:clamp(3rem,13vw,9rem);line-height:.86;font-weight:800;letter-spacin
 h1 span{display:block;letter-spacing:.06em;font-weight:200;color:#ffd8dc;font-size:.62em}
 h2{font-size:clamp(2rem,6vw,3.6rem);line-height:1;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:#fff;text-shadow:0 0 24px rgba(209,18,43,.7);margin-bottom:.8rem}
 .lede{max-width:46ch;font-size:1.15rem;color:#d9c8c8;margin:1.4rem 0 2rem}
-.btn{display:inline-block;font-weight:700;text-decoration:none;color:#fff;background:linear-gradient(180deg,#e0243a,#a50d20);padding:.8rem 1.5rem;border-radius:3px;border:1px solid #ff6a78;box-shadow:0 0 18px rgba(209,18,43,.45);transition:transform .2s,box-shadow .2s,filter .2s;cursor:pointer;font-size:1rem;font-family:inherit}
-.btn:hover{transform:translateY(-2px);filter:brightness(1.15);box-shadow:0 0 30px rgba(209,18,43,.8)}
-.btn.ghost{background:transparent;border-color:rgba(255,255,255,.4);box-shadow:none}
+.btn{display:inline-block;font-weight:700;text-decoration:none;color:#fff;background:linear-gradient(180deg,#8a0a0a,#690000);padding:.8rem 1.5rem;border-radius:3px;border:1px solid #b3262e;box-shadow:0 0 18px rgba(105,0,0,.7);transition:transform .2s,box-shadow .2s,filter .2s;cursor:pointer;font-size:1rem;font-family:inherit}
+.btn:hover{transform:translateY(-2px);filter:brightness(1.25);box-shadow:0 0 30px rgba(150,10,20,.9)}
+.btn.ghost{background:rgba(105,0,0,.22);border-color:#8a1a22;box-shadow:none}
 .row{display:flex;flex-wrap:wrap;gap:1rem;align-items:center}
 .quiet{color:var(--dim);font-size:.9rem;text-decoration:none;letter-spacing:.06em}
 .quiet:hover{color:#fff}
@@ -48,7 +46,7 @@ h2{font-size:clamp(2rem,6vw,3.6rem);line-height:1;letter-spacing:.14em;text-tran
 .card:hover{transform:translateY(-6px) rotate(-.4deg);border-color:var(--red-soft);box-shadow:0 22px 44px rgba(0,0,0,.7),0 0 34px rgba(209,18,43,.4)}
 .card b{font-size:1.15rem;letter-spacing:.04em;color:#fff}
 .card span{color:#c9b8b8;font-size:.9rem}
-.card i{font-style:normal;font-size:.62rem;letter-spacing:.16em;font-weight:800;position:absolute;top:.7rem;right:.7rem;background:var(--red);color:#fff;padding:.18rem .5rem;border-radius:3px}
+.card i{font-style:normal;font-size:.62rem;letter-spacing:.16em;font-weight:800;position:absolute;top:.7rem;right:.7rem;background:var(--brand);border:1px solid #a01a22;color:#fff;padding:.18rem .5rem;border-radius:3px}
 .card.hero{grid-column:1/-1;flex-direction:row;align-items:center;gap:1.4rem;padding:1.8rem;border-color:var(--red-soft);box-shadow:0 0 50px rgba(209,18,43,.25),0 14px 30px rgba(0,0,0,.6)}
 .card.hero b{font-size:1.8rem}
 .card.hero>div:last-child{display:flex;flex-direction:column;gap:.4rem}
@@ -81,6 +79,32 @@ footer a{color:var(--red-soft);text-decoration:none}
 .meter i{position:absolute;left:0;right:0;bottom:0;background:var(--acc);border-radius:3px;box-shadow:0 0 12px var(--acc)}
 .meter span{position:absolute;right:10px;font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:var(--dim);white-space:nowrap}
 .meter .t{top:-4px}.meter .b{bottom:-4px}
+/* the tonearm: a little record deck that plays the page */
+.deck{position:fixed;right:12px;bottom:12px;z-index:21;width:min(168px,30vw);padding:0;border:0;background:transparent;cursor:pointer;filter:drop-shadow(0 6px 14px rgba(0,0,0,.7))}
+.deck svg{display:block;width:100%;height:auto;overflow:visible}
+.deck:focus-visible{outline:2px solid #fff;outline-offset:4px;border-radius:50%}
+.deck .rec{transform-box:fill-box;transform-origin:center;animation:spin 2.4s linear infinite;animation-play-state:paused}
+.deck[aria-pressed=true] .rec{animation-play-state:running}
+.deck .arm{transition:transform 1.2s cubic-bezier(.35,.05,.25,1)}
+.deck .tag{position:absolute;left:0;right:0;bottom:-1.3rem;text-align:center;font-size:.58rem;letter-spacing:.22em;text-transform:uppercase;color:var(--dim);pointer-events:none}
+/* the end-of-page mixer */
+.mixer{width:min(100%,60rem);margin:1.6rem auto 0;padding:1.2rem 1.2rem 1rem;border:1px solid #5a0c12;border-radius:4px;background:linear-gradient(180deg,rgba(40,6,9,.86),rgba(14,5,7,.9));box-shadow:0 0 50px rgba(105,0,0,.35)}
+.mixer h3{font-size:.8rem;letter-spacing:.3em;text-transform:uppercase;color:#ffd8dc;margin-bottom:.2rem}
+.mixer .say{font-size:.85rem;color:var(--dim);min-height:1.4em;margin-bottom:.9rem}
+.stems{display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:.7rem}
+.stem{display:flex;flex-direction:column;gap:.45rem;padding:.7rem .6rem;border:1px solid #3d0d12;border-radius:3px;background:rgba(0,0,0,.35);transition:opacity .2s,border-color .2s}
+.stem.off{opacity:.38}.stem.solo{border-color:#e0434f;box-shadow:0 0 16px rgba(160,20,30,.5)}
+.stem b{font-size:.74rem;letter-spacing:.2em;text-transform:uppercase;color:#fff}
+.stem .sm{display:flex;gap:.4rem}
+.stem button{flex:1;font:inherit;font-size:.72rem;font-weight:800;letter-spacing:.1em;color:#d9c8c8;background:rgba(105,0,0,.3);border:1px solid #5a0c12;border-radius:3px;padding:.3rem 0;cursor:pointer}
+.stem button[aria-pressed=true]{background:var(--brand);color:#fff;border-color:#e0434f}
+.stem input,.knobs input{width:100%;accent-color:#a01a22}
+.knobs{display:flex;flex-wrap:wrap;gap:1.2rem;align-items:center;justify-content:center;margin-top:1rem}
+.knobs label{display:flex;align-items:center;gap:.6rem;font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--dim)}
+.knobs label input{width:7.5rem}.knobs output{min-width:3.2rem;color:#fff;letter-spacing:.08em}
+.mixer .btn{padding:.5rem 1rem;font-size:.8rem}
+.mixer.idle .stems,.mixer.idle .knobs{opacity:.45;pointer-events:none}
+@media (max-width:700px){.deck{width:96px}.deck .tag{display:none}}
 @media (max-width:700px){.bar nav{display:none}.card.hero{flex-direction:column;align-items:flex-start}.meter{display:none}}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
 </style>
@@ -91,7 +115,6 @@ footer a{color:var(--red-soft);text-decoration:none}
 <header class="bar">
   <a class="logo" href="#top">DRE DARKROOM</a>
   <nav aria-label="Sections"><a href="#listen">Listen</a><a href="#play">Play</a><a href="#see">See</a><a href="#drop">Come in</a></nav>
-  <label class="jr" id="jrBox" hidden><span>Journey</span><input id="journey" type="range" min="0" max="1000" value="0" aria-label="Journey: skip along the ten minute climb from dark ambience to the drum and bass crescendo"></label>
   <button class="snd" id="snd" type="button" aria-pressed="false">Sound off</button>
 </header>
 <div class="meter" aria-hidden="true"><span class="t">peak</span><i id="meterFill" style="height:0%"></i><span class="b">intro</span></div>
@@ -100,7 +123,7 @@ footer a{color:var(--red-soft);text-decoration:none}
 <section class="screen" id="top">
   <p class="eyebrow">DJ &middot; Photography &middot; Livestream</p>
   <h1>DRE<span>DARKROOM</span></h1>
-  <p class="lede">Live music and creativity catalyst, developed in the dark. Turn the sound on: it starts as dark, gritty ambience and slowly climbs, over about ten minutes, into a heavy drum &amp; bass crescendo.</p>
+  <p class="lede">Live music and creativity catalyst, developed in the dark. Press play and the needle drops: the page scrolls itself, slowly, and the music climbs with it. Take over whenever you like.</p>
   <div class="row"><button class="btn" id="enter" type="button">Enter with sound</button><a class="quiet" href="#listen">or scroll in silence &darr;</a></div>
 </section>
 
@@ -145,11 +168,34 @@ footer a{color:var(--red-soft);text-decoration:none}
 <section class="screen end" id="drop">
   <p class="eyebrow">04 &middot; The drop</p>
   <h2>Come in.</h2>
-  <p class="lede">The darkroom is open. Take a light.</p>
+  <p class="lede">The darkroom is open. Take a light. Every part of the track is playing now: solo it, mute it, bend it.</p>
+  <div class="mixer idle" id="mixer" role="group" aria-label="Mix the track: solo, mute and set the level of each part">
+    <h3>The mixing desk</h3><p class="say" id="mixSay" role="status" aria-live="polite">Turn the sound on to mix.</p>
+    <div class="stems" id="stems"></div>
+    <div class="knobs">
+      <label>Key <input id="mixKey" type="range" min="-6" max="6" value="0" aria-label="Key, in semitones"><output id="mixKeyO">F</output></label>
+      <label>Tempo <input id="mixTempo" type="range" min="140" max="190" value="174" aria-label="Tempo in beats per minute"><output id="mixTempoO">174</output></label>
+      <button class="btn ghost" id="mixShuffle" type="button">Reshuffle</button><button class="btn ghost" id="mixReset" type="button">Reset the mix</button>
+    </div>
+  </div>
   <div class="row" style="justify-content:center"><a class="btn" href="/darklabs/">Enter Darklabs</a><a class="btn ghost" href="https://dredarkroom.github.io/DevelopDrop/" rel="noopener">Play DevelopDrop</a><a class="btn ghost" href="#top">&uarr; Back to the start (it loops)</a></div>
 </section>
 </main>
 <footer><p>&copy; Dre Darkroom &middot; <a href="https://github.com/DreDarkroom">GitHub</a> &middot; <a href="https://twitch.tv/dredarkroom" rel="noopener">Twitch</a> &middot; <a href="https://soundcloud.com/dredarkroom" rel="noopener">SoundCloud</a> &middot; <a href="https://mixcloud.com/darkroom" rel="noopener">Mixcloud</a></p></footer>
+<button class="deck" id="deck" type="button" aria-pressed="false" aria-label="Record deck. Drops the needle: turns the sound on and slowly scrolls the page. Press again to lift the needle.">
+  <svg viewBox="0 0 220 200" aria-hidden="true">
+    <rect x="4" y="4" width="212" height="192" rx="12" fill="#120608" stroke="#4a0c12"/>
+    <g class="rec"><circle cx="100" cy="120" r="82" fill="#070304" stroke="#2a0a0e" stroke-width="2"/>
+      <circle cx="100" cy="120" r="70" fill="none" stroke="#1d0a0d" stroke-width="1.4"/><circle cx="100" cy="120" r="58" fill="none" stroke="#1d0a0d" stroke-width="1.4"/><circle cx="100" cy="120" r="46" fill="none" stroke="#1d0a0d" stroke-width="1.4"/>
+      <path d="M100 120 L100 38 A82 82 0 0 1 150 55 Z" fill="rgba(255,255,255,.07)"/><path d="M100 120 L100 202 A82 82 0 0 1 50 185 Z" fill="rgba(255,255,255,.05)"/>
+      <circle cx="100" cy="120" r="24" fill="#690000"/><circle cx="100" cy="120" r="3.2" fill="#070304"/></g>
+    <circle cx="196" cy="26" r="13" fill="#2a1013" stroke="#6b1a22" stroke-width="2"/>
+    <g class="arm" id="arm" style="transform:translate(196px,26px) rotate(181deg)">
+      <line x1="-24" y1="0" x2="124" y2="0" stroke="#d9c8c8" stroke-width="3.6" stroke-linecap="round"/><circle cx="-24" cy="0" r="7" fill="#8a8a8a"/>
+      <rect x="116" y="-5" width="18" height="10" rx="2" fill="#e8434f"/><circle cx="196" cy="26" r="0" fill="none"/>
+    </g>
+    <circle cx="196" cy="26" r="5" fill="#8a8a8a"/>
+  </svg><span class="tag" id="deckTag">needle up</span></button>
 <p class="hint" id="hint">scroll</p>
 <div id="toast" role="status" aria-live="polite"></div>
 <dialog id="dino" aria-label="A hidden dinosaur"><pre>                 __
@@ -160,16 +206,16 @@ footer a{color:var(--red-soft);text-decoration:none}
   /__.-'|_|--|_|</pre><p>Frame 04 wasn't blank. It never was a bug.</p><p style="margin-top:.8rem"><button type="button" id="dinoX">Close</button></p></dialog>
 
 <script type="module">
-import { Journey } from "../kit/fm.js";
+import { Ascent, ASCENT_STEMS } from "../kit/fm.js";
 import { Tunnel } from "../kit/visuals.js";
 import { arcColor } from "../kit/visuals.js";
 
 const $ = (id) => document.getElementById(id), root = document.documentElement;
 const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-const music = new Journey().on("crescendo", () => tunnel.boom());                // a ten-minute climb: dark ambience at the start, a heavy drum & bass crescendo at the end
+const music = new Ascent();                                                       // the scroll-driven music: Max Cooper at the top, Noisia at the bottom
 const tunnel = new Tunnel($("sky"));
 tunnel.setEco(((navigator.hardwareConcurrency || 4) <= 4));
-let soundOn = false, a = 0.03, jDrag = false;
+let soundOn = false, a = 0.03, peaked = false, armDeg0;
 
 /* scroll position IS the ascent: the top of the page is the spacious Max Cooper-style intro, the bottom is the Noisia-style drop */
 const progress = () => { const m = root.scrollHeight - innerHeight; return m > 0 ? Math.min(1, Math.max(0, scrollY / m)) : 0; };
@@ -182,12 +228,26 @@ addEventListener("touchmove", (e) => { const t = e.touches[0]; if (t) { st.tx = 
 
 async function turnOn() {
   try { await music.start(); } catch (e) { $("hint").textContent = e.message; return; }
-  soundOn = true; $("jrBox").hidden = false;
-  $("snd").textContent = "Sound on"; $("snd").setAttribute("aria-pressed", "true"); $("enter").textContent = "Sound on. Settle in.";
+  soundOn = true; music.setAscent(a); $("mixer").classList.remove("idle"); setDeck(); mixSay();
+  $("snd").textContent = "Sound on"; $("snd").setAttribute("aria-pressed", "true"); $("enter").textContent = "Sound on. Needle down.";
 }
-function turnOff() { soundOn = false; music.stop(); $("jrBox").hidden = true; $("snd").textContent = "Sound off"; $("snd").setAttribute("aria-pressed", "false"); }
-$("enter").addEventListener("click", () => { if (!soundOn) turnOn(); });
-$("snd").addEventListener("click", () => { soundOn ? turnOff() : turnOn(); });
+function turnOff() { soundOn = false; music.full = false; music.stop(); $("mixer").classList.add("idle"); $("mixSay").textContent = "Turn the sound on to mix."; setDeck(); $("snd").textContent = "Sound off"; $("snd").setAttribute("aria-pressed", "false"); }
+/* the tonearm: dropping the needle turns the sound on and lets the page scroll itself, slowly, like an arm tracking across a record */
+const AUTO_SECS = 120, ARM_REST = 181, ARM_OUT = 170.8, ARM_IN = 150.4;
+const auto = { on: false, y: 0, set: 0, speed: 0, t0: 0 };
+const setDeck = () => { $("deck").setAttribute("aria-pressed", String(soundOn)); $("deckTag").textContent = auto.on ? "needle down" : soundOn ? "needle lifted" : "needle up"; };
+function stopAuto() { if (!auto.on) return; auto.on = false; setDeck(); }
+async function dropNeedle() {
+  if (!soundOn) await turnOn(); if (!soundOn) return;
+  if (reduce) { setDeck(); return; }                                              // reduced motion: sound on, but the page stays still
+  const m = root.scrollHeight - innerHeight; if (scrollY >= m - 4) scrollTo({ top: 0, behavior: "instant" });
+  auto.on = true; auto.y = auto.set = scrollY; auto.t0 = performance.now(); setDeck();
+}
+$("enter").addEventListener("click", () => { dropNeedle(); });
+$("deck").addEventListener("click", () => { auto.on ? stopAuto() : dropNeedle(); });
+$("snd").addEventListener("click", () => { if (soundOn) { stopAuto(); turnOff(); } else turnOn(); });
+for (const ev of ["wheel", "touchstart", "pointerdown"]) addEventListener(ev, (e) => { if (!(e.target.closest && e.target.closest("#deck"))) stopAuto(); }, { passive: true });
+addEventListener("keydown", (e) => { if (["ArrowDown", "ArrowUp", "PageDown", "PageUp", "Home", "End", " "].includes(e.key)) stopAuto(); });
 
 /* hover a card, hear a note (a marimba pluck in the key) */
 document.querySelectorAll("[data-n]").forEach((el) => {
@@ -204,9 +264,19 @@ document.querySelectorAll(".screen").forEach((s) => io.observe(s));
 let last = performance.now(), n = 0;
 function frame(now) {
   const dt = Math.min(0.05, (now - last) / 1000); last = now; st.t += dt; st.idle += dt;
-  const p = progress(), target = reduce ? 0.03 : (soundOn ? music.p : ascentFor(p) * 0.35);          // the visuals follow the music's climb
+  const p = progress(), target = reduce ? 0.03 : ascentFor(p);
+  if (auto.on) {                                                                  // the slow glide, easing in as the needle settles
+    const m = root.scrollHeight - innerHeight, ease = Math.min(1, (now - auto.t0) / 2500);
+    if (Math.abs(scrollY - auto.set) > 3) stopAuto();                              // the reader moved the page themselves
+    else { auto.y = Math.min(m, auto.y + (m / AUTO_SECS) * ease * dt); auto.set = auto.y; scrollTo({ top: auto.y, behavior: "instant" }); if (auto.y >= m - 1) { stopAuto(); } }
+  }
+  const armDeg = auto.on || (soundOn && scrollY > 0 && p < 0.995) ? ARM_OUT + (ARM_IN - ARM_OUT) * p : (soundOn && p >= 0.995 ? ARM_IN : ARM_REST);
+  if (Math.abs(armDeg - (armDeg0 ?? 999)) > 0.05) { $("arm").style.transform = `translate(196px,26px) rotate(${armDeg.toFixed(2)}deg)`; armDeg0 = armDeg; }
+  const drop = $("drop").getBoundingClientRect().top < innerHeight * 0.4;          // the end of the page: every part playing at once
+  if (soundOn && drop !== music.full) { music.full = drop; if (drop) { music.boom(); tunnel.boom(); mixSay(); } }
   a += (target - a) * Math.min(1, dt * 2.2);                                     // the music follows your scroll, a beat behind
   if (soundOn) {
+    music.setAscent(a);
     // the drop: crossing into the last stretch of the page once per visit
   }
   let tx = st.tx, ty = st.ty;
@@ -215,15 +285,33 @@ function frame(now) {
   if ((++n & 1) === 0) {
     root.style.setProperty("--mx", st.mx.toFixed(0) + "px"); root.style.setProperty("--my", st.my.toFixed(0) + "px");
     const [r, g, b] = arcColor(a); root.style.setProperty("--acc", `rgb(${r | 0},${g | 0},${b | 0})`);
-    $("meterFill").style.height = (100 * (soundOn ? music.p : p)).toFixed(0) + "%"; if (soundOn && !jDrag) $("journey").value = Math.round(music.p * 1000);
+    $("meterFill").style.height = (p * 100).toFixed(0) + "%";
   }
-  tunnel.frame(dt, { a, level: music.level() });
+  tunnel.frame(dt, { a: music.full ? 1 : a, level: music.level() });
   $("hint").style.opacity = scrollY > 60 ? 0 : 1;
   requestAnimationFrame(frame);
 }
 requestAnimationFrame(frame);
 addEventListener("pointerdown", () => { music.resume(); }, true);
-const jr = $("journey"); jr.addEventListener("pointerdown", () => (jDrag = true)); addEventListener("pointerup", () => (jDrag = false)); jr.addEventListener("input", () => music.seek(+jr.value / 1000)); jr.addEventListener("keydown", () => (jDrag = true)); jr.addEventListener("keyup", () => (jDrag = false));
+/* the mixing desk at the end of the page */
+const NOTE = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+function mixSay() {
+  const el = $("mixSay"); if (!soundOn) { el.textContent = "Turn the sound on to mix."; return; }
+  if (!music.full) { el.textContent = "Keep going: at the bottom every part plays at once."; return; }
+  const so = [...music.solo].map((id) => ASCENT_STEMS.find((s) => s.id === id).label), mu = [...music.mute].map((id) => ASCENT_STEMS.find((s) => s.id === id).label);
+  el.textContent = so.length ? "Soloing " + so.join(" + ") + "." : mu.length ? "Muted: " + mu.join(", ") + "." : "Everything is playing. Solo a part, mute one, or bend the key and tempo.";
+}
+function paintStems() { document.querySelectorAll(".stem").forEach((el) => { const id = el.dataset.id, off = music.stemGain(id) === 0; el.classList.toggle("off", off); el.classList.toggle("solo", music.solo.has(id)); el.querySelector(".s").setAttribute("aria-pressed", String(music.solo.has(id))); el.querySelector(".m").setAttribute("aria-pressed", String(music.mute.has(id))); }); mixSay(); }
+$("stems").innerHTML = ASCENT_STEMS.map((s) => `<div class="stem" data-id="${s.id}"><b>${s.label}</b><div class="sm"><button class="s" type="button" aria-pressed="false" aria-label="Solo ${s.label}">S</button><button class="m" type="button" aria-pressed="false" aria-label="Mute ${s.label}">M</button></div><input type="range" min="0" max="150" value="100" aria-label="${s.label} level"></div>`).join("");
+$("stems").addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return; const id = b.closest(".stem").dataset.id; if (b.classList.contains("s")) music.setSolo(id, !music.solo.has(id)); else music.setMute(id, !music.mute.has(id)); paintStems(); });
+$("stems").addEventListener("input", (e) => { if (e.target.type === "range") music.setVol(e.target.closest(".stem").dataset.id, e.target.value / 100); });
+const keyO = () => { $("mixKeyO").textContent = NOTE[((29 + music.keyShift) % 12 + 12) % 12]; };
+$("mixKey").addEventListener("input", (e) => { music.setKey(+e.target.value); keyO(); });
+$("mixTempo").addEventListener("input", (e) => { music.setTempo(+e.target.value); $("mixTempoO").textContent = music.tempo; });
+$("mixShuffle").addEventListener("click", () => { music.reshuffle(); toast("Reshuffled: same parts, new pattern."); });
+$("mixReset").addEventListener("click", () => { music.resetMix(); $("mixKey").value = 0; $("mixTempo").value = 174; $("mixTempoO").textContent = 174; keyO(); document.querySelectorAll(".stem input").forEach((i) => (i.value = 100)); paintStems(); });
+keyO();
+
 /* easter eggs: the roll of film, a dinosaur, and the Konami negative */
 const toast = (t) => { const e = $("toast"); e.textContent = t; e.classList.add("on"); clearTimeout(toast.t); toast.t = setTimeout(() => e.classList.remove("on"), 3400); };
 const FRAMES = { 1: "Exposure: you, looking.", 2: "Stop bath. Nothing here is moving.", 3: "A drummer, on a break.", 4: null, 5: "Fixer. Do not open the door.", 6: "A contact sheet, but real.", 7: "Dust. Always dust.", 8: "There is no ninth frame. Try: ↑ ↑ ↓ ↓ ← → ← → B A" };
@@ -245,8 +333,8 @@ addEventListener("keydown", (e) => {
 });
 let taps = 0, tapT = 0; document.querySelector(".logo").addEventListener("click", () => { const now = performance.now(); taps = now - tapT < 900 ? taps + 1 : 1; tapT = now; if (taps >= 7) { taps = 0; negative(); } });   // mobile: tap the logo seven times
 showFound();
-window.__home = { music, tunnel, progress, get a() { return a; } };
-console.log("%cDRE DARKROOM", "color:#d1122b;font:700 22px monospace", "\nten minutes, dark to loud.");
+window.__home = { music, tunnel, progress, auto, get a() { return a; } };
+console.log("%cDRE DARKROOM", "color:#d1122b;font:700 22px monospace", "\nscroll is the music.");
 </script>
 </body>
 </html>
