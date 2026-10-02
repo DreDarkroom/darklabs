@@ -6,7 +6,7 @@
 <meta name="color-scheme" content="dark">
 <meta name="darkreader-lock">
 <title>Dre Darkroom | DJ / Photography / Livestream</title>
-<meta name="description" content="Dre Darkroom: DJ, photography and livestream, plus instruments and games you can play in the browser. Scroll down: the music climbs with you.">
+<meta name="description" content="Dre Darkroom: DJ, photography and livestream, plus instruments and games you can play in the browser. Turn the sound on: it climbs from dark ambience to a drum and bass crescendo.">
 <meta name="theme-color" content="#040203">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2214%22 fill=%22%23060607%22/><text x=%2250%22 y=%2268%22 font-size=%2258%22 font-family=%22monospace%22 font-weight=%22700%22 text-anchor=%22middle%22 fill=%22%23d1122b%22>DD</text></svg>">
 <style>
@@ -25,6 +25,10 @@ a{color:inherit}
 .bar nav a:hover,.bar nav a.on{color:#fff;border-color:var(--red)}
 .snd{font:inherit;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:#fff;background:rgba(209,18,43,.18);border:1px solid rgba(209,18,43,.7);border-radius:999px;padding:.4rem .9rem;cursor:pointer}
 .snd[aria-pressed=true]{background:var(--red)}
+.jr{display:flex;gap:.55rem;align-items:center;font-size:.66rem;letter-spacing:.22em;text-transform:uppercase;color:var(--dim)}
+.jr[hidden]{display:none}
+.jr input{width:7.5rem;accent-color:var(--red)}
+@media (max-width:700px){.jr span{display:none}.jr input{width:5rem}}
 .snd:focus-visible,.bar a:focus-visible,.card:focus-visible,.btn:focus-visible{outline:2px solid #fff;outline-offset:3px}
 main{position:relative;z-index:10}
 .screen{min-height:100vh;display:flex;flex-direction:column;justify-content:center;max-width:1080px;margin:0 auto;padding:6rem 1.3rem 4rem}
@@ -87,6 +91,7 @@ footer a{color:var(--red-soft);text-decoration:none}
 <header class="bar">
   <a class="logo" href="#top">DRE DARKROOM</a>
   <nav aria-label="Sections"><a href="#listen">Listen</a><a href="#play">Play</a><a href="#see">See</a><a href="#drop">Come in</a></nav>
+  <label class="jr" id="jrBox" hidden><span>Journey</span><input id="journey" type="range" min="0" max="1000" value="0" aria-label="Journey: skip along the ten minute climb from dark ambience to the drum and bass crescendo"></label>
   <button class="snd" id="snd" type="button" aria-pressed="false">Sound off</button>
 </header>
 <div class="meter" aria-hidden="true"><span class="t">peak</span><i id="meterFill" style="height:0%"></i><span class="b">intro</span></div>
@@ -95,7 +100,7 @@ footer a{color:var(--red-soft);text-decoration:none}
 <section class="screen" id="top">
   <p class="eyebrow">DJ &middot; Photography &middot; Livestream</p>
   <h1>DRE<span>DARKROOM</span></h1>
-  <p class="lede">Live music and creativity catalyst, developed in the dark. Turn the sound on and scroll: the music climbs with you.</p>
+  <p class="lede">Live music and creativity catalyst, developed in the dark. Turn the sound on: it starts as dark, gritty ambience and slowly climbs, over about ten minutes, into a heavy drum &amp; bass crescendo.</p>
   <div class="row"><button class="btn" id="enter" type="button">Enter with sound</button><a class="quiet" href="#listen">or scroll in silence &darr;</a></div>
 </section>
 
@@ -155,16 +160,16 @@ footer a{color:var(--red-soft);text-decoration:none}
   /__.-'|_|--|_|</pre><p>Frame 04 wasn't blank. It never was a bug.</p><p style="margin-top:.8rem"><button type="button" id="dinoX">Close</button></p></dialog>
 
 <script type="module">
-import { Ascent } from "../kit/fm.js";
+import { Journey } from "../kit/fm.js";
 import { Tunnel } from "../kit/visuals.js";
 import { arcColor } from "../kit/visuals.js";
 
 const $ = (id) => document.getElementById(id), root = document.documentElement;
 const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-const music = new Ascent();                                                       // the scroll-driven music: Max Cooper at the top, Noisia at the bottom
+const music = new Journey().on("crescendo", () => tunnel.boom());                // a ten-minute climb: dark ambience at the start, a heavy drum & bass crescendo at the end
 const tunnel = new Tunnel($("sky"));
 tunnel.setEco(((navigator.hardwareConcurrency || 4) <= 4));
-let soundOn = false, a = 0.03, peaked = false;
+let soundOn = false, a = 0.03, jDrag = false;
 
 /* scroll position IS the ascent: the top of the page is the spacious Max Cooper-style intro, the bottom is the Noisia-style drop */
 const progress = () => { const m = root.scrollHeight - innerHeight; return m > 0 ? Math.min(1, Math.max(0, scrollY / m)) : 0; };
@@ -177,10 +182,10 @@ addEventListener("touchmove", (e) => { const t = e.touches[0]; if (t) { st.tx = 
 
 async function turnOn() {
   try { await music.start(); } catch (e) { $("hint").textContent = e.message; return; }
-  soundOn = true; music.setAscent(a);
-  $("snd").textContent = "Sound on"; $("snd").setAttribute("aria-pressed", "true"); $("enter").textContent = "Sound on. Now scroll.";
+  soundOn = true; $("jrBox").hidden = false;
+  $("snd").textContent = "Sound on"; $("snd").setAttribute("aria-pressed", "true"); $("enter").textContent = "Sound on. Settle in.";
 }
-function turnOff() { soundOn = false; music.stop(); $("snd").textContent = "Sound off"; $("snd").setAttribute("aria-pressed", "false"); }
+function turnOff() { soundOn = false; music.stop(); $("jrBox").hidden = true; $("snd").textContent = "Sound off"; $("snd").setAttribute("aria-pressed", "false"); }
 $("enter").addEventListener("click", () => { if (!soundOn) turnOn(); });
 $("snd").addEventListener("click", () => { soundOn ? turnOff() : turnOn(); });
 
@@ -199,13 +204,10 @@ document.querySelectorAll(".screen").forEach((s) => io.observe(s));
 let last = performance.now(), n = 0;
 function frame(now) {
   const dt = Math.min(0.05, (now - last) / 1000); last = now; st.t += dt; st.idle += dt;
-  const p = progress(), target = reduce ? 0.03 : ascentFor(p);
+  const p = progress(), target = reduce ? 0.03 : (soundOn ? music.p : ascentFor(p) * 0.35);          // the visuals follow the music's climb
   a += (target - a) * Math.min(1, dt * 2.2);                                     // the music follows your scroll, a beat behind
   if (soundOn) {
-    music.setAscent(a);
     // the drop: crossing into the last stretch of the page once per visit
-    if (p > 0.9 && !peaked) { peaked = true; music.boom(); tunnel.boom(); }
-    if (p < 0.78) peaked = false;
   }
   let tx = st.tx, ty = st.ty;
   if (st.idle > 5 && !reduce) { tx = innerWidth * (.5 + .3 * Math.sin(st.t * .3)); ty = innerHeight * (.45 + .25 * Math.sin(st.t * .23 + 1)); }
@@ -213,7 +215,7 @@ function frame(now) {
   if ((++n & 1) === 0) {
     root.style.setProperty("--mx", st.mx.toFixed(0) + "px"); root.style.setProperty("--my", st.my.toFixed(0) + "px");
     const [r, g, b] = arcColor(a); root.style.setProperty("--acc", `rgb(${r | 0},${g | 0},${b | 0})`);
-    $("meterFill").style.height = (p * 100).toFixed(0) + "%";
+    $("meterFill").style.height = (100 * (soundOn ? music.p : p)).toFixed(0) + "%"; if (soundOn && !jDrag) $("journey").value = Math.round(music.p * 1000);
   }
   tunnel.frame(dt, { a, level: music.level() });
   $("hint").style.opacity = scrollY > 60 ? 0 : 1;
@@ -221,6 +223,7 @@ function frame(now) {
 }
 requestAnimationFrame(frame);
 addEventListener("pointerdown", () => { music.resume(); }, true);
+const jr = $("journey"); jr.addEventListener("pointerdown", () => (jDrag = true)); addEventListener("pointerup", () => (jDrag = false)); jr.addEventListener("input", () => music.seek(+jr.value / 1000)); jr.addEventListener("keydown", () => (jDrag = true)); jr.addEventListener("keyup", () => (jDrag = false));
 /* easter eggs: the roll of film, a dinosaur, and the Konami negative */
 const toast = (t) => { const e = $("toast"); e.textContent = t; e.classList.add("on"); clearTimeout(toast.t); toast.t = setTimeout(() => e.classList.remove("on"), 3400); };
 const FRAMES = { 1: "Exposure: you, looking.", 2: "Stop bath. Nothing here is moving.", 3: "A drummer, on a break.", 4: null, 5: "Fixer. Do not open the door.", 6: "A contact sheet, but real.", 7: "Dust. Always dust.", 8: "There is no ninth frame. Try: ↑ ↑ ↓ ↓ ← → ← → B A" };
@@ -243,7 +246,7 @@ addEventListener("keydown", (e) => {
 let taps = 0, tapT = 0; document.querySelector(".logo").addEventListener("click", () => { const now = performance.now(); taps = now - tapT < 900 ? taps + 1 : 1; tapT = now; if (taps >= 7) { taps = 0; negative(); } });   // mobile: tap the logo seven times
 showFound();
 window.__home = { music, tunnel, progress, get a() { return a; } };
-console.log("%cDRE DARKROOM", "color:#d1122b;font:700 22px monospace", "\nscroll is the music.");
+console.log("%cDRE DARKROOM", "color:#d1122b;font:700 22px monospace", "\nten minutes, dark to loud.");
 </script>
 </body>
 </html>

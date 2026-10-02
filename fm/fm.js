@@ -103,6 +103,7 @@ export function createVoices(ctx, B) {
     g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(o.v ?? 0.05, t + dur * 0.4); g.gain.linearRampToValueAtTime(0.0001, t + dur); s.connect(g); g.connect(p); p.connect(B.music); sends(g, o.rev ?? 0.6, 0.1);
   };
   V.glitch = (t, n, gap, o = {}) => { for (let i = 0; i < n; i++) { const tt = t + i * gap * (1 - i / (n * 1.6)), f = (o.f || 2500) * (0.5 + ((i * 7919) % 13) / 13); noise(tt, 0.012, B.drums, { type: "bandpass", f, q: 4, v: (o.v ?? 0.18) * (0.6 + 0.4 * (i % 2)) }); } };
+  V.dust = (t, o = {}) => { noise(t, 0.004, B.music, { type: "highpass", f: 2200 + ((t * 9973) % 1) * 3000, q: 0.7, v: o.v ?? 0.05 }); };
   V.neuro = (t, f, dur, o = {}) => {
     const end = dur + 0.08, car = osc("sawtooth", f, t, end), mod = osc("sine", f * (o.ratio || 2), t, end), mg = ctx.createGain(), lfo = osc("sine", o.rate || 6, t, end), lg = ctx.createGain();
     mg.gain.setValueAtTime(f * (o.index || 1.3), t); mod.connect(mg); mg.connect(car.frequency); lg.gain.value = f * (o.depth || 0.9); lfo.connect(lg); lg.connect(mg.gain);   // the FM index wobbles: that is the "talking"
@@ -236,6 +237,7 @@ export function makeBuses(ctx, M, bpm, trim = 1) {
   const rev = G(0.55); B.rev.connect(rev); rev.connect(M.revIn);
   const d = ctx.createDelay(2), fb = G(0.34), lp = ctx.createBiquadFilter(), wet = G(0.5); d.delayTime.value = (60 / bpm) * 0.75; lp.type = "lowpass"; lp.frequency.value = 2600; lp.Q.value = -3; B.dly.connect(d); d.connect(lp); lp.connect(fb); fb.connect(d); lp.connect(wet); wet.connect(M.input); wet.connect(M.revIn);
   B.duck = (t, amt, rel) => { duckG.gain.setValueAtTime(1 - amt, t); duckG.gain.linearRampToValueAtTime(1, t + rel); };
+  B.setBpm = (bpm) => d.delayTime.setTargetAtTime(clamp((60 / bpm) * 0.75, 0.12, 1.9), ctx.currentTime, 0.4);
   B.out = master; B.dispose = (t, fade = 0.12) => { master.gain.cancelScheduledValues(t); master.gain.setValueAtTime(master.gain.value, t); master.gain.linearRampToValueAtTime(0, t + fade); setTimeout(() => { try { master.disconnect(); rev.disconnect(); wet.disconnect(); } catch (e) { /* already gone */ } }, (fade + 1.5) * 1000); };
   return B;
 }
@@ -284,71 +286,117 @@ export class Radio {
   level() { const a = this.analyser; if (!a) return 0; const b = new Uint8Array(a.fftSize); a.getByteTimeDomainData(b); let s = 0; for (const x of b) { const d = (x - 128) / 128; s += d * d; } return Math.sqrt(s / b.length); }
 }
 
-
-// ───────────────────────────────────────────────── Ascent: the homepage music. One number (0..1) is the whole arrangement.
-// Low = spacious, Max Cooper-ish: polyrhythmic FM bells, a granular cloud, sparse half-time pulse.
-// Rising = breaks, then hard two-step drum & bass. The top = a Noisia-ish drop with a talking neuro bass.
-export const ASCENT_TRK = { bpm: 174, stepDur: 60 / 174 / 4, barDur: 240 / 174, root: 29, trim: 1 };
+// ───────────────────────────────────────────────── Journey: the homepage music. A ten-minute climb.
+// It begins as gritty, dark ambience (a noise bed, a dirty drone, dust, distant metal) with almost no drums, and slowly
+// accumulates: sparse ticks, then intricate interlocking rhythms, then breaks, then two-step, and finally a heavy
+// Noisia-style drum & bass crescendo with a talking neuro bass. The tempo climbs the whole way, from 64 to 174 BPM.
+// Max Cooper supplies the polyrhythmic FM bells, the granular clouds and the micro-edits; Noisia supplies the bass and the weight.
+const PHRYG = [0, 1, 3, 5, 7, 8, 10];                                // Phrygian: the flat second is what makes it dark
+const pscale = (root, deg) => root + 12 * Math.floor(deg / 7) + PHRYG[((deg % 7) + 7) % 7];
+export const JOURNEY = { secs: 600, hold: 120, root: 28 };            // 10 min climb, 2 min at the peak, then it starts over
+const BPM_PTS = [[0, 64], [0.15, 64], [0.3, 78], [0.5, 108], [0.7, 138], [0.9, 172], [1, 174]];
+export function bpmAt(p) { for (let i = 1; i < BPM_PTS.length; i++) if (p <= BPM_PTS[i][0]) { const [p0, b0] = BPM_PTS[i - 1], [p1, b1] = BPM_PTS[i]; return b0 + (b1 - b0) * (p - p0) / (p1 - p0); } return 174; }
+export function journeyAt(e) { const cyc = JOURNEY.secs + JOURNEY.hold, E = ((e % cyc) + cyc) % cyc; return { p: Math.min(1, E / JOURNEY.secs), cycle: Math.floor(e / cyc) }; }
+export const stageOf = (p) => (p >= 0.9 ? 5 : p >= 0.7 ? 4 : p >= 0.5 ? 3 : p >= 0.28 ? 2 : p >= 0.12 ? 1 : 0);        // 0 ambient, 1 first pulse, 2 intricate, 3 breaks, 4 two-step build, 5 crescendo
 const sstep = (x) => x * x * (3 - 2 * x);
+// the overall volume curve of the climb, in dB (measured so the opening is a quiet, dark bed and the crescendo hits hard)
+const GAIN_PTS = [[0, -8], [0.12, -8], [0.25, -6.5], [0.4, -6.5], [0.55, -5.5], [0.7, -4], [0.8, -2.4], [0.9, 0], [1, 0]];
+export function gainDb(p) { for (let i = 1; i < GAIN_PTS.length; i++) if (p <= GAIN_PTS[i][0]) { const [p0, g0] = GAIN_PTS[i - 1], [p1, g1] = GAIN_PTS[i]; return g0 + (g1 - g0) * (p - p0) / (p1 - p0); } return 0; }
+const euclid =(k, n) => { const r = []; for (let i = 0; i < k; i++) r.push(Math.floor(i * n / k)); return r; };
+const rot = (arr, r) => arr.map((x) => (x + r) % 16);
 
-export function scheduleAscentBar(a, bar, t0, V, trk = ASCENT_TRK) {
-  const sd = trk.stepDur, T = (s) => t0 + s * sd, rnd = mulberry32((bar * 2654435761 + 12345) >>> 0), ph = bar % 8, ch = Math.floor(bar / 2) % 4;
-  const off = [0, -4, -9, -2][ch], qual = [[0, 3, 7, 10], [0, 4, 7, 11], [0, 4, 7, 11], [0, 4, 7, 10]][ch], root = trk.root + off, chord = qual.map((i) => root + 24 + i);
-  const sm = (lo, hi) => sstep(clamp((a - lo) / (hi - lo), 0, 1));
-  const L = { amb: 1 - 0.55 * sm(0.45, 0.9), pulse: sm(0.1, 0.3), half: sm(0.2, 0.38), brk: sm(0.4, 0.58), dnb: sm(0.62, 0.78), drop: sm(0.88, 0.96), hat: sm(0.3, 0.5), arp: sm(0.05, 0.2), grain: 1 - sm(0.5, 0.85) };
-  const stage = a >= 0.62 ? "dnb" : a >= 0.4 ? "brk" : "half";
-  // harmony: a slow cloud of pad, one chord per two bars
-  if (bar % 2 === 0) V.pad(T(0), chord.map(mtof), trk.barDur * 2.04, { v: 0.05 * L.amb + 0.012, cut: 500 + 1500 * a, att: 1.0, rel: 1.0, rev: 0.55, dly: 0.1 });
-  // the granular cloud (it thins out as the drums arrive)
-  if (L.grain > 0.03) for (let k = 0; k < 7; k++) if (rnd() < 0.85 * L.grain) { const deg = Math.floor(rnd() * 7), n = scaleNote(root + 36 + 12 * Math.floor(rnd() * 2), deg); V.grain(T(Math.floor(rnd() * 16)), mtof(n), 0.07 + rnd() * 0.12, { v: 0.032 * (0.5 + L.grain), pan: (rnd() - 0.5) * 1.6, type: rnd() < 0.3 ? "triangle" : "sine" }); }
-  // Max Cooper: three cycles of different lengths against the bar (3, 5 and 7 steps), so the pattern keeps shifting
-  if (L.arp > 0.03) {
-    const cyc = [[3, [0, 2, 4, 2], 36], [5, [1, 3, 5, 4, 2], 48], [7, [4, 6, 3, 5, 2, 6, 1], 36]];
-    for (let s = 0; s < 16; s++) { const gs = bar * 16 + s; cyc.forEach(([len, degs, oct], ci) => { if (gs % len === 0) { if (ci > 0 && L.dnb > 0.5 && L.drop < 0.5 && rnd() < 0.5) return; const deg = degs[Math.floor(gs / len) % degs.length]; V.fmbell(T(s), mtof(scaleNote(root + oct, deg)), { v: (0.085 - 0.02 * ci) * L.arp * (1 - 0.35 * L.drop), len: 0.32 + 0.2 * (ci === 1), rev: 0.5, dly: 0.45 }); } }); }
-  }
-  // sparse half-time pulse, then breaks, then two-step drum & bass
-  if (L.half > 0.04 && stage === "half") { V.kick(T(0), { f0: 120, f1: 44, len: 0.3, v: 0.62 * L.half, duckAmt: 0.35, duckRel: 0.2 }); if (rnd() < 0.5) V.kick(T(10), { f0: 110, f1: 44, len: 0.25, v: 0.4 * L.half, duck: false }); V.rim(T(8), { v: 0.2 * L.half }); for (const s of [4, 12]) if (rnd() < 0.6) V.rim(T(s), { v: 0.1 * L.half }); }
-  if (stage === "brk") { for (const s of [0, 10]) V.kick(T(s), { f0: 135, f1: 46, len: 0.26, v: 0.88, duckAmt: 0.5, duckRel: 0.15 }); V.snare(T(8), { v: 0.85, tone: 190 }); for (const s of [7, 15]) if (rnd() < 0.45) V.snare(T(s), { v: 0.2, ghost: true }); }
-  if (stage === "dnb") {
-    const fill = ph === 7;
-    for (const s of [0, 10, ...(rnd() < 0.3 ? [7] : [])]) V.kick(T(s), { f0: 155, f1: 46, len: 0.26, v: 0.95, dist: L.drop > 0.5, duckAmt: 0.6, duckRel: 0.15 });
-    if (!fill) for (const s of [4, 12]) V.snare(T(s), { v: 1.0, tone: 175, noiseF: 2000 });
-    for (const s of [7, 9, 14, 15]) if (rnd() < 0.3 + 0.2 * L.drop) V.snare(T(s), { v: 0.22, ghost: true });
-    if (fill) for (let s = 8; s < 16; s++) V.snare(T(s), { v: 0.3 + (s - 8) * 0.1, tone: 210 + s * 4 });
-  }
-  if (L.hat > 0.04) for (let s = 0; s < 16; s++) if (s % 2 === 0 || rnd() < 0.45 * L.hat) V.hat(T(s), { v: (s % 4 === 2 ? 0.28 : 0.13) * L.hat, open: stage === "dnb" && (s === 6 || s === 14) && rnd() < 0.4 });
-  // a stutter of glitch clicks now and then (the micro-edits)
-  if (a > 0.18 && rnd() < 0.18 + 0.2 * L.brk) V.glitch(T(8 + Math.floor(rnd() * 6)), 5 + Math.floor(rnd() * 5), sd * 0.55, { v: 0.14 });
-  // the low end: a soft sine pulse, then a rolling reese, then the Noisia neuro drop
-  if (a > 0.1 && stage !== "dnb") V.sub(T(0), mtof(root + 12), trk.barDur * 0.85, { v: 0.3 * (0.4 + 0.6 * L.pulse) });
-  if (stage === "brk") for (const s of [0, 3, 6, 10, 11, 14]) { const nx = { 0: 3, 3: 6, 6: 10, 10: 11, 11: 14, 14: 16 }[s]; V.reese(T(s), mtof(root + 12), (nx - s) * sd * 0.9, { cut: 300 + 900 * a, det: 12, v: 0.15 * L.brk, drive: true }); }
-  if (stage === "dnb") {
-    const pat = [[0, 6, 10, 14], [0, 3, 6, 10, 12], [0, 4, 8, 11, 14]][ch % 3];
-    for (let i = 0; i < pat.length; i++) {
-      const s = pat[i], nx = pat[i + 1] ?? 16, dur = (nx - s) * sd * 0.92, n = root + 12 + (i === pat.length - 1 && rnd() < 0.4 ? 7 : 0) + (rnd() < 0.15 ? 12 : 0);
-      if (L.drop > 0.3) V.neuro(T(s), mtof(n), dur, { v: 0.2 * L.drop + 0.04, rate: 2.5 + rnd() * 6, f1: 300 + rnd() * 500, f2: 900 + rnd() * 900, index: 1 + rnd() * 0.9, ratio: rnd() < 0.5 ? 2 : 1.5 });
-      V.reese(T(s), mtof(n), dur, { cut: 400 + 800 * a, det: 14, v: 0.18 * (1 - 0.6 * L.drop), drive: true }); V.sub(T(s), mtof(n), dur, { v: 0.4 });
-    }
-    if (L.drop > 0.3 && ph % 2 === 1) V.stab(T(3), chord.slice(0, 3).map((m) => mtof(m + 12)), 0.2, { v: 0.1 * L.drop });
-  }
-  // movement: a sweep at the start of each phrase, a riser through the second half of every phrase while it is building
-  if (a > 0.45 && ph === 0) V.sweep(T(0), trk.barDur, { f0: 6500, f1: 400, v: 0.06 });
-  if (a > 0.5 && a < 0.92 && ph === 6) V.riser(T(0), trk.barDur * 2, { v: 0.12 * sm(0.5, 0.8) });
+/** The grit: continuous noise layers and a dirty drone that live under everything and change slowly with progress. */
+export function createBed(ctx, B) {
+  const sr = ctx.sampleRate, n = sr * 4, buf = ctx.createBuffer(2, n, sr), r = mulberry32(777);
+  for (let c = 0; c < 2; c++) { const d = buf.getChannelData(c); for (let i = 0; i < n; i++) d[i] = r() * 2 - 1; }
+  const src = () => { const s = ctx.createBufferSource(); s.buffer = buf; s.loop = true; s.start(0, (r() * 3)); return s; };
+  const G = (v = 0) => { const g = ctx.createGain(); g.gain.value = v; return g; };
+  const rumble = G(), wind = G(), hiss = G(), drone = G(), subG = G();
+  { const f = ctx.createBiquadFilter(); f.type = "lowpass"; f.frequency.value = 110; f.Q.value = -3; const s = src(); s.connect(f); f.connect(rumble); }
+  { const f = ctx.createBiquadFilter(); f.type = "bandpass"; f.frequency.value = 600; f.Q.value = 1.1; const s = src(); s.connect(f); f.connect(wind); const l = ctx.createOscillator(), lg = G(380); l.frequency.value = 0.06; l.connect(lg); lg.connect(f.frequency); l.start(); }
+  { const f = ctx.createBiquadFilter(); f.type = "highpass"; f.frequency.value = 6500; f.Q.value = -3; const s = src(); s.connect(f); f.connect(hiss); }
+  const dl = ctx.createBiquadFilter(); dl.type = "lowpass"; dl.frequency.value = 180; dl.Q.value = -1;
+  [-9, 0, 8].forEach((det) => { const o = ctx.createOscillator(); o.type = "sawtooth"; o.frequency.value = mtof(JOURNEY.root + 12); o.detune.value = det; o.connect(dl); o.start(); });
+  { const l = ctx.createOscillator(), lg = G(90); l.frequency.value = 0.045; l.connect(lg); lg.connect(dl.frequency); l.start(); }
+  const ws = ctx.createWaveShaper(), cv = new Float32Array(512); for (let i = 0; i < 512; i++) { const x = (i / 511) * 2 - 1; cv[i] = Math.tanh(x * 3); } ws.curve = cv; dl.connect(ws); ws.connect(drone);
+  { const o = ctx.createOscillator(); o.type = "sine"; o.frequency.value = mtof(JOURNEY.root); o.connect(subG); o.start(); }
+  for (const g of [rumble, wind, hiss, drone, subG]) g.connect(B.music);                       // through the music bus, so the bed breathes with the kick
+  return { update(p, t = ctx.currentTime) {
+    const sm = (lo, hi) => sstep(clamp((p - lo) / (hi - lo), 0, 1)), tc = 0.9;
+    rumble.gain.setTargetAtTime(0.30 * (1 - 0.45 * sm(0.7, 1)), t, tc); wind.gain.setTargetAtTime(0.03 + 0.15 * (1 - sm(0.55, 0.92)), t, tc);
+    hiss.gain.setTargetAtTime(0.035 * (1 - 0.5 * sm(0.8, 1)), t, tc); drone.gain.setTargetAtTime(0.11 * (0.5 + 0.5 * sm(0.05, 0.35)) * (1 - 0.55 * sm(0.88, 1)), t, tc);
+    subG.gain.setTargetAtTime(0.07 * (1 - 0.6 * sm(0.7, 0.95)), t, tc); dl.frequency.setTargetAtTime(150 + 520 * sm(0.2, 0.95), t, 2.5);
+  } };
 }
 
-export class Ascent {
-  constructor() { this.ctx = null; this.target = 0.03; this.a = 0.03; this.live = false; this.bar = 0; this.last = 0; }
+/** One bar of the journey. p = how far along (0..1); bpm = the tempo for this bar. */
+export function scheduleJourneyBar(p, bar, t0, V, bpm) {
+  const sd = 60 / bpm / 4, barDur = sd * 16, T = (s) => t0 + s * sd, rnd = mulberry32((bar * 2654435761 + 777) >>> 0), ph = bar % 8, ch = Math.floor(bar / 2) % 4;
+  const root = JOURNEY.root + [0, 1, 0, -2][ch], qual = [[0, 3, 7, 10], [0, 4, 7, 11], [0, 3, 7, 10], [0, 4, 7, 10]][ch], chord = qual.map((i) => root + 24 + i);
+  const sm = (lo, hi) => sstep(clamp((p - lo) / (hi - lo), 0, 1)), st = stageOf(p), cres = sm(0.88, 0.95);
+  // the grit on top of the bed: dust crackle and distant machinery (fades as the drums take over)
+  const dust = Math.round(8 + 32 * (1 - sm(0.55, 0.9))); for (let i = 0; i < dust; i++) V.dust(T(rnd() * 16), { v: 0.025 + rnd() * 0.07 });
+  if (rnd() < 0.24 * (1 - sm(0.45, 0.85))) V.fmbell(T(Math.floor(rnd() * 16)), mtof(JOURNEY.root + (rnd() < 0.5 ? 12 : 24)), { v: 0.07, len: 1.6, ratio: 5.19, index: 2.2, rev: 0.85, dly: 0.55 });
+  // dark pad swells, a chord every four bars
+  if (p >= 0.1 && bar % 4 === 0) V.pad(T(0), chord.map(mtof), barDur * 4.05, { v: 0.04 + 0.03 * sm(0.1, 0.4), cut: 280 + 1200 * sm(0.1, 0.9), att: barDur * 1.6, rel: barDur * 1.4, rev: 0.7, dly: 0.15 });
+  // the granular cloud (thins out as the weight arrives)
+  if (p > 0.04) for (let k = 0; k < 5; k++) if (rnd() < 0.7 * (1 - sm(0.6, 0.9))) V.grain(T(Math.floor(rnd() * 16)), mtof(pscale(root + 36, Math.floor(rnd() * 7))), 0.08 + rnd() * 0.14, { v: 0.03 * (0.5 + 0.5 * (1 - sm(0.6, 0.9))), pan: (rnd() - 0.5) * 1.6, type: rnd() < 0.3 ? "triangle" : "sine" });
+  // Max Cooper: polyrhythmic FM bells (cycles of 3, 5 and 7 steps against the bar) from the first pulse on
+  if (p >= 0.18) {
+    const cyc = [[3, [0, 1, 4, 1], 36], [5, [1, 3, 5, 4, 2], 48], [7, [4, 6, 3, 5, 2, 6, 1], 36]], lv = sm(0.18, 0.4) * (1 - 0.35 * cres);
+    for (let s = 0; s < 16; s++) { const gs = bar * 16 + s; cyc.forEach(([len, degs, oct], ci) => { if (gs % len === 0 && !(ci > 0 && st >= 4 && rnd() < 0.5)) V.fmbell(T(s), mtof(pscale(root + oct, degs[Math.floor(gs / len) % degs.length])), { v: (0.08 - 0.018 * ci) * lv, len: 0.32 + 0.2 * (ci === 1), rev: 0.5, dly: 0.45 }); }); }
+  }
+  // drums, by stage. Slow and sparse first, then more and more intricate
+  if (st === 1) { if (bar % 2 === 0) V.kick(T(0), { f0: 105, f1: 42, len: 0.4, v: 0.18 + 0.4 * sm(0.12, 0.28), duckAmt: 0.3, duckRel: 0.28 }); for (const s of rot(euclid(3, 16), (bar * 5) % 16)) V.rim(T(s), { v: 0.08 + 0.06 * rnd() }); }
+  if (st === 2) {
+    V.kick(T(0), { f0: 115, f1: 44, len: 0.32, v: 0.7, duckAmt: 0.4, duckRel: 0.2 }); if (rnd() < 0.5) V.kick(T([6, 10, 11][Math.floor(rnd() * 3)]), { f0: 105, f1: 44, len: 0.22, v: 0.4, duck: false });
+    V.snare(T(8), { v: 0.5, tone: 185, noiseF: 2200 }); for (const s of rot(euclid(5, 16), (bar * 3) % 16)) if (rnd() < 0.7) V.snare(T(s), { v: 0.12, ghost: true });
+    for (const s of rot(euclid(9, 16), (bar * 7) % 16)) V.hat(T(s), { v: 0.08 + 0.1 * rnd(), f: 7500 + rnd() * 3000 }); for (const s of rot(euclid(7, 16), (bar * 5) % 16)) V.rim(T(s), { v: 0.1 + 0.08 * rnd() });
+    for (let s = 0; s < 16; s++) if (rnd() < 0.3) V.shaker(T(s), { v: 0.03 }); if (rnd() < 0.3) V.glitch(T(8 + Math.floor(rnd() * 6)), 5 + Math.floor(rnd() * 4), sd * 0.55, { v: 0.12 });
+  }
+  if (st === 3) {
+    const k = [[0, 3, 10], [0, 6, 10, 13], [0, 3, 8, 11]][ch % 3], two = p >= 0.6; for (const s of k) V.kick(T(s), { f0: 135, f1: 46, len: 0.26, v: 0.88, duckAmt: 0.5, duckRel: 0.15 });
+    for (const s of two ? [4, 12] : [8]) V.snare(T(s), { v: 0.88, tone: 190, noiseF: 2300 }); for (const s of [7, 9, 15]) if (rnd() < 0.5) V.snare(T(s), { v: 0.2, ghost: true });
+    for (let s = 0; s < 16; s++) if (s % 2 === 0 || rnd() < 0.5) V.hat(T(s), { v: s % 4 === 2 ? 0.26 : 0.12, open: s === 14 && rnd() < 0.4 }); if (rnd() < 0.3) V.glitch(T(8 + Math.floor(rnd() * 6)), 5 + Math.floor(rnd() * 5), sd * 0.55, { v: 0.14 });
+  }
+  if (st >= 4) {
+    const fill = ph === 7; for (const s of [0, 10, ...(rnd() < 0.3 ? [7] : [])]) V.kick(T(s), { f0: 155, f1: 46, len: 0.26, v: 0.95, dist: st === 5, duckAmt: 0.6, duckRel: 0.15 });
+    if (!fill) for (const s of [4, 12]) V.snare(T(s), { v: 1.0, tone: 175, noiseF: 2000 }); for (const s of [7, 9, 14, 15]) if (rnd() < 0.3 + 0.2 * cres) V.snare(T(s), { v: 0.22, ghost: true });
+    if (fill) for (let s = 8; s < 16; s++) V.snare(T(s), { v: 0.3 + (s - 8) * 0.1, tone: 210 + s * 4 });
+    for (let s = 0; s < 16; s++) if (s % 2 === 0 || rnd() < 0.5) V.hat(T(s), { v: s % 4 === 2 ? 0.28 : 0.13, open: (s === 6 || s === 14) && rnd() < 0.4 });
+  }
+  // the low end: a slow sine pulse, a rolling reese, and finally the talking neuro bass
+  if (p >= 0.12 && st < 4) { V.sub(T(0), mtof(root + 12), barDur * 0.9, { v: 0.18 + 0.15 * sm(0.12, 0.4) }); if (p >= 0.3 && rnd() < 0.5) V.sub(T(10), mtof(root + 12), barDur * 0.3, { v: 0.2 }); }
+  if (st === 3) for (const s of [0, 3, 6, 10, 11, 14]) { const nx = { 0: 3, 3: 6, 6: 10, 10: 11, 11: 14, 14: 16 }[s]; V.reese(T(s), mtof(root + 12), (nx - s) * sd * 0.9, { cut: 300 + 900 * sm(0.5, 0.7), det: 12, v: 0.16 * sm(0.5, 0.62), drive: true }); }
+  if (st >= 4) {
+    const pat = [[0, 6, 10, 14], [0, 3, 6, 10, 12], [0, 4, 8, 11, 14]][ch % 3], ne = sm(0.78, 0.9);
+    for (let i = 0; i < pat.length; i++) { const s = pat[i], nx = pat[i + 1] ?? 16, dur = (nx - s) * sd * 0.92, n = root + 12 + (i === pat.length - 1 && rnd() < 0.4 ? 7 : 0) + (rnd() < 0.15 ? 12 : 0);
+      if (ne > 0.05) V.neuro(T(s), mtof(n), dur, { v: 0.06 + 0.2 * ne + 0.1 * cres, rate: 2.5 + rnd() * 6, f1: 300 + rnd() * 500, f2: 900 + rnd() * 900, index: 1 + rnd() * 0.9 + 0.5 * cres, ratio: rnd() < 0.5 ? 2 : 1.5 });
+      V.reese(T(s), mtof(n), dur, { cut: 400 + 800 * p, det: 14, v: 0.17 * (1 - 0.6 * ne), drive: true }); V.sub(T(s), mtof(n), dur, { v: 0.4 }); }
+    if (ne > 0.3 && ph % 2 === 1) V.stab(T(3), chord.slice(0, 3).map((m) => mtof(m + 12)), 0.2, { v: 0.1 * ne });
+  }
+  // movement: a sweep at the start of each phrase, and a riser through the build
+  if (p >= 0.3 && ph === 0) V.sweep(T(0), barDur, { f0: 6500, f1: 400, v: 0.05 });
+  if (p >= 0.5 && p < 0.9 && ph === 6) V.riser(T(0), barDur * 2, { v: 0.12 * sm(0.5, 0.85) });
+  if (p >= 0.55 && p < 0.7 && ph === 7) for (let s = 12; s < 16; s += 2) V.snare(T(s), { v: 0.3 + (s - 12) * 0.06, tone: 200 });
+}
+
+export class Journey {
+  constructor() { this.ctx = null; this.live = false; this.cb = {}; this.offset = 0; this.startAt = 0; this.bar = 0; this.stage = -1; this.cycle = 0; this.last = 0; this.bpm = 64; }
+  on(name, fn) { this.cb[name] = fn; return this; }
   get ready() { return !!this.ctx; }
-  async start() {
+  get elapsed() { return this.ctx ? this.ctx.currentTime - this.startAt + this.offset : 0; }
+  get p() { return this.ctx && this.live ? journeyAt(this.elapsed).p : 0; }
+  async start(p0 = 0) {
     if (!this.ctx) {
       this.ctx = new (window.AudioContext || window.webkitAudioContext)({ latencyHint: "playback" }); this.M = makeMaster(this.ctx); this.analyser = this.M.analyser;
-      this.B = makeBuses(this.ctx, this.M, ASCENT_TRK.bpm, 1.0); this.V = createVoices(this.ctx, this.B);
+      this.B = makeBuses(this.ctx, this.M, 64, 1.0); this.V = createVoices(this.ctx, this.B); this.bed = createBed(this.ctx, this.B);
     }
     if (this.ctx.state !== "running") await this.ctx.resume();
-    this.M.gain.gain.cancelScheduledValues(this.ctx.currentTime); this.M.gain.gain.setTargetAtTime(0.9, this.ctx.currentTime, 0.05);
-    this.live = true; this.nextT = this.ctx.currentTime + 0.12; this.bar = 0; this.last = performance.now(); this._clock();
+    this.M.gain.gain.cancelScheduledValues(this.ctx.currentTime); this.M.gain.gain.setTargetAtTime(0.9, this.ctx.currentTime, 0.4);
+    this.live = true; this.startAt = this.ctx.currentTime + 0.1; this.offset = p0 * JOURNEY.secs; this.nextT = this.startAt; this.bar = 0; this.stage = -1; this._clock();
   }
-  setAscent(a) { this.target = clamp(a, 0, 1); }
+  seek(p) { if (!this.live) return; this.offset = clamp(p, 0, 1) * JOURNEY.secs - (this.ctx.currentTime - this.startAt); this.stage = -1; const t = this.ctx.currentTime + 0.05; this.V.sweep(t, 0.6, { f0: 9000, f1: 400, v: 0.08 }); this.V.glitch(t, 6, 0.04, { v: 0.12 }); }
   resume() { if (this.ctx && this.ctx.state !== "running") this.ctx.resume(); }
   _clock() {
     if (this.worker) return;
@@ -356,16 +404,20 @@ export class Ascent {
     catch (e) { this.timer = setInterval(() => this._tick(), 40); }
   }
   _tick() {
-    if (!this.live) return; const now = performance.now(), dt = Math.min(0.2, (now - this.last) / 1000); this.last = now;
-    this.a += (this.target - this.a) * Math.min(1, dt * 1.6);                                   // the music follows you, a beat behind
+    if (!this.live) return;
     while (this.nextT < this.ctx.currentTime + 0.9) {
-      try { scheduleAscentBar(this.a, this.bar, this.nextT, this.V); } catch (e) { console.error("Ascent bar failed (skipped):", e); }       // never replay a bad bar
-      this.nextT += ASCENT_TRK.barDur; this.bar++;
+      const e = this.nextT - this.startAt + this.offset, { p, cycle } = journeyAt(e), bpm = bpmAt(p), st = stageOf(p); this.bpm = bpm;
+      try {
+        if (cycle !== this.cycle) { this.cycle = cycle; this.V.impact(this.nextT, { v: 0.7 }); this.V.sweep(this.nextT, 1.2, { f0: 400, f1: 9000, v: 0.08 }); }      // the loop restarts with a hit
+        this.B.setBpm(bpm); this.bed.update(p, this.nextT); this.B.out.gain.setTargetAtTime(Math.pow(10, gainDb(p) / 20), this.nextT, 1.5);
+        if (st !== this.stage) { if (this.stage >= 0 && st > this.stage) { this.V.impact(this.nextT, { v: 0.45 + 0.08 * st }); this.V.sweep(this.nextT, 60 / bpm * 4, { f0: 8000, f1: 500, v: 0.07 }); } if (st === 5 && this.cb.crescendo) this.cb.crescendo(); this.stage = st; if (this.cb.stage) this.cb.stage(st); }
+        scheduleJourneyBar(p, this.bar, this.nextT, this.V, bpm);
+      } catch (err) { console.error("Journey bar failed (skipped):", err); }                                         // never replay a bad bar
+      this.nextT += 240 / bpm; this.bar++;
     }
   }
-  boom() { if (!this.live) return; const t = this.ctx.currentTime + 0.05; this.V.impact(t, { v: 0.9 }); this.V.sweep(t, 0.9, { f0: 9000, f1: 300, v: 0.1 }); }
-  pluck(midi) { if (!this.live) return; const pc = ((midi - ASCENT_TRK.root) % 12 + 12) % 12, MIN = [0, 2, 3, 5, 7, 8, 10], near = MIN.reduce((b, n) => (Math.abs(n - pc) < Math.abs(b - pc) ? n : b), 0); this.V.fmbell(this.ctx.currentTime + 0.01, mtof(midi - pc + near), { v: 0.12, len: 0.6, rev: 0.5 }); }
+  pluck(midi) { if (!this.live) return; const pc = ((midi - JOURNEY.root) % 12 + 12) % 12, near = PHRYG.reduce((b, n) => (Math.abs(n - pc) < Math.abs(b - pc) ? n : b), 0); this.V.fmbell(this.ctx.currentTime + 0.01, mtof(midi - pc + near), { v: 0.11, len: 0.7, rev: 0.6 }); }
   tick() { if (this.live) this.V.rim(this.ctx.currentTime + 0.01, { v: 0.3 }); }
-  stop() { this.live = false; if (this.worker) { this.worker.terminate(); this.worker = null; } clearInterval(this.timer); if (this.ctx) { this.M.gain.gain.cancelScheduledValues(this.ctx.currentTime); this.M.gain.gain.setTargetAtTime(0, this.ctx.currentTime, 0.06); } }
+  stop() { this.live = false; if (this.worker) { this.worker.terminate(); this.worker = null; } clearInterval(this.timer); if (this.ctx) { this.M.gain.gain.cancelScheduledValues(this.ctx.currentTime); this.M.gain.gain.setTargetAtTime(0, this.ctx.currentTime, 0.08); } }
   level() { const an = this.analyser; if (!an) return 0; const b = new Uint8Array(an.fftSize); an.getByteTimeDomainData(b); let s = 0; for (const x of b) { const d = (x - 128) / 128; s += d * d; } return Math.sqrt(s / b.length); }
 }
