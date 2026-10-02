@@ -1,0 +1,5099 @@
+{
+ "generated": "2026-10-02",
+ "shots": [
+  {
+   "id": "kurt-22magnum-1",
+   "gun": ".22 Magnum",
+   "caliber": ".22 WMR",
+   "type": "pistol",
+   "mic": "room",
+   "source": "22 Magnum.wav",
+   "credit": "kurt",
+   "license": "CC0 1.0",
+   "url": "https://opengameart.org/content/gunshots",
+   "note": "Several shots per file with some room echo.",
+   "raw": {
+    "file": "raw/kurt-22magnum-1.wav",
+    "score": 98.8,
+    "crisp": 75,
+    "crunch": 46,
+    "parts": {
+     "attack": 1.0,
+     "tail": 1.0,
+     "dry": 0.96,
+     "clip": 0.95,
+     "clean": 1.0,
+     "crack": 1.0,
+     "body": 1.0,
+     "bright": 1.0,
+     "weight": 1.0
+    },
+    "metrics": {
+     "peak_db": 0.2,
+     "attack_ms": 0.48,
+     "t30_ms": 30,
+     "t50_ms": 178,
+     "room_db": -17.4,
+     "crest_db": 19.6,
+     "low_db": -25.8,
+     "centroid_hz": 1689,
+     "clip_pct": 0.012,
+     "snr_db": 60.3,
+     "length_ms": 703,
+     "bands": {
+      "sub": 11.6,
+      "body": 7.7,
+      "mid": 59.8,
+      "crack": 15.6,
+      "air": 5.3
+     }
+    }
+   },
+   "variants": {
+    "crisp": {
+     "file": null,
+     "score": 97.2,
+     "crisp": 80,
+     "crunch": 66,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.74,
+      "dry": 1.0,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 1.0,
+      "bright": 1.0,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 0.48,
+      "t50_ms": 120,
+      "room_db": -27.5,
+      "centroid_hz": 2468,
+      "low_db": -19.8,
+      "peak_db": -1.0
+     }
+    },
+    "crunch": {
+     "file": null,
+     "score": 97.6,
+     "crisp": 83,
+     "crunch": 72,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.78,
+      "dry": 1.0,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 1.0,
+      "bright": 1.0,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 0.46,
+      "t50_ms": 123,
+      "room_db": -23.5,
+      "centroid_hz": 1828,
+      "low_db": -22.5,
+      "peak_db": -1.0
+     }
+    },
+    "arc": {
+     "file": null,
+     "score": 97.2,
+     "crisp": 82,
+     "crunch": 66,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.74,
+      "dry": 1.0,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 1.0,
+      "bright": 1.0,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 0.48,
+      "t50_ms": 120,
+      "room_db": -26.1,
+      "centroid_hz": 2426,
+      "low_db": -19.8,
+      "peak_db": -1.0
+     }
+    }
+   },
+   "sweetener": "laserRetro_002.ogg",
+   "kept": false
+  },
+  {
+   "id": "kurt-22pistol-4",
+   "gun": ".22 pistol",
+   "caliber": ".22",
+   "type": "pistol",
+   "mic": "room",
+   "source": "22 Pistol.wav",
+   "credit": "kurt",
+   "license": "CC0 1.0",
+   "url": "https://opengameart.org/content/gunshots",
+   "note": "Several shots per file with some room echo.",
+   "raw": {
+    "file": "raw/kurt-22pistol-4.wav",
+    "score": 98.5,
+    "crisp": 63,
+    "crunch": 33,
+    "parts": {
+     "attack": 1.0,
+     "tail": 1.0,
+     "dry": 0.89,
+     "clip": 1.0,
+     "clean": 1.0,
+     "crack": 1.0,
+     "body": 1.0,
+     "bright": 1.0,
+     "weight": 1.0
+    },
+    "metrics": {
+     "peak_db": -2.2,
+     "attack_ms": 0.42,
+     "t30_ms": 32,
+     "t50_ms": 145,
+     "room_db": -16.5,
+     "crest_db": 20.8,
+     "low_db": -30.3,
+     "centroid_hz": 2128,
+     "clip_pct": 0.0,
+     "snr_db": 58.0,
+     "length_ms": 388,
+     "bands": {
+      "sub": 2.7,
+      "body": 7.3,
+      "mid": 74.1,
+      "crack": 13.3,
+      "air": 2.6
+     }
+    }
+   },
+   "variants": {
+    "crisp": {
+     "file": "pack/crisp/22-pistol-rm-4_crisp.wav",
+     "score": 97.6,
+     "crisp": 89,
+     "crunch": 60,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.78,
+      "dry": 1.0,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 1.0,
+      "bright": 1.0,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 0.46,
+      "t50_ms": 123,
+      "room_db": -24.3,
+      "centroid_hz": 2744,
+      "low_db": -21.8,
+      "peak_db": -1.0
+     }
+    },
+    "crunch": {
+     "file": "pack/crunch/22-pistol-rm-4_crunch.wav",
+     "score": 98.0,
+     "crisp": 90,
+     "crunch": 68,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.82,
+      "dry": 1.0,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 1.0,
+      "bright": 1.0,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 0.44,
+      "t50_ms": 125,
+      "room_db": -22.2,
+      "centroid_hz": 1598,
+      "low_db": -23.7,
+      "peak_db": -1.0
+     }
+    },
+    "arc": {
+     "file": "pack/arc/22-pistol-rm-4_arc.wav",
+     "score": 97.6,
+     "crisp": 100,
+     "crunch": 62,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.78,
+      "dry": 1.0,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 1.0,
+      "bright": 1.0,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 0.46,
+      "t50_ms": 123,
+      "room_db": -20.7,
+      "centroid_hz": 2681,
+      "low_db": -21.7,
+      "peak_db": -1.0
+     }
+    }
+   },
+   "sweetener": "laserRetro_003.ogg",
+   "kept": true
+  },
+  {
+   "id": "kurt-22pistol-3",
+   "gun": ".22 pistol",
+   "caliber": ".22",
+   "type": "pistol",
+   "mic": "room",
+   "source": "22 Pistol.wav",
+   "credit": "kurt",
+   "license": "CC0 1.0",
+   "url": "https://opengameart.org/content/gunshots",
+   "note": "Several shots per file with some room echo.",
+   "raw": {
+    "file": "raw/kurt-22pistol-3.wav",
+    "score": 97.5,
+    "crisp": 56,
+    "crunch": 33,
+    "parts": {
+     "attack": 1.0,
+     "tail": 0.77,
+     "dry": 1.0,
+     "clip": 1.0,
+     "clean": 1.0,
+     "crack": 1.0,
+     "body": 1.0,
+     "bright": 1.0,
+     "weight": 1.0
+    },
+    "metrics": {
+     "peak_db": -2.2,
+     "attack_ms": 0.42,
+     "t30_ms": 32,
+     "t50_ms": 122,
+     "room_db": -25.5,
+     "crest_db": 20.9,
+     "low_db": -29.1,
+     "centroid_hz": 1953,
+     "clip_pct": 0.0,
+     "snr_db": 65.9,
+     "length_ms": 334,
+     "bands": {
+      "sub": 3.5,
+      "body": 9.0,
+      "mid": 74.2,
+      "crack": 10.9,
+      "air": 2.5
+     }
+    }
+   },
+   "variants": {
+    "crisp": {
+     "file": "pack/crisp/22-pistol-rm-3_crisp.wav",
+     "score": 97.4,
+     "crisp": 88,
+     "crunch": 58,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.77,
+      "dry": 1.0,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 1.0,
+      "bright": 1.0,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 0.46,
+      "t50_ms": 121,
+      "room_db": -25.2,
+      "centroid_hz": 2598,
+      "low_db": -21.2,
+      "peak_db": -1.0
+     }
+    },
+    "crunch": {
+     "file": "pack/crunch/22-pistol-rm-3_crunch.wav",
+     "score": 99.6,
+     "crisp": 73,
+     "crunch": 70,
+     "parts": {
+      "attack": 1.0,
+      "tail": 1.0,
+      "dry": 1.0,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 1.0,
+      "bright": 0.95,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 0.44,
+      "t50_ms": 144,
+      "room_db": -23.2,
+      "centroid_hz": 1460,
+      "low_db": -23.4,
+      "peak_db": -1.0
+     }
+    },
+    "arc": {
+     "file": "pack/arc/22-pistol-rm-3_arc.wav",
+     "score": 97.4,
+     "crisp": 88,
+     "crunch": 58,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.77,
+      "dry": 1.0,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 1.0,
+      "bright": 1.0,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 0.46,
+      "t50_ms": 121,
+      "room_db": -23.4,
+      "centroid_hz": 2605,
+      "low_db": -21.3,
+      "peak_db": -1.0
+     }
+    }
+   },
+   "sweetener": "laserRetro_002.ogg",
+   "kept": true
+  },
+  {
+   "id": "kurt-22magnum-2",
+   "gun": ".22 Magnum",
+   "caliber": ".22 WMR",
+   "type": "pistol",
+   "mic": "room",
+   "source": "22 Magnum.wav",
+   "credit": "kurt",
+   "license": "CC0 1.0",
+   "url": "https://opengameart.org/content/gunshots",
+   "note": "Several shots per file with some room echo.",
+   "raw": {
+    "file": "raw/kurt-22magnum-2.wav",
+    "score": 95.0,
+    "crisp": 75,
+    "crunch": 42,
+    "parts": {
+     "attack": 1.0,
+     "tail": 1.0,
+     "dry": 0.81,
+     "clip": 0.92,
+     "clean": 1.0,
+     "crack": 1.0,
+     "body": 1.0,
+     "bright": 0.87,
+     "weight": 1.0
+    },
+    "metrics": {
+     "peak_db": 0.2,
+     "attack_ms": 0.5,
+     "t30_ms": 30,
+     "t50_ms": 181,
+     "room_db": -15.3,
+     "crest_db": 19.8,
+     "low_db": -27.5,
+     "centroid_hz": 1393,
+     "clip_pct": 0.021,
+     "snr_db": 52.8,
+     "length_ms": 507,
+     "bands": {
+      "sub": 7.2,
+      "body": 5.6,
+      "mid": 65.6,
+      "crack": 14.7,
+      "air": 7.0
+     }
+    }
+   },
+   "variants": {
+    "crisp": {
+     "file": "pack/crisp/22-magnum-rm-2_crisp.wav",
+     "score": 97.0,
+     "crisp": 82,
+     "crunch": 63,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.73,
+      "dry": 1.0,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 1.0,
+      "bright": 1.0,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 0.52,
+      "t50_ms": 118,
+      "room_db": -26.8,
+      "centroid_hz": 2329,
+      "low_db": -20.6,
+      "peak_db": -1.0
+     }
+    },
+    "crunch": {
+     "file": "pack/crunch/22-magnum-rm-2_crunch.wav",
+     "score": 100.0,
+     "crisp": 80,
+     "crunch": 70,
+     "parts": {
+      "attack": 1.0,
+      "tail": 1.0,
+      "dry": 1.0,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 1.0,
+      "bright": 1.0,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 0.46,
+      "t50_ms": 154,
+      "room_db": -23.3,
+      "centroid_hz": 1513,
+      "low_db": -23.6,
+      "peak_db": -1.0
+     }
+    },
+    "arc": {
+     "file": "pack/arc/22-magnum-rm-2_arc.wav",
+     "score": 97.0,
+     "crisp": 97,
+     "crunch": 63,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.73,
+      "dry": 1.0,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 1.0,
+      "bright": 1.0,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 0.52,
+      "t50_ms": 118,
+      "room_db": -22.0,
+      "centroid_hz": 2317,
+      "low_db": -20.6,
+      "peak_db": -1.0
+     }
+    }
+   },
+   "sweetener": "laserRetro_003.ogg",
+   "kept": true
+  },
+  {
+   "id": "kurt-blackpowder-2",
+   "gun": "black powder pistol",
+   "caliber": "",
+   "type": "pistol",
+   "mic": "room",
+   "source": "Black Powder.wav",
+   "credit": "kurt",
+   "license": "CC0 1.0",
+   "url": "https://opengameart.org/content/gunshots",
+   "note": "Several shots per file with some room echo.",
+   "raw": {
+    "file": "raw/kurt-blackpowder-2.wav",
+    "score": 94.6,
+    "crisp": 78,
+    "crunch": 54,
+    "parts": {
+     "attack": 1.0,
+     "tail": 0.98,
+     "dry": 1.0,
+     "clip": 1.0,
+     "clean": 1.0,
+     "crack": 1.0,
+     "body": 1.0,
+     "bright": 0.42,
+     "weight": 1.0
+    },
+    "metrics": {
+     "peak_db": -1.2,
+     "attack_ms": 0.4,
+     "t30_ms": 36,
+     "t50_ms": 138,
+     "room_db": -23.1,
+     "crest_db": 17.6,
+     "low_db": -27.6,
+     "centroid_hz": 1040,
+     "clip_pct": 0.0,
+     "snr_db": 63.1,
+     "length_ms": 690,
+     "bands": {
+      "sub": 2.3,
+      "body": 4.4,
+      "mid": 69.7,
+      "crack": 18.8,
+      "air": 4.8
+     }
+    }
+   },
+   "variants": {
+    "crisp": {
+     "file": null,
+     "score": 94.9,
+     "crisp": 79,
+     "crunch": 62,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.73,
+      "dry": 1.0,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 1.0,
+      "bright": 0.76,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 0.92,
+      "t50_ms": 119,
+      "room_db": -24.3,
+      "centroid_hz": 1308,
+      "low_db": -21.0,
+      "peak_db": -1.0
+     }
+    },
+    "crunch": {
+     "file": null,
+     "score": 94.4,
+     "crisp": 82,
+     "crunch": 71,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.97,
+      "dry": 1.0,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 0.98,
+      "bright": 0.44,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 0.48,
+      "t50_ms": 138,
+      "room_db": -22.5,
+      "centroid_hz": 1051,
+      "low_db": -23.3,
+      "peak_db": -1.0
+     }
+    },
+    "arc": {
+     "file": null,
+     "score": 94.9,
+     "crisp": 92,
+     "crunch": 64,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.73,
+      "dry": 1.0,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 1.0,
+      "bright": 0.76,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 0.92,
+      "t50_ms": 119,
+      "room_db": -22.8,
+      "centroid_hz": 1308,
+      "low_db": -21.0,
+      "peak_db": -1.0
+     }
+    }
+   },
+   "sweetener": "laserRetro_000.ogg",
+   "kept": false
+  },
+  {
+   "id": "ppq-near-0",
+   "gun": "Walther PPQ",
+   "caliber": "9mm",
+   "type": "semi-auto pistol",
+   "mic": "near",
+   "source": "X_39P.wav",
+   "credit": "Ben Jaszczak, Brian Nelson, Kevin Heras, Matthew Nanney",
+   "license": "CC0 1.0",
+   "url": "https://opengameart.org/content/the-free-firearm-sound-library",
+   "note": "Real firearm recording, 96 kHz / 24-bit stereo, summed to mono.",
+   "raw": {
+    "file": "raw/ppq-near-0.wav",
+    "score": 93.0,
+    "crisp": 75,
+    "crunch": 44,
+    "parts": {
+     "attack": 1.0,
+     "tail": 0.36,
+     "dry": 1.0,
+     "clip": 1.0,
+     "clean": 1.0,
+     "crack": 1.0,
+     "body": 1.0,
+     "bright": 1.0,
+     "weight": 1.0
+    },
+    "metrics": {
+     "peak_db": -4.9,
+     "attack_ms": 0.44,
+     "t30_ms": 22,
+     "t50_ms": 89,
+     "room_db": -22.9,
+     "crest_db": 18.7,
+     "low_db": -22.1,
+     "centroid_hz": 1594,
+     "clip_pct": 0.0,
+     "snr_db": 68.1,
+     "length_ms": 704,
+     "bands": {
+      "sub": 0.3,
+      "body": 17.8,
+      "mid": 54.6,
+      "crack": 24.5,
+      "air": 2.7
+     }
+    }
+   },
+   "variants": {
+    "crisp": {
+     "file": null,
+     "score": 90.9,
+     "crisp": 79,
+     "crunch": 59,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.17,
+      "dry": 1.0,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 1.0,
+      "bright": 1.0,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 0.48,
+      "t50_ms": 74,
+      "room_db": -27.3,
+      "centroid_hz": 1858,
+      "low_db": -19.4,
+      "peak_db": -1.0
+     }
+    },
+    "crunch": {
+     "file": null,
+     "score": 93.1,
+     "crisp": 80,
+     "crunch": 69,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.37,
+      "dry": 1.0,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 1.0,
+      "bright": 1.0,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 0.44,
+      "t50_ms": 90,
+      "room_db": -23.3,
+      "centroid_hz": 1625,
+      "low_db": -22.7,
+      "peak_db": -1.0
+     }
+    },
+    "arc": {
+     "file": null,
+     "score": 93.2,
+     "crisp": 78,
+     "crunch": 60,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.38,
+      "dry": 1.0,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 1.0,
+      "bright": 1.0,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 0.48,
+      "t50_ms": 90,
+      "room_db": -26.0,
+      "centroid_hz": 1830,
+      "low_db": -19.4,
+      "peak_db": -1.0
+     }
+    }
+   },
+   "sweetener": "laserRetro_001.ogg",
+   "kept": false
+  },
+  {
+   "id": "ppq-near-2",
+   "gun": "Walther PPQ",
+   "caliber": "9mm",
+   "type": "semi-auto pistol",
+   "mic": "near",
+   "source": "X_39P.wav",
+   "credit": "Ben Jaszczak, Brian Nelson, Kevin Heras, Matthew Nanney",
+   "license": "CC0 1.0",
+   "url": "https://opengameart.org/content/the-free-firearm-sound-library",
+   "note": "Real firearm recording, 96 kHz / 24-bit stereo, summed to mono.",
+   "raw": {
+    "file": "raw/ppq-near-2.wav",
+    "score": 93.0,
+    "crisp": 73,
+    "crunch": 29,
+    "parts": {
+     "attack": 1.0,
+     "tail": 0.36,
+     "dry": 1.0,
+     "clip": 1.0,
+     "clean": 1.0,
+     "crack": 1.0,
+     "body": 1.0,
+     "bright": 1.0,
+     "weight": 1.0
+    },
+    "metrics": {
+     "peak_db": -2.8,
+     "attack_ms": 1.42,
+     "t30_ms": 22,
+     "t50_ms": 89,
+     "room_db": -21.7,
+     "crest_db": 20.6,
+     "low_db": -24.3,
+     "centroid_hz": 1721,
+     "clip_pct": 0.0,
+     "snr_db": 69.2,
+     "length_ms": 704,
+     "bands": {
+      "sub": 0.3,
+      "body": 16.3,
+      "mid": 46.5,
+      "crack": 34.7,
+      "air": 2.2
+     }
+    }
+   },
+   "variants": {
+    "crisp": {
+     "file": "pack/crisp/walther-ppq-near-2_crisp.wav",
+     "score": 90.9,
+     "crisp": 76,
+     "crunch": 55,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.18,
+      "dry": 1.0,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 1.0,
+      "bright": 1.0,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 0.54,
+      "t50_ms": 74,
+      "room_db": -26.8,
+      "centroid_hz": 1884,
+      "low_db": -20.4,
+      "peak_db": -1.0
+     }
+    },
+    "crunch": {
+     "file": "pack/crunch/walther-ppq-near-2_crunch.wav",
+     "score": 93.1,
+     "crisp": 77,
+     "crunch": 64,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.37,
+      "dry": 1.0,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 1.0,
+      "bright": 1.0,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 0.46,
+      "t50_ms": 90,
+      "room_db": -23.3,
+      "centroid_hz": 1677,
+      "low_db": -23.9,
+      "peak_db": -1.0
+     }
+    },
+    "arc": {
+     "file": "pack/arc/walther-ppq-near-2_arc.wav",
+     "score": 95.4,
+     "crisp": 96,
+     "crunch": 55,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.59,
+      "dry": 1.0,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 1.0,
+      "bright": 1.0,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 0.54,
+      "t50_ms": 107,
+      "room_db": -21.6,
+      "centroid_hz": 1924,
+      "low_db": -20.4,
+      "peak_db": -1.0
+     }
+    }
+   },
+   "sweetener": "laserRetro_003.ogg",
+   "kept": true
+  },
+  {
+   "id": "ppq-near-1",
+   "gun": "Walther PPQ",
+   "caliber": "9mm",
+   "type": "semi-auto pistol",
+   "mic": "near",
+   "source": "X_39P.wav",
+   "credit": "Ben Jaszczak, Brian Nelson, Kevin Heras, Matthew Nanney",
+   "license": "CC0 1.0",
+   "url": "https://opengameart.org/content/the-free-firearm-sound-library",
+   "note": "Real firearm recording, 96 kHz / 24-bit stereo, summed to mono.",
+   "raw": {
+    "file": "raw/ppq-near-1.wav",
+    "score": 92.6,
+    "crisp": 73,
+    "crunch": 35,
+    "parts": {
+     "attack": 1.0,
+     "tail": 0.33,
+     "dry": 1.0,
+     "clip": 1.0,
+     "clean": 1.0,
+     "crack": 1.0,
+     "body": 1.0,
+     "bright": 1.0,
+     "weight": 1.0
+    },
+    "metrics": {
+     "peak_db": -3.5,
+     "attack_ms": 1.48,
+     "t30_ms": 22,
+     "t50_ms": 86,
+     "room_db": -22.4,
+     "crest_db": 19.8,
+     "low_db": -23.4,
+     "centroid_hz": 1677,
+     "clip_pct": 0.0,
+     "snr_db": 68.7,
+     "length_ms": 704,
+     "bands": {
+      "sub": 0.3,
+      "body": 16.8,
+      "mid": 50.3,
+      "crack": 30.1,
+      "air": 2.4
+     }
+    }
+   },
+   "variants": {
+    "crisp": {
+     "file": "pack/crisp/walther-ppq-near-1_crisp.wav",
+     "score": 90.9,
+     "crisp": 78,
+     "crunch": 55,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.17,
+      "dry": 1.0,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 1.0,
+      "bright": 1.0,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 0.52,
+      "t50_ms": 74,
+      "room_db": -27.1,
+      "centroid_hz": 1943,
+      "low_db": -20.1,
+      "peak_db": -1.0
+     }
+    },
+    "crunch": {
+     "file": "pack/crunch/walther-ppq-near-1_crunch.wav",
+     "score": 93.1,
+     "crisp": 80,
+     "crunch": 66,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.37,
+      "dry": 1.0,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 1.0,
+      "bright": 1.0,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 0.44,
+      "t50_ms": 90,
+      "room_db": -23.8,
+      "centroid_hz": 1758,
+      "low_db": -23.3,
+      "peak_db": -1.0
+     }
+    },
+    "arc": {
+     "file": "pack/arc/walther-ppq-near-1_arc.wav",
+     "score": 94.1,
+     "crisp": 76,
+     "crunch": 56,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.47,
+      "dry": 1.0,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 1.0,
+      "bright": 1.0,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 0.52,
+      "t50_ms": 97,
+      "room_db": -25.4,
+      "centroid_hz": 1918,
+      "low_db": -20.1,
+      "peak_db": -1.0
+     }
+    }
+   },
+   "sweetener": "laserRetro_002.ogg",
+   "kept": true
+  },
+  {
+   "id": "kurt-blackpowder-3",
+   "gun": "black powder pistol",
+   "caliber": "",
+   "type": "pistol",
+   "mic": "room",
+   "source": "Black Powder.wav",
+   "credit": "kurt",
+   "license": "CC0 1.0",
+   "url": "https://opengameart.org/content/gunshots",
+   "note": "Several shots per file with some room echo.",
+   "raw": {
+    "file": "raw/kurt-blackpowder-3.wav",
+    "score": 91.8,
+    "crisp": 78,
+    "crunch": 57,
+    "parts": {
+     "attack": 1.0,
+     "tail": 1.0,
+     "dry": 0.96,
+     "clip": 1.0,
+     "clean": 1.0,
+     "crack": 1.0,
+     "body": 1.0,
+     "bright": 0.15,
+     "weight": 1.0
+    },
+    "metrics": {
+     "peak_db": -1.6,
+     "attack_ms": 0.4,
+     "t30_ms": 36,
+     "t50_ms": 167,
+     "room_db": -17.4,
+     "crest_db": 17.1,
+     "low_db": -25.7,
+     "centroid_hz": 823,
+     "clip_pct": 0.0,
+     "snr_db": 63.1,
+     "length_ms": 665,
+     "bands": {
+      "sub": 2.7,
+      "body": 5.6,
+      "mid": 67.9,
+      "crack": 16.6,
+      "air": 7.2
+     }
+    }
+   },
+   "variants": {
+    "crisp": {
+     "file": "pack/crisp/black-powder-pistol-rm-3_crisp.wav",
+     "score": 98.2,
+     "crisp": 77,
+     "crunch": 62,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.84,
+      "dry": 1.0,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 1.0,
+      "bright": 1.0,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 1.44,
+      "t50_ms": 127,
+      "room_db": -23.4,
+      "centroid_hz": 1734,
+      "low_db": -22.0,
+      "peak_db": -1.0
+     }
+    },
+    "crunch": {
+     "file": "pack/crunch/black-powder-pistol-rm-3_crunch.wav",
+     "score": 93.9,
+     "crisp": 82,
+     "crunch": 70,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.92,
+      "dry": 1.0,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 0.87,
+      "bright": 0.57,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 0.46,
+      "t50_ms": 133,
+      "room_db": -21.8,
+      "centroid_hz": 1152,
+      "low_db": -23.5,
+      "peak_db": -1.0
+     }
+    },
+    "arc": {
+     "file": "pack/arc/black-powder-pistol-rm-3_arc.wav",
+     "score": 98.2,
+     "crisp": 82,
+     "crunch": 62,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.84,
+      "dry": 1.0,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 1.0,
+      "bright": 1.0,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 1.44,
+      "t50_ms": 127,
+      "room_db": -23.1,
+      "centroid_hz": 1703,
+      "low_db": -21.9,
+      "peak_db": -1.0
+     }
+    }
+   },
+   "sweetener": "laserRetro_001.ogg",
+   "kept": true
+  },
+  {
+   "id": "kurt-22magnum-0",
+   "gun": ".22 Magnum",
+   "caliber": ".22 WMR",
+   "type": "pistol",
+   "mic": "room",
+   "source": "22 Magnum.wav",
+   "credit": "kurt",
+   "license": "CC0 1.0",
+   "url": "https://opengameart.org/content/gunshots",
+   "note": "Several shots per file with some room echo.",
+   "raw": {
+    "file": "raw/kurt-22magnum-0.wav",
+    "score": 90.1,
+    "crisp": 75,
+    "crunch": 52,
+    "parts": {
+     "attack": 1.0,
+     "tail": 1.0,
+     "dry": 0.81,
+     "clip": 0.91,
+     "clean": 1.0,
+     "crack": 1.0,
+     "body": 1.0,
+     "bright": 0.31,
+     "weight": 1.0
+    },
+    "metrics": {
+     "peak_db": 0.1,
+     "attack_ms": 0.4,
+     "t30_ms": 28,
+     "t50_ms": 194,
+     "room_db": -15.4,
+     "crest_db": 17.8,
+     "low_db": -26.1,
+     "centroid_hz": 950,
+     "clip_pct": 0.021,
+     "snr_db": 58.6,
+     "length_ms": 685,
+     "bands": {
+      "sub": 4.8,
+      "body": 5.6,
+      "mid": 60.0,
+      "crack": 21.7,
+      "air": 7.8
+     }
+    }
+   },
+   "variants": {
+    "crisp": {
+     "file": "pack/crisp/22-magnum-rm-0_crisp.wav",
+     "score": 98.0,
+     "crisp": 82,
+     "crunch": 67,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.81,
+      "dry": 1.0,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 1.0,
+      "bright": 1.0,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 0.44,
+      "t50_ms": 125,
+      "room_db": -27.1,
+      "centroid_hz": 2003,
+      "low_db": -20.9,
+      "peak_db": -1.0
+     }
+    },
+    "crunch": {
+     "file": "pack/crunch/22-magnum-rm-0_crunch.wav",
+     "score": 96.9,
+     "crisp": 84,
+     "crunch": 69,
+     "parts": {
+      "attack": 1.0,
+      "tail": 1.0,
+      "dry": 1.0,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 1.0,
+      "bright": 0.66,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 0.42,
+      "t50_ms": 187,
+      "room_db": -23.9,
+      "centroid_hz": 1227,
+      "low_db": -23.0,
+      "peak_db": -1.0
+     }
+    },
+    "arc": {
+     "file": "pack/arc/22-magnum-rm-0_arc.wav",
+     "score": 98.0,
+     "crisp": 82,
+     "crunch": 67,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.81,
+      "dry": 1.0,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 1.0,
+      "bright": 1.0,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 0.44,
+      "t50_ms": 125,
+      "room_db": -25.8,
+      "centroid_hz": 1953,
+      "low_db": -20.8,
+      "peak_db": -1.0
+     }
+    }
+   },
+   "sweetener": "laserRetro_001.ogg",
+   "kept": true
+  },
+  {
+   "id": "kurt-unkown-3",
+   "gun": "unidentified gun",
+   "caliber": "",
+   "type": "unknown",
+   "mic": "room",
+   "source": "Unkown.wav",
+   "credit": "kurt",
+   "license": "CC0 1.0",
+   "url": "https://opengameart.org/content/gunshots",
+   "note": "Several shots per file with some room echo.",
+   "raw": {
+    "file": "raw/kurt-unkown-3.wav",
+    "score": 89.0,
+    "crisp": 100,
+    "crunch": 61,
+    "parts": {
+     "attack": 1.0,
+     "tail": 1.0,
+     "dry": 0.84,
+     "clip": 0.87,
+     "clean": 1.0,
+     "crack": 1.0,
+     "body": 1.0,
+     "bright": 0.21,
+     "weight": 1.0
+    },
+    "metrics": {
+     "peak_db": 0.3,
+     "attack_ms": 0.9,
+     "t30_ms": 100,
+     "t50_ms": 160,
+     "room_db": -15.8,
+     "crest_db": 15.8,
+     "low_db": -20.8,
+     "centroid_hz": 867,
+     "clip_pct": 0.033,
+     "snr_db": 63.2,
+     "length_ms": 704,
+     "bands": {
+      "sub": 4.0,
+      "body": 21.1,
+      "mid": 47.3,
+      "crack": 20.2,
+      "air": 7.5
+     }
+    }
+   },
+   "variants": {
+    "crisp": {
+     "file": "pack/crisp/unidentified-gun-rm-3_crisp.wav",
+     "score": 97.8,
+     "crisp": 90,
+     "crunch": 69,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.8,
+      "dry": 1.0,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 1.0,
+      "bright": 1.0,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 1.0,
+      "t50_ms": 124,
+      "room_db": -23.7,
+      "centroid_hz": 1525,
+      "low_db": -17.8,
+      "peak_db": -1.0
+     }
+    },
+    "crunch": {
+     "file": "pack/crunch/unidentified-gun-rm-3_crunch.wav",
+     "score": 96.5,
+     "crisp": 95,
+     "crunch": 71,
+     "parts": {
+      "attack": 1.0,
+      "tail": 1.0,
+      "dry": 1.0,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 1.0,
+      "bright": 0.61,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 0.81,
+      "t50_ms": 192,
+      "room_db": -18.2,
+      "centroid_hz": 1186,
+      "low_db": -20.7,
+      "peak_db": -1.0
+     }
+    },
+    "arc": {
+     "file": "pack/arc/unidentified-gun-rm-3_arc.wav",
+     "score": 97.8,
+     "crisp": 97,
+     "crunch": 71,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.8,
+      "dry": 1.0,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 1.0,
+      "bright": 1.0,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 1.0,
+      "t50_ms": 124,
+      "room_db": -22.9,
+      "centroid_hz": 1579,
+      "low_db": -17.8,
+      "peak_db": -1.0
+     }
+    }
+   },
+   "sweetener": "laserSmall_001.ogg",
+   "kept": true
+  },
+  {
+   "id": "kurt-unkown-1",
+   "gun": "unidentified gun",
+   "caliber": "",
+   "type": "unknown",
+   "mic": "room",
+   "source": "Unkown.wav",
+   "credit": "kurt",
+   "license": "CC0 1.0",
+   "url": "https://opengameart.org/content/gunshots",
+   "note": "Several shots per file with some room echo.",
+   "raw": {
+    "file": "raw/kurt-unkown-1.wav",
+    "score": 88.9,
+    "crisp": 92,
+    "crunch": 79,
+    "parts": {
+     "attack": 1.0,
+     "tail": 1.0,
+     "dry": 1.0,
+     "clip": 0.3,
+     "clean": 1.0,
+     "crack": 1.0,
+     "body": 1.0,
+     "bright": 0.77,
+     "weight": 1.0
+    },
+    "metrics": {
+     "peak_db": 0.4,
+     "attack_ms": 0.44,
+     "t30_ms": 74,
+     "t50_ms": 323,
+     "room_db": -19.5,
+     "crest_db": 13.6,
+     "low_db": -14.8,
+     "centroid_hz": 1318,
+     "clip_pct": 0.174,
+     "snr_db": 57.5,
+     "length_ms": 706,
+     "bands": {
+      "sub": 4.2,
+      "body": 26.5,
+      "mid": 51.0,
+      "crack": 12.0,
+      "air": 6.4
+     }
+    }
+   },
+   "variants": null,
+   "sweetener": null,
+   "kept": false
+  },
+  {
+   "id": "kurt-blackpowder-5",
+   "gun": "black powder pistol",
+   "caliber": "",
+   "type": "pistol",
+   "mic": "room",
+   "source": "Black Powder.wav",
+   "credit": "kurt",
+   "license": "CC0 1.0",
+   "url": "https://opengameart.org/content/gunshots",
+   "note": "Several shots per file with some room echo.",
+   "raw": {
+    "file": "raw/kurt-blackpowder-5.wav",
+    "score": 88.8,
+    "crisp": 78,
+    "crunch": 58,
+    "parts": {
+     "attack": 1.0,
+     "tail": 1.0,
+     "dry": 0.84,
+     "clip": 1.0,
+     "clean": 1.0,
+     "crack": 1.0,
+     "body": 1.0,
+     "bright": 0.0,
+     "weight": 1.0
+    },
+    "metrics": {
+     "peak_db": -1.1,
+     "attack_ms": 0.4,
+     "t30_ms": 37,
+     "t50_ms": 159,
+     "room_db": -15.8,
+     "crest_db": 17.1,
+     "low_db": -25.3,
+     "centroid_hz": 615,
+     "clip_pct": 0.0,
+     "snr_db": 55.9,
+     "length_ms": 519,
+     "bands": {
+      "sub": 4.3,
+      "body": 7.3,
+      "mid": 68.7,
+      "crack": 15.0,
+      "air": 4.8
+     }
+    }
+   },
+   "variants": {
+    "crisp": {
+     "file": null,
+     "score": 93.1,
+     "crisp": 79,
+     "crunch": 57,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.72,
+      "dry": 1.0,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 1.0,
+      "bright": 0.57,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 0.5,
+      "t50_ms": 118,
+      "room_db": -24.1,
+      "centroid_hz": 1159,
+      "low_db": -20.9,
+      "peak_db": -1.0
+     }
+    },
+    "crunch": {
+     "file": null,
+     "score": 93.4,
+     "crisp": 80,
+     "crunch": 67,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.89,
+      "dry": 1.0,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 1.0,
+      "bright": 0.41,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 0.44,
+      "t50_ms": 131,
+      "room_db": -22.1,
+      "centroid_hz": 1024,
+      "low_db": -23.4,
+      "peak_db": -1.0
+     }
+    },
+    "arc": {
+     "file": null,
+     "score": 93.8,
+     "crisp": 96,
+     "crunch": 58,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.72,
+      "dry": 1.0,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 1.0,
+      "bright": 0.65,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 0.5,
+      "t50_ms": 118,
+      "room_db": -21.3,
+      "centroid_hz": 1220,
+      "low_db": -20.9,
+      "peak_db": -1.0
+     }
+    }
+   },
+   "sweetener": "laserRetro_003.ogg",
+   "kept": false
+  },
+  {
+   "id": "kurt-22pistol-1",
+   "gun": ".22 pistol",
+   "caliber": ".22",
+   "type": "pistol",
+   "mic": "room",
+   "source": "22 Pistol.wav",
+   "credit": "kurt",
+   "license": "CC0 1.0",
+   "url": "https://opengameart.org/content/gunshots",
+   "note": "Several shots per file with some room echo.",
+   "raw": {
+    "file": "raw/kurt-22pistol-1.wav",
+    "score": 88.4,
+    "crisp": 66,
+    "crunch": 40,
+    "parts": {
+     "attack": 1.0,
+     "tail": 1.0,
+     "dry": 0.52,
+     "clip": 1.0,
+     "clean": 1.0,
+     "crack": 1.0,
+     "body": 1.0,
+     "bright": 0.46,
+     "weight": 1.0
+    },
+    "metrics": {
+     "peak_db": -5.0,
+     "attack_ms": 0.42,
+     "t30_ms": 30,
+     "t50_ms": 157,
+     "room_db": -11.3,
+     "crest_db": 20.4,
+     "low_db": -26.5,
+     "centroid_hz": 1067,
+     "clip_pct": 0.0,
+     "snr_db": 67.7,
+     "length_ms": 340,
+     "bands": {
+      "sub": 19.1,
+      "body": 14.3,
+      "mid": 49.7,
+      "crack": 13.7,
+      "air": 3.3
+     }
+    }
+   },
+   "variants": {
+    "crisp": {
+     "file": null,
+     "score": 93.0,
+     "crisp": 78,
+     "crunch": 51,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.47,
+      "dry": 1.0,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 0.88,
+      "bright": 1.0,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 0.46,
+      "t50_ms": 98,
+      "room_db": -25.4,
+      "centroid_hz": 2387,
+      "low_db": -19.0,
+      "peak_db": -1.0
+     }
+    },
+    "crunch": {
+     "file": null,
+     "score": 97.5,
+     "crisp": 82,
+     "crunch": 55,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.77,
+      "dry": 1.0,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 1.0,
+      "bright": 1.0,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 0.42,
+      "t50_ms": 122,
+      "room_db": -24.7,
+      "centroid_hz": 1590,
+      "low_db": -21.5,
+      "peak_db": -1.0
+     }
+    },
+    "arc": {
+     "file": null,
+     "score": 93.9,
+     "crisp": 90,
+     "crunch": 53,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.53,
+      "dry": 1.0,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 0.91,
+      "bright": 1.0,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 0.46,
+      "t50_ms": 102,
+      "room_db": -21.6,
+      "centroid_hz": 2343,
+      "low_db": -19.0,
+      "peak_db": -1.0
+     }
+    }
+   },
+   "sweetener": "laserRetro_000.ogg",
+   "kept": false
+  },
+  {
+   "id": "kurt-blackpowder-1",
+   "gun": "black powder pistol",
+   "caliber": "",
+   "type": "pistol",
+   "mic": "room",
+   "source": "Black Powder.wav",
+   "credit": "kurt",
+   "license": "CC0 1.0",
+   "url": "https://opengameart.org/content/gunshots",
+   "note": "Several shots per file with some room echo.",
+   "raw": {
+    "file": "raw/kurt-blackpowder-1.wav",
+    "score": 87.9,
+    "crisp": 70,
+    "crunch": 58,
+    "parts": {
+     "attack": 1.0,
+     "tail": 1.0,
+     "dry": 0.78,
+     "clip": 1.0,
+     "clean": 1.0,
+     "crack": 1.0,
+     "body": 1.0,
+     "bright": 0.0,
+     "weight": 1.0
+    },
+    "metrics": {
+     "peak_db": -0.9,
+     "attack_ms": 0.4,
+     "t30_ms": 36,
+     "t50_ms": 159,
+     "room_db": -14.9,
+     "crest_db": 17.1,
+     "low_db": -25.3,
+     "centroid_hz": 643,
+     "clip_pct": 0.0,
+     "snr_db": 63.8,
+     "length_ms": 698,
+     "bands": {
+      "sub": 3.9,
+      "body": 6.9,
+      "mid": 71.8,
+      "crack": 12.2,
+      "air": 5.2
+     }
+    }
+   },
+   "variants": {
+    "crisp": {
+     "file": "pack/crisp/black-powder-pistol-rm-1_crisp.wav",
+     "score": 97.1,
+     "crisp": 77,
+     "crunch": 61,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.83,
+      "dry": 1.0,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 1.0,
+      "bright": 0.88,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 1.46,
+      "t50_ms": 127,
+      "room_db": -24.5,
+      "centroid_hz": 1405,
+      "low_db": -20.4,
+      "peak_db": -1.0
+     }
+    },
+    "crunch": {
+     "file": "pack/crunch/black-powder-pistol-rm-1_crunch.wav",
+     "score": 94.6,
+     "crisp": 69,
+     "crunch": 70,
+     "parts": {
+      "attack": 1.0,
+      "tail": 1.0,
+      "dry": 1.0,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 0.89,
+      "bright": 0.52,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 0.44,
+      "t50_ms": 162,
+      "room_db": -22.3,
+      "centroid_hz": 1116,
+      "low_db": -23.4,
+      "peak_db": -1.0
+     }
+    },
+    "arc": {
+     "file": "pack/arc/black-powder-pistol-rm-1_arc.wav",
+     "score": 97.1,
+     "crisp": 91,
+     "crunch": 60,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.83,
+      "dry": 1.0,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 1.0,
+      "bright": 0.88,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 1.46,
+      "t50_ms": 127,
+      "room_db": -22.3,
+      "centroid_hz": 1407,
+      "low_db": -20.4,
+      "peak_db": -1.0
+     }
+    }
+   },
+   "sweetener": "laserRetro_004.ogg",
+   "kept": true
+  },
+  {
+   "id": "1911-near-1",
+   "gun": "1911",
+   "caliber": ".45",
+   "type": "semi-auto pistol",
+   "mic": "near",
+   "source": "A_42P.wav",
+   "credit": "Ben Jaszczak, Brian Nelson, Kevin Heras, Matthew Nanney",
+   "license": "CC0 1.0",
+   "url": "https://opengameart.org/content/the-free-firearm-sound-library",
+   "note": "Real firearm recording, 96 kHz / 24-bit stereo, summed to mono.",
+   "raw": {
+    "file": "raw/1911-near-1.wav",
+    "score": 87.8,
+    "crisp": 62,
+    "crunch": 51,
+    "parts": {
+     "attack": 1.0,
+     "tail": 0.0,
+     "dry": 1.0,
+     "clip": 1.0,
+     "clean": 1.0,
+     "crack": 1.0,
+     "body": 1.0,
+     "bright": 0.87,
+     "weight": 1.0
+    },
+    "metrics": {
+     "peak_db": -0.0,
+     "attack_ms": 1.33,
+     "t30_ms": 27,
+     "t50_ms": 46,
+     "room_db": -18.1,
+     "crest_db": 18.6,
+     "low_db": -21.3,
+     "centroid_hz": 1394,
+     "clip_pct": 0.0,
+     "snr_db": 60.2,
+     "length_ms": 704,
+     "bands": {
+      "sub": 0.6,
+      "body": 27.4,
+      "mid": 56.1,
+      "crack": 14.6,
+      "air": 1.4
+     }
+    }
+   },
+   "variants": {
+    "crisp": {
+     "file": "pack/crisp/1911-near-1_crisp.wav",
+     "score": 91.0,
+     "crisp": 82,
+     "crunch": 70,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.18,
+      "dry": 1.0,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 1.0,
+      "bright": 1.0,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 0.83,
+      "t50_ms": 74,
+      "room_db": -25.2,
+      "centroid_hz": 1970,
+      "low_db": -19.0,
+      "peak_db": -1.0
+     }
+    },
+    "crunch": {
+     "file": "pack/crunch/1911-near-1_crunch.wav",
+     "score": 92.3,
+     "crisp": 78,
+     "crunch": 71,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.37,
+      "dry": 1.0,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 1.0,
+      "bright": 0.91,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 0.69,
+      "t50_ms": 90,
+      "room_db": -19.7,
+      "centroid_hz": 1430,
+      "low_db": -23.6,
+      "peak_db": -1.0
+     }
+    },
+    "arc": {
+     "file": "pack/arc/1911-near-1_arc.wav",
+     "score": 95.2,
+     "crisp": 89,
+     "crunch": 73,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.56,
+      "dry": 1.0,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 1.0,
+      "bright": 1.0,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 0.83,
+      "t50_ms": 105,
+      "room_db": -23.6,
+      "centroid_hz": 2036,
+      "low_db": -19.0,
+      "peak_db": -1.0
+     }
+    }
+   },
+   "sweetener": "laserSmall_001.ogg",
+   "kept": true
+  },
+  {
+   "id": "1911-near-0",
+   "gun": "1911",
+   "caliber": ".45",
+   "type": "semi-auto pistol",
+   "mic": "near",
+   "source": "A_42P.wav",
+   "credit": "Ben Jaszczak, Brian Nelson, Kevin Heras, Matthew Nanney",
+   "license": "CC0 1.0",
+   "url": "https://opengameart.org/content/the-free-firearm-sound-library",
+   "note": "Real firearm recording, 96 kHz / 24-bit stereo, summed to mono.",
+   "raw": {
+    "file": "raw/1911-near-0.wav",
+    "score": 87.2,
+    "crisp": 54,
+    "crunch": 55,
+    "parts": {
+     "attack": 1.0,
+     "tail": 0.0,
+     "dry": 1.0,
+     "clip": 0.96,
+     "clean": 1.0,
+     "crack": 1.0,
+     "body": 1.0,
+     "bright": 0.85,
+     "weight": 1.0
+    },
+    "metrics": {
+     "peak_db": 0.0,
+     "attack_ms": 1.29,
+     "t30_ms": 27,
+     "t50_ms": 50,
+     "room_db": -18.3,
+     "crest_db": 17.9,
+     "low_db": -20.4,
+     "centroid_hz": 1379,
+     "clip_pct": 0.009,
+     "snr_db": 59.7,
+     "length_ms": 704,
+     "bands": {
+      "sub": 0.6,
+      "body": 28.9,
+      "mid": 57.1,
+      "crack": 12.2,
+      "air": 1.1
+     }
+    }
+   },
+   "variants": {
+    "crisp": {
+     "file": "pack/crisp/1911-near-0_crisp.wav",
+     "score": 93.1,
+     "crisp": 82,
+     "crunch": 73,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.37,
+      "dry": 1.0,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 1.0,
+      "bright": 1.0,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 1.0,
+      "t50_ms": 90,
+      "room_db": -24.6,
+      "centroid_hz": 2074,
+      "low_db": -18.3,
+      "peak_db": -1.0
+     }
+    },
+    "crunch": {
+     "file": "pack/crunch/1911-near-0_crunch.wav",
+     "score": 93.1,
+     "crisp": 74,
+     "crunch": 75,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.37,
+      "dry": 1.0,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 1.0,
+      "bright": 1.0,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 0.73,
+      "t50_ms": 90,
+      "room_db": -19.3,
+      "centroid_hz": 1521,
+      "low_db": -22.3,
+      "peak_db": -1.0
+     }
+    },
+    "arc": {
+     "file": "pack/arc/1911-near-0_arc.wav",
+     "score": 94.3,
+     "crisp": 85,
+     "crunch": 73,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.48,
+      "dry": 1.0,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 1.0,
+      "bright": 1.0,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 1.0,
+      "t50_ms": 99,
+      "room_db": -23.7,
+      "centroid_hz": 2044,
+      "low_db": -18.3,
+      "peak_db": -1.0
+     }
+    }
+   },
+   "sweetener": "laserSmall_000.ogg",
+   "kept": true
+  },
+  {
+   "id": "kurt-unkown-2",
+   "gun": "unidentified gun",
+   "caliber": "",
+   "type": "unknown",
+   "mic": "room",
+   "source": "Unkown.wav",
+   "credit": "kurt",
+   "license": "CC0 1.0",
+   "url": "https://opengameart.org/content/gunshots",
+   "note": "Several shots per file with some room echo.",
+   "raw": {
+    "file": "raw/kurt-unkown-2.wav",
+    "score": 87.1,
+    "crisp": 95,
+    "crunch": 81,
+    "parts": {
+     "attack": 1.0,
+     "tail": 1.0,
+     "dry": 1.0,
+     "clip": 0.28,
+     "clean": 1.0,
+     "crack": 1.0,
+     "body": 1.0,
+     "bright": 0.61,
+     "weight": 1.0
+    },
+    "metrics": {
+     "peak_db": 0.9,
+     "attack_ms": 0.48,
+     "t30_ms": 72,
+     "t50_ms": 327,
+     "room_db": -21.7,
+     "crest_db": 13.0,
+     "low_db": -15.5,
+     "centroid_hz": 1186,
+     "clip_pct": 0.18,
+     "snr_db": 60.0,
+     "length_ms": 704,
+     "bands": {
+      "sub": 2.9,
+      "body": 25.1,
+      "mid": 52.2,
+      "crack": 12.2,
+      "air": 7.6
+     }
+    }
+   },
+   "variants": null,
+   "sweetener": null,
+   "kept": false
+  },
+  {
+   "id": "kurt-blackpowder-4",
+   "gun": "black powder pistol",
+   "caliber": "",
+   "type": "pistol",
+   "mic": "room",
+   "source": "Black Powder.wav",
+   "credit": "kurt",
+   "license": "CC0 1.0",
+   "url": "https://opengameart.org/content/gunshots",
+   "note": "Several shots per file with some room echo.",
+   "raw": {
+    "file": "raw/kurt-blackpowder-4.wav",
+    "score": 86.0,
+    "crisp": 76,
+    "crunch": 61,
+    "parts": {
+     "attack": 1.0,
+     "tail": 1.0,
+     "dry": 0.64,
+     "clip": 1.0,
+     "clean": 1.0,
+     "crack": 1.0,
+     "body": 1.0,
+     "bright": 0.0,
+     "weight": 1.0
+    },
+    "metrics": {
+     "peak_db": -2.1,
+     "attack_ms": 0.42,
+     "t30_ms": 40,
+     "t50_ms": 176,
+     "room_db": -13.0,
+     "crest_db": 16.3,
+     "low_db": -24.9,
+     "centroid_hz": 607,
+     "clip_pct": 0.0,
+     "snr_db": 62.6,
+     "length_ms": 546,
+     "bands": {
+      "sub": 8.7,
+      "body": 5.9,
+      "mid": 66.6,
+      "crack": 10.8,
+      "air": 8.0
+     }
+    }
+   },
+   "variants": {
+    "crisp": {
+     "file": null,
+     "score": 90.4,
+     "crisp": 74,
+     "crunch": 56,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.72,
+      "dry": 1.0,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 1.0,
+      "bright": 0.28,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 0.46,
+      "t50_ms": 118,
+      "room_db": -24.1,
+      "centroid_hz": 923,
+      "low_db": -22.7,
+      "peak_db": -1.0
+     }
+    },
+    "crunch": {
+     "file": null,
+     "score": 94.3,
+     "crisp": 57,
+     "crunch": 69,
+     "parts": {
+      "attack": 1.0,
+      "tail": 1.0,
+      "dry": 1.0,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 1.0,
+      "bright": 0.37,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 0.44,
+      "t50_ms": 154,
+      "room_db": -23.1,
+      "centroid_hz": 995,
+      "low_db": -24.2,
+      "peak_db": -1.0
+     }
+    },
+    "arc": {
+     "file": null,
+     "score": 90.6,
+     "crisp": 74,
+     "crunch": 57,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.72,
+      "dry": 1.0,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 1.0,
+      "bright": 0.3,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 0.46,
+      "t50_ms": 118,
+      "room_db": -22.9,
+      "centroid_hz": 938,
+      "low_db": -22.7,
+      "peak_db": -1.0
+     }
+    }
+   },
+   "sweetener": "laserRetro_002.ogg",
+   "kept": false
+  },
+  {
+   "id": "kurt-blackpowder-0",
+   "gun": "black powder pistol",
+   "caliber": "",
+   "type": "pistol",
+   "mic": "room",
+   "source": "Black Powder.wav",
+   "credit": "kurt",
+   "license": "CC0 1.0",
+   "url": "https://opengameart.org/content/gunshots",
+   "note": "Several shots per file with some room echo.",
+   "raw": {
+    "file": "raw/kurt-blackpowder-0.wav",
+    "score": 85.9,
+    "crisp": 76,
+    "crunch": 49,
+    "parts": {
+     "attack": 1.0,
+     "tail": 1.0,
+     "dry": 0.65,
+     "clip": 0.99,
+     "clean": 1.0,
+     "crack": 1.0,
+     "body": 1.0,
+     "bright": 0.0,
+     "weight": 1.0
+    },
+    "metrics": {
+     "peak_db": 0.1,
+     "attack_ms": 0.4,
+     "t30_ms": 33,
+     "t50_ms": 186,
+     "room_db": -13.1,
+     "crest_db": 19.0,
+     "low_db": -22.4,
+     "centroid_hz": 293,
+     "clip_pct": 0.003,
+     "snr_db": 64.8,
+     "length_ms": 675,
+     "bands": {
+      "sub": 16.7,
+      "body": 17.3,
+      "mid": 19.5,
+      "crack": 35.5,
+      "air": 11.0
+     }
+    }
+   },
+   "variants": {
+    "crisp": {
+     "file": null,
+     "score": 87.2,
+     "crisp": 79,
+     "crunch": 59,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.74,
+      "dry": 1.0,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 0.91,
+      "bright": 0.0,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 0.46,
+      "t50_ms": 119,
+      "room_db": -24.9,
+      "centroid_hz": 683,
+      "low_db": -17.2,
+      "peak_db": -1.0
+     }
+    },
+    "crunch": {
+     "file": null,
+     "score": 92.0,
+     "crisp": 77,
+     "crunch": 60,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.95,
+      "dry": 1.0,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 1.0,
+      "bright": 0.18,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 0.44,
+      "t50_ms": 136,
+      "room_db": -21.9,
+      "centroid_hz": 843,
+      "low_db": -18.9,
+      "peak_db": -1.0
+     }
+    },
+    "arc": {
+     "file": null,
+     "score": 88.8,
+     "crisp": 88,
+     "crunch": 65,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.73,
+      "dry": 1.0,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 0.94,
+      "bright": 0.16,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 0.46,
+      "t50_ms": 118,
+      "room_db": -21.5,
+      "centroid_hz": 825,
+      "low_db": -17.3,
+      "peak_db": -1.0
+     }
+    }
+   },
+   "sweetener": "laserSmall_002.ogg",
+   "kept": false
+  },
+  {
+   "id": "kurt-22pistol-0",
+   "gun": ".22 pistol",
+   "caliber": ".22",
+   "type": "pistol",
+   "mic": "room",
+   "source": "22 Pistol.wav",
+   "credit": "kurt",
+   "license": "CC0 1.0",
+   "url": "https://opengameart.org/content/gunshots",
+   "note": "Several shots per file with some room echo.",
+   "raw": {
+    "file": "raw/kurt-22pistol-0.wav",
+    "score": 84.6,
+    "crisp": 67,
+    "crunch": 31,
+    "parts": {
+     "attack": 1.0,
+     "tail": 1.0,
+     "dry": 0.53,
+     "clip": 1.0,
+     "clean": 1.0,
+     "crack": 1.0,
+     "body": 1.0,
+     "bright": 0.01,
+     "weight": 1.0
+    },
+    "metrics": {
+     "peak_db": -3.0,
+     "attack_ms": 0.42,
+     "t30_ms": 26,
+     "t50_ms": 183,
+     "room_db": -11.5,
+     "crest_db": 20.0,
+     "low_db": -24.8,
+     "centroid_hz": 709,
+     "clip_pct": 0.0,
+     "snr_db": 65.0,
+     "length_ms": 437,
+     "bands": {
+      "sub": 18.9,
+      "body": 18.7,
+      "mid": 45.0,
+      "crack": 15.9,
+      "air": 1.5
+     }
+    }
+   },
+   "variants": {
+    "crisp": {
+     "file": null,
+     "score": 91.7,
+     "crisp": 78,
+     "crunch": 45,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.46,
+      "dry": 1.0,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 0.76,
+      "bright": 1.0,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 0.46,
+      "t50_ms": 97,
+      "room_db": -24.7,
+      "centroid_hz": 2390,
+      "low_db": -19.4,
+      "peak_db": -1.0
+     }
+    },
+    "crunch": {
+     "file": null,
+     "score": 95.1,
+     "crisp": 84,
+     "crunch": 42,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.62,
+      "dry": 1.0,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 1.0,
+      "bright": 0.92,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 0.44,
+      "t50_ms": 109,
+      "room_db": -23.5,
+      "centroid_hz": 1437,
+      "low_db": -22.3,
+      "peak_db": -1.0
+     }
+    },
+    "arc": {
+     "file": null,
+     "score": 93.7,
+     "crisp": 93,
+     "crunch": 51,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.61,
+      "dry": 1.0,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 0.8,
+      "bright": 1.0,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 0.46,
+      "t50_ms": 108,
+      "room_db": -22.3,
+      "centroid_hz": 2197,
+      "low_db": -19.2,
+      "peak_db": -1.0
+     }
+    }
+   },
+   "sweetener": "laserRetro_004.ogg",
+   "kept": false
+  },
+  {
+   "id": "kurt-22pistol-2",
+   "gun": ".22 pistol",
+   "caliber": ".22",
+   "type": "pistol",
+   "mic": "room",
+   "source": "22 Pistol.wav",
+   "credit": "kurt",
+   "license": "CC0 1.0",
+   "url": "https://opengameart.org/content/gunshots",
+   "note": "Several shots per file with some room echo.",
+   "raw": {
+    "file": "raw/kurt-22pistol-2.wav",
+    "score": 84.3,
+    "crisp": 75,
+    "crunch": 12,
+    "parts": {
+     "attack": 1.0,
+     "tail": 0.2,
+     "dry": 1.0,
+     "clip": 1.0,
+     "clean": 1.0,
+     "crack": 1.0,
+     "body": 0.57,
+     "bright": 1.0,
+     "weight": 0.68
+    },
+    "metrics": {
+     "peak_db": -4.2,
+     "attack_ms": 0.4,
+     "t30_ms": 27,
+     "t50_ms": 76,
+     "room_db": -28.4,
+     "crest_db": 25.6,
+     "low_db": -38.5,
+     "centroid_hz": 2394,
+     "clip_pct": 0.0,
+     "snr_db": 59.9,
+     "length_ms": 422,
+     "bands": {
+      "sub": 0.4,
+      "body": 3.8,
+      "mid": 61.9,
+      "crack": 30.0,
+      "air": 3.8
+     }
+    }
+   },
+   "variants": {
+    "crisp": {
+     "file": null,
+     "score": 93.3,
+     "crisp": 83,
+     "crunch": 38,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.39,
+      "dry": 1.0,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 1.0,
+      "bright": 1.0,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 0.44,
+      "t50_ms": 91,
+      "room_db": -25.7,
+      "centroid_hz": 3046,
+      "low_db": -23.3,
+      "peak_db": -1.0
+     }
+    },
+    "crunch": {
+     "file": null,
+     "score": 95.8,
+     "crisp": 84,
+     "crunch": 47,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.62,
+      "dry": 1.0,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 1.0,
+      "bright": 1.0,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 0.42,
+      "t50_ms": 109,
+      "room_db": -24.7,
+      "centroid_hz": 1590,
+      "low_db": -25.7,
+      "peak_db": -1.0
+     }
+    },
+    "arc": {
+     "file": null,
+     "score": 94.4,
+     "crisp": 84,
+     "crunch": 40,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.49,
+      "dry": 1.0,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 1.0,
+      "bright": 1.0,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 0.44,
+      "t50_ms": 99,
+      "room_db": -23.7,
+      "centroid_hz": 2901,
+      "low_db": -23.3,
+      "peak_db": -1.0
+     }
+    }
+   },
+   "sweetener": "laserRetro_001.ogg",
+   "kept": false
+  },
+  {
+   "id": "ppq-mid-1",
+   "gun": "Walther PPQ",
+   "caliber": "9mm",
+   "type": "semi-auto pistol",
+   "mic": "mid",
+   "source": "X_31P.wav",
+   "credit": "Ben Jaszczak, Brian Nelson, Kevin Heras, Matthew Nanney",
+   "license": "CC0 1.0",
+   "url": "https://opengameart.org/content/the-free-firearm-sound-library",
+   "note": "Real firearm recording, 96 kHz / 24-bit stereo, summed to mono.",
+   "raw": {
+    "file": "raw/ppq-mid-1.wav",
+    "score": 80.9,
+    "crisp": 43,
+    "crunch": 26,
+    "parts": {
+     "attack": 1.0,
+     "tail": 0.0,
+     "dry": 0.8,
+     "clip": 0.93,
+     "clean": 1.0,
+     "crack": 0.77,
+     "body": 1.0,
+     "bright": 0.87,
+     "weight": 1.0
+    },
+    "metrics": {
+     "peak_db": 0.1,
+     "attack_ms": 1.23,
+     "t30_ms": 15,
+     "t50_ms": 53,
+     "room_db": -15.2,
+     "crest_db": 19.4,
+     "low_db": -28.2,
+     "centroid_hz": 1392,
+     "clip_pct": 0.018,
+     "snr_db": 59.1,
+     "length_ms": 704,
+     "bands": {
+      "sub": 0.4,
+      "body": 11.1,
+      "mid": 79.0,
+      "crack": 8.6,
+      "air": 0.9
+     }
+    }
+   },
+   "variants": {
+    "crisp": {
+     "file": null,
+     "score": 86.9,
+     "crisp": 67,
+     "crunch": 40,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.08,
+      "dry": 0.89,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 1.0,
+      "bright": 0.84,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 1.02,
+      "t50_ms": 66,
+      "room_db": -16.5,
+      "centroid_hz": 1372,
+      "low_db": -23.3,
+      "peak_db": -1.0
+     }
+    },
+    "crunch": {
+     "file": null,
+     "score": 82.6,
+     "crisp": 69,
+     "crunch": 56,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.16,
+      "dry": 0.74,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 0.67,
+      "bright": 0.87,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 0.52,
+      "t50_ms": 72,
+      "room_db": -14.4,
+      "centroid_hz": 1394,
+      "low_db": -27.0,
+      "peak_db": -1.0
+     }
+    },
+    "arc": {
+     "file": null,
+     "score": 93.1,
+     "crisp": 85,
+     "crunch": 44,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.56,
+      "dry": 0.85,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 1.0,
+      "bright": 1.0,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 1.02,
+      "t50_ms": 105,
+      "room_db": -15.9,
+      "centroid_hz": 1624,
+      "low_db": -23.4,
+      "peak_db": -1.0
+     }
+    }
+   },
+   "sweetener": "laserSmall_002.ogg",
+   "kept": false
+  },
+  {
+   "id": "ruger-ss-near-0",
+   "gun": "Ruger Single Six",
+   "caliber": ".22",
+   "type": "revolver",
+   "mic": "near",
+   "source": "S_14P.wav",
+   "credit": "Ben Jaszczak, Brian Nelson, Kevin Heras, Matthew Nanney",
+   "license": "CC0 1.0",
+   "url": "https://opengameart.org/content/the-free-firearm-sound-library",
+   "note": "Real firearm recording, 96 kHz / 24-bit stereo, summed to mono.",
+   "raw": {
+    "file": "raw/ruger-ss-near-0.wav",
+    "score": 80.5,
+    "crisp": 50,
+    "crunch": 28,
+    "parts": {
+     "attack": 1.0,
+     "tail": 0.55,
+     "dry": 0.48,
+     "clip": 0.8,
+     "clean": 1.0,
+     "crack": 1.0,
+     "body": 0.54,
+     "bright": 1.0,
+     "weight": 1.0
+    },
+    "metrics": {
+     "peak_db": 0.2,
+     "attack_ms": 0.94,
+     "t30_ms": 23,
+     "t50_ms": 104,
+     "room_db": -10.7,
+     "crest_db": 18.6,
+     "low_db": -32.2,
+     "centroid_hz": 1649,
+     "clip_pct": 0.05,
+     "snr_db": 52.6,
+     "length_ms": 703,
+     "bands": {
+      "sub": 1.4,
+      "body": 2.8,
+      "mid": 84.0,
+      "crack": 10.7,
+      "air": 1.1
+     }
+    }
+   },
+   "variants": {
+    "crisp": {
+     "file": null,
+     "score": 89.0,
+     "crisp": 77,
+     "crunch": 50,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.28,
+      "dry": 0.78,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 1.0,
+      "bright": 1.0,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 0.92,
+      "t50_ms": 82,
+      "room_db": -14.9,
+      "centroid_hz": 2123,
+      "low_db": -24.5,
+      "peak_db": -1.0
+     }
+    },
+    "crunch": {
+     "file": null,
+     "score": 80.6,
+     "crisp": 78,
+     "crunch": 61,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.38,
+      "dry": 0.56,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 0.36,
+      "bright": 1.0,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 0.54,
+      "t50_ms": 90,
+      "room_db": -11.8,
+      "centroid_hz": 1790,
+      "low_db": -26.4,
+      "peak_db": -1.0
+     }
+    },
+    "arc": {
+     "file": null,
+     "score": 92.2,
+     "crisp": 88,
+     "crunch": 53,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.59,
+      "dry": 0.77,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 1.0,
+      "bright": 1.0,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 0.92,
+      "t50_ms": 107,
+      "room_db": -14.8,
+      "centroid_hz": 2049,
+      "low_db": -24.6,
+      "peak_db": -1.0
+     }
+    }
+   },
+   "sweetener": "laserRetro_000.ogg",
+   "kept": false
+  },
+  {
+   "id": "bersa-near-0",
+   "gun": "Bersa",
+   "caliber": ".380",
+   "type": "semi-auto pistol",
+   "mic": "near",
+   "source": "F_47P.wav",
+   "credit": "Ben Jaszczak, Brian Nelson, Kevin Heras, Matthew Nanney",
+   "license": "CC0 1.0",
+   "url": "https://opengameart.org/content/the-free-firearm-sound-library",
+   "note": "Real firearm recording, 96 kHz / 24-bit stereo, summed to mono.",
+   "raw": {
+    "file": "raw/bersa-near-0.wav",
+    "score": 80.1,
+    "crisp": 44,
+    "crunch": 62,
+    "parts": {
+     "attack": 1.0,
+     "tail": 0.65,
+     "dry": 0.66,
+     "clip": 0.95,
+     "clean": 1.0,
+     "crack": 0.49,
+     "body": 1.0,
+     "bright": 0.61,
+     "weight": 1.0
+    },
+    "metrics": {
+     "peak_db": 0.3,
+     "attack_ms": 1.04,
+     "t30_ms": 39,
+     "t50_ms": 112,
+     "room_db": -13.2,
+     "crest_db": 17.5,
+     "low_db": -21.2,
+     "centroid_hz": 1185,
+     "clip_pct": 0.012,
+     "snr_db": 54.9,
+     "length_ms": 703,
+     "bands": {
+      "sub": 1.6,
+      "body": 23.0,
+      "mid": 67.2,
+      "crack": 7.0,
+      "air": 1.2
+     }
+    }
+   },
+   "variants": {
+    "crisp": {
+     "file": "pack/crisp/bersa-near-0_crisp.wav",
+     "score": 93.2,
+     "crisp": 69,
+     "crunch": 74,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.38,
+      "dry": 1.0,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 1.0,
+      "bright": 1.0,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 1.04,
+      "t50_ms": 90,
+      "room_db": -20.3,
+      "centroid_hz": 1870,
+      "low_db": -19.0,
+      "peak_db": -1.0
+     }
+    },
+    "crunch": {
+     "file": "pack/crunch/bersa-near-0_crunch.wav",
+     "score": 84.5,
+     "crisp": 49,
+     "crunch": 77,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.38,
+      "dry": 0.79,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 0.75,
+      "body": 1.0,
+      "bright": 0.75,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 0.85,
+      "t50_ms": 90,
+      "room_db": -15.0,
+      "centroid_hz": 1298,
+      "low_db": -23.3,
+      "peak_db": -1.0
+     }
+    },
+    "arc": {
+     "file": "pack/arc/bersa-near-0_arc.wav",
+     "score": 94.5,
+     "crisp": 84,
+     "crunch": 76,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.5,
+      "dry": 1.0,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 1.0,
+      "bright": 1.0,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 1.04,
+      "t50_ms": 100,
+      "room_db": -19.8,
+      "centroid_hz": 1872,
+      "low_db": -19.0,
+      "peak_db": -1.0
+     }
+    }
+   },
+   "sweetener": "laserSmall_001.ogg",
+   "kept": true
+  },
+  {
+   "id": "bersa-near-1",
+   "gun": "Bersa",
+   "caliber": ".380",
+   "type": "semi-auto pistol",
+   "mic": "near",
+   "source": "F_47P.wav",
+   "credit": "Ben Jaszczak, Brian Nelson, Kevin Heras, Matthew Nanney",
+   "license": "CC0 1.0",
+   "url": "https://opengameart.org/content/the-free-firearm-sound-library",
+   "note": "Real firearm recording, 96 kHz / 24-bit stereo, summed to mono.",
+   "raw": {
+    "file": "raw/bersa-near-1.wav",
+    "score": 78.0,
+    "crisp": 39,
+    "crunch": 64,
+    "parts": {
+     "attack": 1.0,
+     "tail": 0.65,
+     "dry": 0.63,
+     "clip": 0.92,
+     "clean": 1.0,
+     "crack": 0.41,
+     "body": 1.0,
+     "bright": 0.59,
+     "weight": 1.0
+    },
+    "metrics": {
+     "peak_db": 0.1,
+     "attack_ms": 0.98,
+     "t30_ms": 33,
+     "t50_ms": 112,
+     "room_db": -12.8,
+     "crest_db": 17.2,
+     "low_db": -20.9,
+     "centroid_hz": 1173,
+     "clip_pct": 0.021,
+     "snr_db": 54.2,
+     "length_ms": 703,
+     "bands": {
+      "sub": 1.8,
+      "body": 21.8,
+      "mid": 68.7,
+      "crack": 6.5,
+      "air": 1.2
+     }
+    }
+   },
+   "variants": {
+    "crisp": {
+     "file": "pack/crisp/bersa-near-1_crisp.wav",
+     "score": 91.0,
+     "crisp": 57,
+     "crunch": 74,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.18,
+      "dry": 1.0,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 1.0,
+      "bright": 1.0,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 1.0,
+      "t50_ms": 74,
+      "room_db": -19.5,
+      "centroid_hz": 1524,
+      "low_db": -18.8,
+      "peak_db": -1.0
+     }
+    },
+    "crunch": {
+     "file": "pack/crunch/bersa-near-1_crunch.wav",
+     "score": 84.4,
+     "crisp": 50,
+     "crunch": 79,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.38,
+      "dry": 0.75,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 0.82,
+      "body": 1.0,
+      "bright": 0.7,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 0.77,
+      "t50_ms": 91,
+      "room_db": -14.4,
+      "centroid_hz": 1260,
+      "low_db": -22.9,
+      "peak_db": -1.0
+     }
+    },
+    "arc": {
+     "file": "pack/arc/bersa-near-1_arc.wav",
+     "score": 95.3,
+     "crisp": 74,
+     "crunch": 75,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.57,
+      "dry": 1.0,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 1.0,
+      "bright": 1.0,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 1.0,
+      "t50_ms": 106,
+      "room_db": -18.8,
+      "centroid_hz": 1533,
+      "low_db": -18.8,
+      "peak_db": -1.0
+     }
+    }
+   },
+   "sweetener": "laserSmall_002.ogg",
+   "kept": true
+  },
+  {
+   "id": "kurt-unkown-0",
+   "gun": "unidentified gun",
+   "caliber": "",
+   "type": "unknown",
+   "mic": "room",
+   "source": "Unkown.wav",
+   "credit": "kurt",
+   "license": "CC0 1.0",
+   "url": "https://opengameart.org/content/gunshots",
+   "note": "Several shots per file with some room echo.",
+   "raw": {
+    "file": "raw/kurt-unkown-0.wav",
+    "score": 77.3,
+    "crisp": 100,
+    "crunch": 83,
+    "parts": {
+     "attack": 1.0,
+     "tail": 1.0,
+     "dry": 0.57,
+     "clip": 0.4,
+     "clean": 1.0,
+     "crack": 1.0,
+     "body": 1.0,
+     "bright": 0.02,
+     "weight": 1.0
+    },
+    "metrics": {
+     "peak_db": 1.3,
+     "attack_ms": 0.48,
+     "t30_ms": 140,
+     "t50_ms": 400,
+     "room_db": -11.9,
+     "crest_db": 11.8,
+     "low_db": -17.6,
+     "centroid_hz": 717,
+     "clip_pct": 0.151,
+     "snr_db": 44.2,
+     "length_ms": 703,
+     "bands": {
+      "sub": 10.1,
+      "body": 15.9,
+      "mid": 51.1,
+      "crack": 16.7,
+      "air": 6.2
+     }
+    }
+   },
+   "variants": null,
+   "sweetener": null,
+   "kept": false
+  },
+  {
+   "id": "ruger-mk3-mid-0",
+   "gun": "Ruger Mark III",
+   "caliber": ".22",
+   "type": "semi-auto pistol",
+   "mic": "mid",
+   "source": "R_30P.wav",
+   "credit": "Ben Jaszczak, Brian Nelson, Kevin Heras, Matthew Nanney",
+   "license": "CC0 1.0",
+   "url": "https://opengameart.org/content/the-free-firearm-sound-library",
+   "note": "Real firearm recording, 96 kHz / 24-bit stereo, summed to mono.",
+   "raw": {
+    "file": "raw/ruger-mk3-mid-0.wav",
+    "score": 75.1,
+    "crisp": 41,
+    "crunch": 35,
+    "parts": {
+     "attack": 1.0,
+     "tail": 0.55,
+     "dry": 0.5,
+     "clip": 0.86,
+     "clean": 1.0,
+     "crack": 0.6,
+     "body": 1.0,
+     "bright": 0.39,
+     "weight": 1.0
+    },
+    "metrics": {
+     "peak_db": 0.2,
+     "attack_ms": 0.94,
+     "t30_ms": 20,
+     "t50_ms": 104,
+     "room_db": -11.0,
+     "crest_db": 19.3,
+     "low_db": -28.7,
+     "centroid_hz": 1011,
+     "clip_pct": 0.036,
+     "snr_db": 53.2,
+     "length_ms": 703,
+     "bands": {
+      "sub": 5.1,
+      "body": 4.1,
+      "mid": 82.0,
+      "crack": 7.6,
+      "air": 1.1
+     }
+    }
+   },
+   "variants": {
+    "crisp": {
+     "file": null,
+     "score": 82.0,
+     "crisp": 51,
+     "crunch": 48,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.37,
+      "dry": 0.72,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 1.0,
+      "bright": 0.22,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 0.83,
+      "t50_ms": 89,
+      "room_db": -14.0,
+      "centroid_hz": 872,
+      "low_db": -20.7,
+      "peak_db": -1.0
+     }
+    },
+    "crunch": {
+     "file": null,
+     "score": 77.9,
+     "crisp": 47,
+     "crunch": 60,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.38,
+      "dry": 0.42,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 0.93,
+      "body": 1.0,
+      "bright": 0.33,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 0.5,
+      "t50_ms": 90,
+      "room_db": -9.8,
+      "centroid_hz": 963,
+      "low_db": -22.3,
+      "peak_db": -1.0
+     }
+    },
+    "arc": {
+     "file": null,
+     "score": 82.1,
+     "crisp": 55,
+     "crunch": 49,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.38,
+      "dry": 0.71,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 1.0,
+      "bright": 0.22,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 0.83,
+      "t50_ms": 90,
+      "room_db": -14.0,
+      "centroid_hz": 874,
+      "low_db": -20.7,
+      "peak_db": -1.0
+     }
+    }
+   },
+   "sweetener": "laserRetro_001.ogg",
+   "kept": false
+  },
+  {
+   "id": "1911-mid-1",
+   "gun": "1911",
+   "caliber": ".45",
+   "type": "semi-auto pistol",
+   "mic": "mid",
+   "source": "A_34P.wav",
+   "credit": "Ben Jaszczak, Brian Nelson, Kevin Heras, Matthew Nanney",
+   "license": "CC0 1.0",
+   "url": "https://opengameart.org/content/the-free-firearm-sound-library",
+   "note": "Real firearm recording, 96 kHz / 24-bit stereo, summed to mono.",
+   "raw": {
+    "file": "raw/1911-mid-1.wav",
+    "score": 74.6,
+    "crisp": 64,
+    "crunch": 37,
+    "parts": {
+     "attack": 1.0,
+     "tail": 0.69,
+     "dry": 0.0,
+     "clip": 0.77,
+     "clean": 0.61,
+     "crack": 1.0,
+     "body": 0.76,
+     "bright": 1.0,
+     "weight": 1.0
+    },
+    "metrics": {
+     "peak_db": 0.2,
+     "attack_ms": 1.04,
+     "t30_ms": 27,
+     "t50_ms": 700,
+     "room_db": 4.4,
+     "crest_db": 18.5,
+     "low_db": -33.8,
+     "centroid_hz": 1548,
+     "clip_pct": 0.056,
+     "snr_db": 31.1,
+     "length_ms": 704,
+     "bands": {
+      "sub": 0.6,
+      "body": 4.4,
+      "mid": 78.7,
+      "crack": 10.9,
+      "air": 5.4
+     }
+    }
+   },
+   "variants": null,
+   "sweetener": null,
+   "kept": false
+  },
+  {
+   "id": "ppq-mid-0",
+   "gun": "Walther PPQ",
+   "caliber": "9mm",
+   "type": "semi-auto pistol",
+   "mic": "mid",
+   "source": "X_31P.wav",
+   "credit": "Ben Jaszczak, Brian Nelson, Kevin Heras, Matthew Nanney",
+   "license": "CC0 1.0",
+   "url": "https://opengameart.org/content/the-free-firearm-sound-library",
+   "note": "Real firearm recording, 96 kHz / 24-bit stereo, summed to mono.",
+   "raw": {
+    "file": "raw/ppq-mid-0.wav",
+    "score": 74.6,
+    "crisp": 39,
+    "crunch": 21,
+    "parts": {
+     "attack": 1.0,
+     "tail": 0.0,
+     "dry": 0.68,
+     "clip": 0.92,
+     "clean": 1.0,
+     "crack": 0.58,
+     "body": 1.0,
+     "bright": 0.67,
+     "weight": 1.0
+    },
+    "metrics": {
+     "peak_db": 0.0,
+     "attack_ms": 1.25,
+     "t30_ms": 15,
+     "t50_ms": 52,
+     "room_db": -13.5,
+     "crest_db": 20.9,
+     "low_db": -29.5,
+     "centroid_hz": 1238,
+     "clip_pct": 0.021,
+     "snr_db": 58.9,
+     "length_ms": 705,
+     "bands": {
+      "sub": 0.6,
+      "body": 8.4,
+      "mid": 82.7,
+      "crack": 7.5,
+      "air": 0.8
+     }
+    }
+   },
+   "variants": {
+    "crisp": {
+     "file": null,
+     "score": 87.1,
+     "crisp": 66,
+     "crunch": 38,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.08,
+      "dry": 0.85,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 1.0,
+      "bright": 0.93,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 1.02,
+      "t50_ms": 66,
+      "room_db": -15.9,
+      "centroid_hz": 1443,
+      "low_db": -24.1,
+      "peak_db": -1.0
+     }
+    },
+    "crunch": {
+     "file": null,
+     "score": 80.7,
+     "crisp": 67,
+     "crunch": 57,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.16,
+      "dry": 0.77,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 0.69,
+      "bright": 0.59,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 0.52,
+      "t50_ms": 73,
+      "room_db": -14.7,
+      "centroid_hz": 1175,
+      "low_db": -26.6,
+      "peak_db": -1.0
+     }
+    },
+    "arc": {
+     "file": null,
+     "score": 92.9,
+     "crisp": 79,
+     "crunch": 43,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.57,
+      "dry": 0.83,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 1.0,
+      "bright": 1.0,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 1.02,
+      "t50_ms": 106,
+      "room_db": -15.6,
+      "centroid_hz": 1640,
+      "low_db": -24.1,
+      "peak_db": -1.0
+     }
+    }
+   },
+   "sweetener": "laserSmall_001.ogg",
+   "kept": false
+  },
+  {
+   "id": "1911-mid-0",
+   "gun": "1911",
+   "caliber": ".45",
+   "type": "semi-auto pistol",
+   "mic": "mid",
+   "source": "A_34P.wav",
+   "credit": "Ben Jaszczak, Brian Nelson, Kevin Heras, Matthew Nanney",
+   "license": "CC0 1.0",
+   "url": "https://opengameart.org/content/the-free-firearm-sound-library",
+   "note": "Real firearm recording, 96 kHz / 24-bit stereo, summed to mono.",
+   "raw": {
+    "file": "raw/1911-mid-0.wav",
+    "score": 73.3,
+    "crisp": 56,
+    "crunch": 47,
+    "parts": {
+     "attack": 1.0,
+     "tail": 0.69,
+     "dry": 0.0,
+     "clip": 0.7,
+     "clean": 0.63,
+     "crack": 0.79,
+     "body": 1.0,
+     "bright": 1.0,
+     "weight": 1.0
+    },
+    "metrics": {
+     "peak_db": 0.2,
+     "attack_ms": 1.02,
+     "t30_ms": 31,
+     "t50_ms": 700,
+     "room_db": 4.3,
+     "crest_db": 17.8,
+     "low_db": -31.4,
+     "centroid_hz": 1710,
+     "clip_pct": 0.074,
+     "snr_db": 31.4,
+     "length_ms": 704,
+     "bands": {
+      "sub": 1.0,
+      "body": 7.3,
+      "mid": 78.2,
+      "crack": 8.8,
+      "air": 4.8
+     }
+    }
+   },
+   "variants": null,
+   "sweetener": null,
+   "kept": false
+  },
+  {
+   "id": "sw642-near-1",
+   "gun": "Smith & Wesson 642",
+   "caliber": ".38 Special",
+   "type": "revolver",
+   "mic": "near",
+   "source": "V_27P.wav",
+   "credit": "Ben Jaszczak, Brian Nelson, Kevin Heras, Matthew Nanney",
+   "license": "CC0 1.0",
+   "url": "https://opengameart.org/content/the-free-firearm-sound-library",
+   "note": "Real firearm recording, 96 kHz / 24-bit stereo, summed to mono.",
+   "raw": {
+    "file": "raw/sw642-near-1.wav",
+    "score": 72.9,
+    "crisp": 30,
+    "crunch": 30,
+    "parts": {
+     "attack": 1.0,
+     "tail": 0.36,
+     "dry": 1.0,
+     "clip": 1.0,
+     "clean": 1.0,
+     "crack": 0.0,
+     "body": 1.0,
+     "bright": 0.33,
+     "weight": 1.0
+    },
+    "metrics": {
+     "peak_db": -1.3,
+     "attack_ms": 0.52,
+     "t30_ms": 18,
+     "t50_ms": 89,
+     "room_db": -26.2,
+     "crest_db": 19.9,
+     "low_db": -24.5,
+     "centroid_hz": 961,
+     "clip_pct": 0.0,
+     "snr_db": 71.9,
+     "length_ms": 703,
+     "bands": {
+      "sub": 0.2,
+      "body": 21.1,
+      "mid": 75.6,
+      "crack": 2.6,
+      "air": 0.4
+     }
+    }
+   },
+   "variants": {
+    "crisp": {
+     "file": null,
+     "score": 79.8,
+     "crisp": 39,
+     "crunch": 55,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.18,
+      "dry": 1.0,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 0.44,
+      "body": 1.0,
+      "bright": 0.62,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 0.48,
+      "t50_ms": 74,
+      "room_db": -28.5,
+      "centroid_hz": 1198,
+      "low_db": -20.4,
+      "peak_db": -1.0
+     }
+    },
+    "crunch": {
+     "file": null,
+     "score": 76.5,
+     "crisp": 35,
+     "crunch": 60,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.17,
+      "dry": 1.0,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 0.38,
+      "body": 1.0,
+      "bright": 0.38,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 0.44,
+      "t50_ms": 73,
+      "room_db": -25.9,
+      "centroid_hz": 1005,
+      "low_db": -24.0,
+      "peak_db": -1.0
+     }
+    },
+    "arc": {
+     "file": null,
+     "score": 84.2,
+     "crisp": 56,
+     "crunch": 53,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.56,
+      "dry": 1.0,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 0.42,
+      "body": 1.0,
+      "bright": 0.68,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 0.48,
+      "t50_ms": 105,
+      "room_db": -23.6,
+      "centroid_hz": 1247,
+      "low_db": -20.3,
+      "peak_db": -1.0
+     }
+    }
+   },
+   "sweetener": "laserRetro_004.ogg",
+   "kept": false
+  },
+  {
+   "id": "sw642-near-0",
+   "gun": "Smith & Wesson 642",
+   "caliber": ".38 Special",
+   "type": "revolver",
+   "mic": "near",
+   "source": "V_27P.wav",
+   "credit": "Ben Jaszczak, Brian Nelson, Kevin Heras, Matthew Nanney",
+   "license": "CC0 1.0",
+   "url": "https://opengameart.org/content/the-free-firearm-sound-library",
+   "note": "Real firearm recording, 96 kHz / 24-bit stereo, summed to mono.",
+   "raw": {
+    "file": "raw/sw642-near-0.wav",
+    "score": 72.7,
+    "crisp": 30,
+    "crunch": 32,
+    "parts": {
+     "attack": 1.0,
+     "tail": 0.36,
+     "dry": 1.0,
+     "clip": 1.0,
+     "clean": 1.0,
+     "crack": 0.0,
+     "body": 1.0,
+     "bright": 0.31,
+     "weight": 1.0
+    },
+    "metrics": {
+     "peak_db": -2.2,
+     "attack_ms": 0.54,
+     "t30_ms": 21,
+     "t50_ms": 89,
+     "room_db": -26.6,
+     "crest_db": 19.2,
+     "low_db": -23.5,
+     "centroid_hz": 949,
+     "clip_pct": 0.0,
+     "snr_db": 71.1,
+     "length_ms": 703,
+     "bands": {
+      "sub": 0.2,
+      "body": 22.0,
+      "mid": 74.6,
+      "crack": 2.8,
+      "air": 0.4
+     }
+    }
+   },
+   "variants": {
+    "crisp": {
+     "file": "pack/crisp/smith-wesson-642-near-0_crisp.wav",
+     "score": 77.5,
+     "crisp": 38,
+     "crunch": 58,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.18,
+      "dry": 1.0,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 0.39,
+      "body": 1.0,
+      "bright": 0.44,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 0.52,
+      "t50_ms": 74,
+      "room_db": -28.5,
+      "centroid_hz": 1055,
+      "low_db": -20.0,
+      "peak_db": -1.0
+     }
+    },
+    "crunch": {
+     "file": "pack/crunch/smith-wesson-642-near-0_crunch.wav",
+     "score": 78.6,
+     "crisp": 38,
+     "crunch": 60,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.17,
+      "dry": 1.0,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 0.53,
+      "body": 1.0,
+      "bright": 0.36,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 0.44,
+      "t50_ms": 73,
+      "room_db": -25.6,
+      "centroid_hz": 989,
+      "low_db": -24.5,
+      "peak_db": -1.0
+     }
+    },
+    "arc": {
+     "file": "pack/arc/smith-wesson-642-near-0_arc.wav",
+     "score": 88.2,
+     "crisp": 61,
+     "crunch": 62,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.56,
+      "dry": 1.0,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 0.65,
+      "body": 1.0,
+      "bright": 0.77,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 0.52,
+      "t50_ms": 105,
+      "room_db": -23.6,
+      "centroid_hz": 1316,
+      "low_db": -20.0,
+      "peak_db": -1.0
+     }
+    }
+   },
+   "sweetener": "laserSmall_002.ogg",
+   "kept": true
+  },
+  {
+   "id": "sw642-mid-0",
+   "gun": "Smith & Wesson 642",
+   "caliber": ".38 Special",
+   "type": "revolver",
+   "mic": "mid",
+   "source": "V_22P.wav",
+   "credit": "Ben Jaszczak, Brian Nelson, Kevin Heras, Matthew Nanney",
+   "license": "CC0 1.0",
+   "url": "https://opengameart.org/content/the-free-firearm-sound-library",
+   "note": "Real firearm recording, 96 kHz / 24-bit stereo, summed to mono.",
+   "raw": {
+    "file": "raw/sw642-mid-0.wav",
+    "score": 71.7,
+    "crisp": 52,
+    "crunch": 33,
+    "parts": {
+     "attack": 1.0,
+     "tail": 0.73,
+     "dry": 0.0,
+     "clip": 0.7,
+     "clean": 0.81,
+     "crack": 0.93,
+     "body": 1.0,
+     "bright": 0.42,
+     "weight": 1.0
+    },
+    "metrics": {
+     "peak_db": 0.2,
+     "attack_ms": 0.92,
+     "t30_ms": 26,
+     "t50_ms": 673,
+     "room_db": 3.4,
+     "crest_db": 18.7,
+     "low_db": -32.8,
+     "centroid_hz": 1037,
+     "clip_pct": 0.074,
+     "snr_db": 34.6,
+     "length_ms": 703,
+     "bands": {
+      "sub": 0.9,
+      "body": 5.6,
+      "mid": 81.2,
+      "crack": 9.6,
+      "air": 2.7
+     }
+    }
+   },
+   "variants": null,
+   "sweetener": null,
+   "kept": false
+  },
+  {
+   "id": "ruger-ss-near-1",
+   "gun": "Ruger Single Six",
+   "caliber": ".22",
+   "type": "revolver",
+   "mic": "near",
+   "source": "S_14P.wav",
+   "credit": "Ben Jaszczak, Brian Nelson, Kevin Heras, Matthew Nanney",
+   "license": "CC0 1.0",
+   "url": "https://opengameart.org/content/the-free-firearm-sound-library",
+   "note": "Real firearm recording, 96 kHz / 24-bit stereo, summed to mono.",
+   "raw": {
+    "file": "raw/ruger-ss-near-1.wav",
+    "score": 71.5,
+    "crisp": 46,
+    "crunch": 29,
+    "parts": {
+     "attack": 1.0,
+     "tail": 0.0,
+     "dry": 0.55,
+     "clip": 0.8,
+     "clean": 1.0,
+     "crack": 0.88,
+     "body": 0.31,
+     "bright": 1.0,
+     "weight": 1.0
+    },
+    "metrics": {
+     "peak_db": 0.2,
+     "attack_ms": 0.94,
+     "t30_ms": 17,
+     "t50_ms": 48,
+     "room_db": -11.7,
+     "crest_db": 18.9,
+     "low_db": -33.6,
+     "centroid_hz": 1754,
+     "clip_pct": 0.05,
+     "snr_db": 53.1,
+     "length_ms": 703,
+     "bands": {
+      "sub": 1.1,
+      "body": 2.2,
+      "mid": 86.4,
+      "crack": 9.3,
+      "air": 1.0
+     }
+    }
+   },
+   "variants": {
+    "crisp": {
+     "file": null,
+     "score": 88.2,
+     "crisp": 78,
+     "crunch": 48,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.08,
+      "dry": 0.88,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 1.0,
+      "bright": 1.0,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 0.9,
+      "t50_ms": 66,
+      "room_db": -16.3,
+      "centroid_hz": 2063,
+      "low_db": -24.9,
+      "peak_db": -1.0
+     }
+    },
+    "crunch": {
+     "file": null,
+     "score": 81.5,
+     "crisp": 77,
+     "crunch": 60,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.38,
+      "dry": 0.62,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 0.36,
+      "bright": 1.0,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 0.56,
+      "t50_ms": 90,
+      "room_db": -12.7,
+      "centroid_hz": 1770,
+      "low_db": -26.6,
+      "peak_db": -1.0
+     }
+    },
+    "arc": {
+     "file": null,
+     "score": 91.4,
+     "crisp": 78,
+     "crunch": 49,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.38,
+      "dry": 0.87,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 1.0,
+      "bright": 1.0,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 0.9,
+      "t50_ms": 90,
+      "room_db": -16.2,
+      "centroid_hz": 2030,
+      "low_db": -24.9,
+      "peak_db": -1.0
+     }
+    }
+   },
+   "sweetener": "laserRetro_001.ogg",
+   "kept": false
+  },
+  {
+   "id": "ruger-mk3-mid-1",
+   "gun": "Ruger Mark III",
+   "caliber": ".22",
+   "type": "semi-auto pistol",
+   "mic": "mid",
+   "source": "R_30P.wav",
+   "credit": "Ben Jaszczak, Brian Nelson, Kevin Heras, Matthew Nanney",
+   "license": "CC0 1.0",
+   "url": "https://opengameart.org/content/the-free-firearm-sound-library",
+   "note": "Real firearm recording, 96 kHz / 24-bit stereo, summed to mono.",
+   "raw": {
+    "file": "raw/ruger-mk3-mid-1.wav",
+    "score": 71.0,
+    "crisp": 35,
+    "crunch": 30,
+    "parts": {
+     "attack": 1.0,
+     "tail": 0.55,
+     "dry": 0.48,
+     "clip": 0.85,
+     "clean": 1.0,
+     "crack": 0.3,
+     "body": 0.68,
+     "bright": 0.8,
+     "weight": 1.0
+    },
+    "metrics": {
+     "peak_db": 0.1,
+     "attack_ms": 0.96,
+     "t30_ms": 17,
+     "t50_ms": 104,
+     "room_db": -10.7,
+     "crest_db": 19.3,
+     "low_db": -32.1,
+     "centroid_hz": 1343,
+     "clip_pct": 0.039,
+     "snr_db": 52.8,
+     "length_ms": 703,
+     "bands": {
+      "sub": 1.5,
+      "body": 3.3,
+      "mid": 88.7,
+      "crack": 5.8,
+      "air": 0.8
+     }
+    }
+   },
+   "variants": {
+    "crisp": {
+     "file": null,
+     "score": 87.7,
+     "crisp": 60,
+     "crunch": 37,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.37,
+      "dry": 0.62,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 1.0,
+      "bright": 1.0,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 0.85,
+      "t50_ms": 90,
+      "room_db": -12.6,
+      "centroid_hz": 1510,
+      "low_db": -23.0,
+      "peak_db": -1.0
+     }
+    },
+    "crunch": {
+     "file": null,
+     "score": 81.5,
+     "crisp": 51,
+     "crunch": 54,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.38,
+      "dry": 0.44,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 1.0,
+      "bright": 0.57,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 0.5,
+      "t50_ms": 90,
+      "room_db": -10.2,
+      "centroid_hz": 1158,
+      "low_db": -24.2,
+      "peak_db": -1.0
+     }
+    },
+    "arc": {
+     "file": null,
+     "score": 89.6,
+     "crisp": 60,
+     "crunch": 38,
+     "parts": {
+      "attack": 1.0,
+      "tail": 0.55,
+      "dry": 0.61,
+      "clip": 1.0,
+      "clean": 1.0,
+      "crack": 1.0,
+      "body": 1.0,
+      "bright": 1.0,
+      "weight": 1.0
+     },
+     "metrics": {
+      "attack_ms": 0.85,
+      "t50_ms": 104,
+      "room_db": -12.6,
+      "centroid_hz": 1506,
+      "low_db": -23.0,
+      "peak_db": -1.0
+     }
+    }
+   },
+   "sweetener": "laserRetro_002.ogg",
+   "kept": false
+  },
+  {
+   "id": "ruger-mk3-near-1",
+   "gun": "Ruger Mark III",
+   "caliber": ".22",
+   "type": "semi-auto pistol",
+   "mic": "near",
+   "source": "R_35P.wav",
+   "credit": "Ben Jaszczak, Brian Nelson, Kevin Heras, Matthew Nanney",
+   "license": "CC0 1.0",
+   "url": "https://opengameart.org/content/the-free-firearm-sound-library",
+   "note": "Real firearm recording, 96 kHz / 24-bit stereo, summed to mono.",
+   "raw": {
+    "file": "raw/ruger-mk3-near-1.wav",
+    "score": 69.4,
+    "crisp": 49,
+    "crunch": 50,
+    "parts": {
+     "attack": 0.0,
+     "tail": 0.75,
+     "dry": 0.02,
+     "clip": 1.0,
+     "clean": 1.0,
+     "crack": 1.0,
+     "body": 1.0,
+     "bright": 0.98,
+     "weight": 1.0
+    },
+    "metrics": {
+     "peak_db": -0.2,
+     "attack_ms": 8.9,
+     "t30_ms": 38,
+     "t50_ms": 657,
+     "room_db": -4.3,
+     "crest_db": 20.0,
+     "low_db": -29.4,
+     "centroid_hz": 1481,
+     "clip_pct": 0.0,
+     "snr_db": 49.1,
+     "length_ms": 712,
+     "bands": {
+      "sub": 0.7,
+      "body": 7.4,
+      "mid": 63.4,
+      "crack": 24.3,
+      "air": 4.3
+     }
+    }
+   },
+   "variants": null,
+   "sweetener": null,
+   "kept": false
+  },
+  {
+   "id": "ruger-mk3-near-0",
+   "gun": "Ruger Mark III",
+   "caliber": ".22",
+   "type": "semi-auto pistol",
+   "mic": "near",
+   "source": "R_35P.wav",
+   "credit": "Ben Jaszczak, Brian Nelson, Kevin Heras, Matthew Nanney",
+   "license": "CC0 1.0",
+   "url": "https://opengameart.org/content/the-free-firearm-sound-library",
+   "note": "Real firearm recording, 96 kHz / 24-bit stereo, summed to mono.",
+   "raw": {
+    "file": "raw/ruger-mk3-near-0.wav",
+    "score": 68.2,
+    "crisp": 51,
+    "crunch": 57,
+    "parts": {
+     "attack": 0.0,
+     "tail": 0.73,
+     "dry": 0.03,
+     "clip": 1.0,
+     "clean": 1.0,
+     "crack": 1.0,
+     "body": 1.0,
+     "bright": 0.85,
+     "weight": 1.0
+    },
+    "metrics": {
+     "peak_db": -1.1,
+     "attack_ms": 8.48,
+     "t30_ms": 42,
+     "t50_ms": 675,
+     "room_db": -4.5,
+     "crest_db": 18.9,
+     "low_db": -29.3,
+     "centroid_hz": 1383,
+     "clip_pct": 0.0,
+     "snr_db": 48.5,
+     "length_ms": 711,
+     "bands": {
+      "sub": 0.7,
+      "body": 6.4,
+      "mid": 63.0,
+      "crack": 26.4,
+      "air": 3.5
+     }
+    }
+   },
+   "variants": null,
+   "sweetener": null,
+   "kept": false
+  },
+  {
+   "id": "ruger-ss-mid-0",
+   "gun": "Ruger Single Six",
+   "caliber": ".22",
+   "type": "revolver",
+   "mic": "mid",
+   "source": "S_11P.wav",
+   "credit": "Ben Jaszczak, Brian Nelson, Kevin Heras, Matthew Nanney",
+   "license": "CC0 1.0",
+   "url": "https://opengameart.org/content/the-free-firearm-sound-library",
+   "note": "Real firearm recording, 96 kHz / 24-bit stereo, summed to mono.",
+   "raw": {
+    "file": "raw/ruger-ss-mid-0.wav",
+    "score": 67.1,
+    "crisp": 56,
+    "crunch": 28,
+    "parts": {
+     "attack": 1.0,
+     "tail": 0.9,
+     "dry": 0.0,
+     "clip": 0.93,
+     "clean": 1.0,
+     "crack": 0.83,
+     "body": 0.0,
+     "bright": 1.0,
+     "weight": 0.44
+    },
+    "metrics": {
+     "peak_db": 0.0,
+     "attack_ms": 0.96,
+     "t30_ms": 18,
+     "t50_ms": 552,
+     "room_db": -0.1,
+     "crest_db": 22.7,
+     "low_db": -41.8,
+     "centroid_hz": 2369,
+     "clip_pct": 0.018,
+     "snr_db": 40.8,
+     "length_ms": 704,
+     "bands": {
+      "sub": 0.1,
+      "body": 1.0,
+      "mid": 85.4,
+      "crack": 9.0,
+      "air": 4.6
+     }
+    }
+   },
+   "variants": null,
+   "sweetener": null,
+   "kept": false
+  },
+  {
+   "id": "sw642-mid-1",
+   "gun": "Smith & Wesson 642",
+   "caliber": ".38 Special",
+   "type": "revolver",
+   "mic": "mid",
+   "source": "V_22P.wav",
+   "credit": "Ben Jaszczak, Brian Nelson, Kevin Heras, Matthew Nanney",
+   "license": "CC0 1.0",
+   "url": "https://opengameart.org/content/the-free-firearm-sound-library",
+   "note": "Real firearm recording, 96 kHz / 24-bit stereo, summed to mono.",
+   "raw": {
+    "file": "raw/sw642-mid-1.wav",
+    "score": 65.7,
+    "crisp": 45,
+    "crunch": 38,
+    "parts": {
+     "attack": 1.0,
+     "tail": 0.69,
+     "dry": 0.0,
+     "clip": 0.72,
+     "clean": 0.75,
+     "crack": 0.6,
+     "body": 1.0,
+     "bright": 0.35,
+     "weight": 1.0
+    },
+    "metrics": {
+     "peak_db": 0.2,
+     "attack_ms": 0.94,
+     "t30_ms": 25,
+     "t50_ms": 700,
+     "room_db": 3.9,
+     "crest_db": 18.6,
+     "low_db": -32.6,
+     "centroid_hz": 980,
+     "clip_pct": 0.071,
+     "snr_db": 33.4,
+     "length_ms": 703,
+     "bands": {
+      "sub": 1.0,
+      "body": 5.8,
+      "mid": 83.2,
+      "crack": 7.6,
+      "air": 2.5
+     }
+    }
+   },
+   "variants": null,
+   "sweetener": null,
+   "kept": false
+  },
+  {
+   "id": "cz52-8",
+   "gun": "CZ-52",
+   "caliber": "7.62x25",
+   "type": "semi-auto pistol",
+   "mic": "range",
+   "source": "cz.wav",
+   "credit": "Vincent Sevedge ('Tabasco')",
+   "license": "CC BY 3.0 (the bundled text says so; the OpenGameArt page says CC0, so the stricter one is honoured)",
+   "url": "https://opengameart.org/content/gunshot-sounds",
+   "note": "Recorded while target shooting; the recorder clipped on loud shots.",
+   "raw": {
+    "file": "raw/cz52-8.wav",
+    "score": 62.8,
+    "crisp": 70,
+    "crunch": 82,
+    "parts": {
+     "attack": 0.0,
+     "tail": 1.0,
+     "dry": 0.0,
+     "clip": 1.0,
+     "clean": 0.0,
+     "crack": 1.0,
+     "body": 0.78,
+     "bright": 1.0,
+     "weight": 1.0
+    },
+    "metrics": {
+     "peak_db": -5.7,
+     "attack_ms": 9.0,
+     "t30_ms": 299,
+     "t50_ms": 299,
+     "room_db": 2.7,
+     "crest_db": 7.2,
+     "low_db": -23.1,
+     "centroid_hz": 1783,
+     "clip_pct": 0.0,
+     "snr_db": 17.2,
+     "length_ms": 313,
+     "bands": {
+      "sub": 0.6,
+      "body": 4.5,
+      "mid": 66.6,
+      "crack": 27.7,
+      "air": 0.6
+     }
+    }
+   },
+   "variants": null,
+   "sweetener": null,
+   "kept": false
+  },
+  {
+   "id": "bersa-mid-0",
+   "gun": "Bersa",
+   "caliber": ".380",
+   "type": "semi-auto pistol",
+   "mic": "mid",
+   "source": "F_41P.wav",
+   "credit": "Ben Jaszczak, Brian Nelson, Kevin Heras, Matthew Nanney",
+   "license": "CC0 1.0",
+   "url": "https://opengameart.org/content/the-free-firearm-sound-library",
+   "note": "Real firearm recording, 96 kHz / 24-bit stereo, summed to mono.",
+   "raw": {
+    "file": "raw/bersa-mid-0.wav",
+    "score": 61.9,
+    "crisp": 41,
+    "crunch": 27,
+    "parts": {
+     "attack": 1.0,
+     "tail": 0.72,
+     "dry": 0.0,
+     "clip": 0.83,
+     "clean": 1.0,
+     "crack": 0.33,
+     "body": 0.49,
+     "bright": 0.61,
+     "weight": 0.87
+    },
+    "metrics": {
+     "peak_db": 0.2,
+     "attack_ms": 0.92,
+     "t30_ms": 24,
+     "t50_ms": 680,
+     "room_db": -0.0,
+     "crest_db": 20.0,
+     "low_db": -35.8,
+     "centroid_hz": 1190,
+     "clip_pct": 0.041,
+     "snr_db": 39.9,
+     "length_ms": 703,
+     "bands": {
+      "sub": 0.6,
+      "body": 3.4,
+      "mid": 87.3,
+      "crack": 6.0,
+      "air": 2.8
+     }
+    }
+   },
+   "variants": null,
+   "sweetener": null,
+   "kept": false
+  },
+  {
+   "id": "ruger-ss-mid-1",
+   "gun": "Ruger Single Six",
+   "caliber": ".22",
+   "type": "revolver",
+   "mic": "mid",
+   "source": "S_11P.wav",
+   "credit": "Ben Jaszczak, Brian Nelson, Kevin Heras, Matthew Nanney",
+   "license": "CC0 1.0",
+   "url": "https://opengameart.org/content/the-free-firearm-sound-library",
+   "note": "Real firearm recording, 96 kHz / 24-bit stereo, summed to mono.",
+   "raw": {
+    "file": "raw/ruger-ss-mid-1.wav",
+    "score": 61.9,
+    "crisp": 51,
+    "crunch": 30,
+    "parts": {
+     "attack": 1.0,
+     "tail": 0.83,
+     "dry": 0.0,
+     "clip": 0.92,
+     "clean": 1.0,
+     "crack": 0.54,
+     "body": 0.0,
+     "bright": 1.0,
+     "weight": 0.41
+    },
+    "metrics": {
+     "peak_db": 0.1,
+     "attack_ms": 0.92,
+     "t30_ms": 18,
+     "t50_ms": 605,
+     "room_db": -0.3,
+     "crest_db": 21.9,
+     "low_db": -42.2,
+     "centroid_hz": 2402,
+     "clip_pct": 0.021,
+     "snr_db": 40.7,
+     "length_ms": 703,
+     "bands": {
+      "sub": 0.2,
+      "body": 0.8,
+      "mid": 87.1,
+      "crack": 7.2,
+      "air": 4.7
+     }
+    }
+   },
+   "variants": null,
+   "sweetener": null,
+   "kept": false
+  },
+  {
+   "id": "cz52-3",
+   "gun": "CZ-52",
+   "caliber": "7.62x25",
+   "type": "semi-auto pistol",
+   "mic": "range",
+   "source": "cz.wav",
+   "credit": "Vincent Sevedge ('Tabasco')",
+   "license": "CC BY 3.0 (the bundled text says so; the OpenGameArt page says CC0, so the stricter one is honoured)",
+   "url": "https://opengameart.org/content/gunshot-sounds",
+   "note": "Recorded while target shooting; the recorder clipped on loud shots.",
+   "raw": {
+    "file": "raw/cz52-3.wav",
+    "score": 61.2,
+    "crisp": 70,
+    "crunch": 82,
+    "parts": {
+     "attack": 0.0,
+     "tail": 1.0,
+     "dry": 0.0,
+     "clip": 1.0,
+     "clean": 0.0,
+     "crack": 1.0,
+     "body": 0.62,
+     "bright": 1.0,
+     "weight": 1.0
+    },
+    "metrics": {
+     "peak_db": -5.3,
+     "attack_ms": 7.4,
+     "t30_ms": 301,
+     "t50_ms": 301,
+     "room_db": 3.0,
+     "crest_db": 7.6,
+     "low_db": -24.2,
+     "centroid_hz": 1783,
+     "clip_pct": 0.0,
+     "snr_db": 16.3,
+     "length_ms": 312,
+     "bands": {
+      "sub": 0.5,
+      "body": 4.0,
+      "mid": 64.6,
+      "crack": 30.2,
+      "air": 0.8
+     }
+    }
+   },
+   "variants": null,
+   "sweetener": null,
+   "kept": false
+  },
+  {
+   "id": "cz52-0",
+   "gun": "CZ-52",
+   "caliber": "7.62x25",
+   "type": "semi-auto pistol",
+   "mic": "range",
+   "source": "cz.wav",
+   "credit": "Vincent Sevedge ('Tabasco')",
+   "license": "CC BY 3.0 (the bundled text says so; the OpenGameArt page says CC0, so the stricter one is honoured)",
+   "url": "https://opengameart.org/content/gunshot-sounds",
+   "note": "Recorded while target shooting; the recorder clipped on loud shots.",
+   "raw": {
+    "file": "raw/cz52-0.wav",
+    "score": 60.2,
+    "crisp": 70,
+    "crunch": 82,
+    "parts": {
+     "attack": 0.0,
+     "tail": 1.0,
+     "dry": 0.0,
+     "clip": 1.0,
+     "clean": 0.0,
+     "crack": 1.0,
+     "body": 0.52,
+     "bright": 1.0,
+     "weight": 1.0
+    },
+    "metrics": {
+     "peak_db": -5.2,
+     "attack_ms": 15.96,
+     "t30_ms": 206,
+     "t50_ms": 206,
+     "room_db": 1.8,
+     "crest_db": 8.3,
+     "low_db": -25.4,
+     "centroid_hz": 1544,
+     "clip_pct": 0.0,
+     "snr_db": 15.3,
+     "length_ms": 235,
+     "bands": {
+      "sub": 0.0,
+      "body": 4.0,
+      "mid": 69.9,
+      "crack": 25.4,
+      "air": 0.6
+     }
+    }
+   },
+   "variants": null,
+   "sweetener": null,
+   "kept": false
+  },
+  {
+   "id": "cz52-5",
+   "gun": "CZ-52",
+   "caliber": "7.62x25",
+   "type": "semi-auto pistol",
+   "mic": "range",
+   "source": "cz.wav",
+   "credit": "Vincent Sevedge ('Tabasco')",
+   "license": "CC BY 3.0 (the bundled text says so; the OpenGameArt page says CC0, so the stricter one is honoured)",
+   "url": "https://opengameart.org/content/gunshot-sounds",
+   "note": "Recorded while target shooting; the recorder clipped on loud shots.",
+   "raw": {
+    "file": "raw/cz52-5.wav",
+    "score": 59.0,
+    "crisp": 70,
+    "crunch": 82,
+    "parts": {
+     "attack": 0.0,
+     "tail": 1.0,
+     "dry": 0.0,
+     "clip": 1.0,
+     "clean": 0.0,
+     "crack": 1.0,
+     "body": 0.4,
+     "bright": 1.0,
+     "weight": 1.0
+    },
+    "metrics": {
+     "peak_db": -5.9,
+     "attack_ms": 8.94,
+     "t30_ms": 287,
+     "t50_ms": 287,
+     "room_db": 2.8,
+     "crest_db": 7.6,
+     "low_db": -24.7,
+     "centroid_hz": 1585,
+     "clip_pct": 0.0,
+     "snr_db": 16.6,
+     "length_ms": 314,
+     "bands": {
+      "sub": 0.1,
+      "body": 3.5,
+      "mid": 68.1,
+      "crack": 27.7,
+      "air": 0.6
+     }
+    }
+   },
+   "variants": null,
+   "sweetener": null,
+   "kept": false
+  },
+  {
+   "id": "bersa-mid-1",
+   "gun": "Bersa",
+   "caliber": ".380",
+   "type": "semi-auto pistol",
+   "mic": "mid",
+   "source": "F_41P.wav",
+   "credit": "Ben Jaszczak, Brian Nelson, Kevin Heras, Matthew Nanney",
+   "license": "CC0 1.0",
+   "url": "https://opengameart.org/content/the-free-firearm-sound-library",
+   "note": "Real firearm recording, 96 kHz / 24-bit stereo, summed to mono.",
+   "raw": {
+    "file": "raw/bersa-mid-1.wav",
+    "score": 58.4,
+    "crisp": 45,
+    "crunch": 28,
+    "parts": {
+     "attack": 1.0,
+     "tail": 0.71,
+     "dry": 0.0,
+     "clip": 0.8,
+     "clean": 0.95,
+     "crack": 0.41,
+     "body": 0.57,
+     "bright": 0.0,
+     "weight": 1.0
+    },
+    "metrics": {
+     "peak_db": 0.3,
+     "attack_ms": 0.92,
+     "t30_ms": 21,
+     "t50_ms": 688,
+     "room_db": 1.8,
+     "crest_db": 20.2,
+     "low_db": -32.8,
+     "centroid_hz": 529,
+     "clip_pct": 0.05,
+     "snr_db": 37.1,
+     "length_ms": 703,
+     "bands": {
+      "sub": 2.1,
+      "body": 2.2,
+      "mid": 85.9,
+      "crack": 6.5,
+      "air": 3.4
+     }
+    }
+   },
+   "variants": null,
+   "sweetener": null,
+   "kept": false
+  },
+  {
+   "id": "cz52-2",
+   "gun": "CZ-52",
+   "caliber": "7.62x25",
+   "type": "semi-auto pistol",
+   "mic": "range",
+   "source": "cz.wav",
+   "credit": "Vincent Sevedge ('Tabasco')",
+   "license": "CC BY 3.0 (the bundled text says so; the OpenGameArt page says CC0, so the stricter one is honoured)",
+   "url": "https://opengameart.org/content/gunshot-sounds",
+   "note": "Recorded while target shooting; the recorder clipped on loud shots.",
+   "raw": {
+    "file": "raw/cz52-2.wav",
+    "score": 53.4,
+    "crisp": 27,
+    "crunch": 73,
+    "parts": {
+     "attack": 0.16,
+     "tail": 0.66,
+     "dry": 0.0,
+     "clip": 1.0,
+     "clean": 0.23,
+     "crack": 0.73,
+     "body": 0.83,
+     "bright": 0.32,
+     "weight": 1.0
+    },
+    "metrics": {
+     "peak_db": -13.5,
+     "attack_ms": 5.31,
+     "t30_ms": 505,
+     "t50_ms": 724,
+     "room_db": 3.3,
+     "crest_db": 13.2,
+     "low_db": -29.1,
+     "centroid_hz": 956,
+     "clip_pct": 0.0,
+     "snr_db": 24.1,
+     "length_ms": 732,
+     "bands": {
+      "sub": 0.1,
+      "body": 5.2,
+      "mid": 86.1,
+      "crack": 8.4,
+      "air": 0.2
+     }
+    }
+   },
+   "variants": null,
+   "sweetener": null,
+   "kept": false
+  },
+  {
+   "id": "cz52-1",
+   "gun": "CZ-52",
+   "caliber": "7.62x25",
+   "type": "semi-auto pistol",
+   "mic": "range",
+   "source": "cz.wav",
+   "credit": "Vincent Sevedge ('Tabasco')",
+   "license": "CC BY 3.0 (the bundled text says so; the OpenGameArt page says CC0, so the stricter one is honoured)",
+   "url": "https://opengameart.org/content/gunshot-sounds",
+   "note": "Recorded while target shooting; the recorder clipped on loud shots.",
+   "raw": {
+    "file": "raw/cz52-1.wav",
+    "score": 48.6,
+    "crisp": 34,
+    "crunch": 64,
+    "parts": {
+     "attack": 0.0,
+     "tail": 1.0,
+     "dry": 0.0,
+     "clip": 1.0,
+     "clean": 0.0,
+     "crack": 0.65,
+     "body": 0.38,
+     "bright": 0.41,
+     "weight": 1.0
+    },
+    "metrics": {
+     "peak_db": -7.9,
+     "attack_ms": 31.4,
+     "t30_ms": 170,
+     "t50_ms": 170,
+     "room_db": 2.7,
+     "crest_db": 15.0,
+     "low_db": -31.7,
+     "centroid_hz": 1030,
+     "clip_pct": 0.0,
+     "snr_db": 16.9,
+     "length_ms": 201,
+     "bands": {
+      "sub": 0.2,
+      "body": 3.3,
+      "mid": 88.5,
+      "crack": 7.9,
+      "air": 0.1
+     }
+    }
+   },
+   "variants": null,
+   "sweetener": null,
+   "kept": false
+  },
+  {
+   "id": "cz52-9",
+   "gun": "CZ-52",
+   "caliber": "7.62x25",
+   "type": "semi-auto pistol",
+   "mic": "range",
+   "source": "cz.wav",
+   "credit": "Vincent Sevedge ('Tabasco')",
+   "license": "CC BY 3.0 (the bundled text says so; the OpenGameArt page says CC0, so the stricter one is honoured)",
+   "url": "https://opengameart.org/content/gunshot-sounds",
+   "note": "Recorded while target shooting; the recorder clipped on loud shots.",
+   "raw": {
+    "file": "raw/cz52-9.wav",
+    "score": 43.8,
+    "crisp": 20,
+    "crunch": 46,
+    "parts": {
+     "attack": 0.0,
+     "tail": 0.69,
+     "dry": 0.0,
+     "clip": 1.0,
+     "clean": 0.3,
+     "crack": 0.33,
+     "body": 0.35,
+     "bright": 0.55,
+     "weight": 1.0
+    },
+    "metrics": {
+     "peak_db": -8.1,
+     "attack_ms": 31.35,
+     "t30_ms": 497,
+     "t50_ms": 700,
+     "room_db": 4.6,
+     "crest_db": 15.5,
+     "low_db": -32.4,
+     "centroid_hz": 1137,
+     "clip_pct": 0.0,
+     "snr_db": 25.5,
+     "length_ms": 732,
+     "bands": {
+      "sub": 0.1,
+      "body": 3.4,
+      "mid": 90.6,
+      "crack": 6.0,
+      "air": 0.0
+     }
+    }
+   },
+   "variants": null,
+   "sweetener": null,
+   "kept": false
+  },
+  {
+   "id": "cz52-7",
+   "gun": "CZ-52",
+   "caliber": "7.62x25",
+   "type": "semi-auto pistol",
+   "mic": "range",
+   "source": "cz.wav",
+   "credit": "Vincent Sevedge ('Tabasco')",
+   "license": "CC BY 3.0 (the bundled text says so; the OpenGameArt page says CC0, so the stricter one is honoured)",
+   "url": "https://opengameart.org/content/gunshot-sounds",
+   "note": "Recorded while target shooting; the recorder clipped on loud shots.",
+   "raw": {
+    "file": "raw/cz52-7.wav",
+    "score": 42.8,
+    "crisp": 9,
+    "crunch": 74,
+    "parts": {
+     "attack": 0.0,
+     "tail": 0.69,
+     "dry": 0.0,
+     "clip": 1.0,
+     "clean": 0.0,
+     "crack": 0.21,
+     "body": 0.92,
+     "bright": 0.22,
+     "weight": 1.0
+    },
+    "metrics": {
+     "peak_db": -17.8,
+     "attack_ms": 31.52,
+     "t30_ms": 700,
+     "t50_ms": 700,
+     "room_db": 5.6,
+     "crest_db": 12.6,
+     "low_db": -24.2,
+     "centroid_hz": 880,
+     "clip_pct": 0.0,
+     "snr_db": 19.8,
+     "length_ms": 732,
+     "bands": {
+      "sub": 0.2,
+      "body": 5.4,
+      "mid": 89.0,
+      "crack": 5.3,
+      "air": 0.0
+     }
+    }
+   },
+   "variants": null,
+   "sweetener": null,
+   "kept": false
+  },
+  {
+   "id": "cz52-6",
+   "gun": "CZ-52",
+   "caliber": "7.62x25",
+   "type": "semi-auto pistol",
+   "mic": "range",
+   "source": "cz.wav",
+   "credit": "Vincent Sevedge ('Tabasco')",
+   "license": "CC BY 3.0 (the bundled text says so; the OpenGameArt page says CC0, so the stricter one is honoured)",
+   "url": "https://opengameart.org/content/gunshot-sounds",
+   "note": "Recorded while target shooting; the recorder clipped on loud shots.",
+   "raw": {
+    "file": "raw/cz52-6.wav",
+    "score": 38.6,
+    "crisp": 25,
+    "crunch": 31,
+    "parts": {
+     "attack": 0.0,
+     "tail": 1.0,
+     "dry": 0.0,
+     "clip": 1.0,
+     "clean": 0.02,
+     "crack": 0.02,
+     "body": 0.22,
+     "bright": 0.45,
+     "weight": 1.0
+    },
+    "metrics": {
+     "peak_db": -6.8,
+     "attack_ms": 31.5,
+     "t30_ms": 178,
+     "t50_ms": 178,
+     "room_db": 1.4,
+     "crest_db": 16.8,
+     "low_db": -34.0,
+     "centroid_hz": 1057,
+     "clip_pct": 0.0,
+     "snr_db": 20.3,
+     "length_ms": 210,
+     "bands": {
+      "sub": 0.0,
+      "body": 2.9,
+      "mid": 93.0,
+      "crack": 4.1,
+      "air": 0.0
+     }
+    }
+   },
+   "variants": null,
+   "sweetener": null,
+   "kept": false
+  },
+  {
+   "id": "cz52-4",
+   "gun": "CZ-52",
+   "caliber": "7.62x25",
+   "type": "semi-auto pistol",
+   "mic": "range",
+   "source": "cz.wav",
+   "credit": "Vincent Sevedge ('Tabasco')",
+   "license": "CC BY 3.0 (the bundled text says so; the OpenGameArt page says CC0, so the stricter one is honoured)",
+   "url": "https://opengameart.org/content/gunshot-sounds",
+   "note": "Recorded while target shooting; the recorder clipped on loud shots.",
+   "raw": {
+    "file": "raw/cz52-4.wav",
+    "score": 37.8,
+    "crisp": 25,
+    "crunch": 35,
+    "parts": {
+     "attack": 0.0,
+     "tail": 0.69,
+     "dry": 0.0,
+     "clip": 1.0,
+     "clean": 0.62,
+     "crack": 0.0,
+     "body": 0.22,
+     "bright": 0.29,
+     "weight": 1.0
+    },
+    "metrics": {
+     "peak_db": -6.8,
+     "attack_ms": 31.31,
+     "t30_ms": 273,
+     "t50_ms": 700,
+     "room_db": 2.9,
+     "crest_db": 16.6,
+     "low_db": -33.7,
+     "centroid_hz": 935,
+     "clip_pct": 0.0,
+     "snr_db": 31.1,
+     "length_ms": 732,
+     "bands": {
+      "sub": 0.0,
+      "body": 2.8,
+      "mid": 94.0,
+      "crack": 3.1,
+      "air": 0.0
+     }
+    }
+   },
+   "variants": null,
+   "sweetener": null,
+   "kept": false
+  }
+ ],
+ "roundrobin": [
+  {
+   "file": "roundrobin/pistol_01.wav",
+   "source": "kurt-unkown-3",
+   "flavour": "crisp",
+   "gun": "unidentified gun",
+   "score": 97.8
+  },
+  {
+   "file": "roundrobin/pistol_02.wav",
+   "source": "ppq-near-2",
+   "flavour": "arc",
+   "gun": "Walther PPQ",
+   "score": 95.4
+  },
+  {
+   "file": "roundrobin/pistol_03.wav",
+   "source": "1911-near-1",
+   "flavour": "crunch",
+   "gun": "1911",
+   "score": 92.3
+  },
+  {
+   "file": "roundrobin/pistol_04.wav",
+   "source": "bersa-near-1",
+   "flavour": "crisp",
+   "gun": "Bersa",
+   "score": 91.0
+  },
+  {
+   "file": "roundrobin/pistol_05.wav",
+   "source": "kurt-blackpowder-3",
+   "flavour": "arc",
+   "gun": "black powder pistol",
+   "score": 98.2
+  },
+  {
+   "file": "roundrobin/pistol_06.wav",
+   "source": "kurt-22magnum-2",
+   "flavour": "crunch",
+   "gun": ".22 Magnum",
+   "score": 100.0
+  },
+  {
+   "file": "roundrobin/pistol_07.wav",
+   "source": "kurt-22pistol-3",
+   "flavour": "crisp",
+   "gun": ".22 pistol",
+   "score": 97.4
+  },
+  {
+   "file": "roundrobin/pistol_08.wav",
+   "source": "sw642-near-0",
+   "flavour": "arc",
+   "gun": "Smith & Wesson 642",
+   "score": 88.2
+  }
+ ]
+}

@@ -1,0 +1,47 @@
+CRACKSHOT: LICENCES AND CREDITS
+===============================
+
+Every sound in this pack is derived from real recordings that other people have shared under open licences,
+plus (a) a plain sine-wave "thump" computed by code and (b) a very quiet layer from a Kenney CC0 pack.
+No AI audio model was used. All processing is classic DSP (filters, saturation, envelope shaping).
+
+RAW SOURCES
+-----------
+1. The Free Firearm Sound Library
+   Authors: Ben Jaszczak, Brian Nelson, Kevin Heras, Matthew Nanney
+   Licence: CC0 1.0 (No Rights Reserved)
+   Source:  https://opengameart.org/content/the-free-firearm-sound-library
+   Used:    Walther PPQ, 1911, Bersa, Smith & Wesson 642, Ruger Mark III, Ruger Single Six (summed to mono, sliced to single shots).
+
+2. Gunshots
+   Author:  kurt
+   Licence: CC0 1.0
+   Source:  https://opengameart.org/content/gunshots
+   Used:    22 Pistol, 22 Magnum, Black Powder, Unknown (sliced to single shots).
+
+3. Gunshot Sounds (CZ-52 and others)
+   Author:  Vincent Sevedge ("Tabasco")
+   Licence: Creative Commons Attribution 3.0 Unported (https://creativecommons.org/licenses/by/3.0/)
+   Source:  https://opengameart.org/content/gunshot-sounds
+   Note:    The OpenGameArt page labels this pack CC0, but the text file inside the download states
+            "Copyright (c) 2009 Vincent Sevedge ... Creative Commons Attribution 3.0". The stricter licence is honoured here.
+            Shots from this pack appear in the raw slices only (they were not good enough to be pack picks).
+            If you use any of them, credit: "Vincent Sevedge, CC BY 3.0".
+
+SWEETENER LAYER ("arc" versions only)
+-------------------------------------
+4. Sci-Fi Sounds (laserRetro_000 to 004, laserSmall_000 to 002)
+   Author:  Kenney (www.kenney.nl)
+   Licence: CC0 1.0
+   Source:  https://kenney.nl/assets/sci-fi-sounds
+
+WHAT WAS DONE TO THEM
+---------------------
+Sliced into single shots, DC and rumble removed, tail shortened, transient shaped, brightened (exciter + EQ),
+saturated (crunch), a short synthesised sine "thump" added for weight, soft-limited and normalised.
+These are modified versions. The processed files in this pack are released under CC0 1.0 where all inputs were CC0.
+Files derived from the CC BY 3.0 source (if any are ever added) must carry the attribution above.
+
+NO WARRANTY
+-----------
+Provided as is. If you spot a licensing error, please say so and it will be fixed.

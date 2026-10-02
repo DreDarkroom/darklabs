@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<meta name="robots" content="noindex, nofollow">
+<title>Crackshot | a gunshot sound workshop</title>
+<meta name="description" content="Real gunshot recordings, sliced, measured and shaped crisp and crunchy. No generated audio.">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--red:#d1122b;--soft:#e8434f;--ink:#040203;--text:#eadede;--dim:#b09c9c;--line:#3a1a1f;--card:#120809;--ok:#59f0b0}
+html{background:var(--ink)}
+body{color:var(--text);font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:radial-gradient(ellipse at 50% -12%,#220609 0,#0a0405 52%,#030203 100%);min-height:100vh}
+a{color:var(--soft)}
+:focus-visible{outline:2px solid #fff;outline-offset:3px;border-radius:4px}
+.wrap{max-width:70rem;margin:0 auto;padding:1rem 1.1rem 4rem}
+.top{padding:.4rem 0 1rem;font-size:.9rem}.top a{text-decoration:none;font-weight:600}
+header{text-align:center;margin:1.6rem 0 1.6rem}
+.sign{font-weight:800;letter-spacing:.34em;text-indent:.34em;font-size:clamp(2rem,7vw,4rem);color:#ffd8dc;text-shadow:0 0 12px rgba(209,18,43,.95),0 0 34px rgba(209,18,43,.7),0 0 80px rgba(209,18,43,.45)}
+.tagline{margin-top:.6rem;color:var(--dim);letter-spacing:.3em;font-size:.8rem;text-transform:uppercase}
+h2{margin:2.6rem 0 .3rem;font-size:1.5rem;letter-spacing:.16em;text-transform:uppercase;color:var(--soft);text-shadow:0 0 16px rgba(209,18,43,.6)}
+p.sub{color:var(--dim);margin-bottom:1rem;max-width:46rem}
+.card{border:1px solid var(--line);border-radius:3px;background:linear-gradient(180deg,#1b0c0f,#0e0709);padding:1.1rem;box-shadow:0 14px 30px rgba(0,0,0,.6)}
+.pill{display:inline-block;font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;border:1px solid var(--soft);color:var(--soft);border-radius:3px;padding:.15rem .45rem;margin-right:.3rem}
+.pill.ok{border-color:var(--ok);color:var(--ok)}
+button{font:inherit;cursor:pointer;color:var(--text);background:transparent;border:1px solid var(--line);border-radius:3px;padding:.5rem .9rem;min-height:2.6rem}
+button:hover{border-color:var(--soft)}
+button.act{font-weight:800;color:#fff;background:linear-gradient(180deg,#e0243a,#a50d20);border:1px solid #ff6a78;box-shadow:0 0 18px rgba(209,18,43,.4)}
+button[aria-pressed=true],button.on{background:var(--red);border-color:var(--red);color:#fff}
+.row{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center}
+.grid2{display:grid;grid-template-columns:1.25fr 1fr;gap:1.2rem}
+@media(max-width:860px){.grid2{grid-template-columns:1fr}}
+table{width:100%;border-collapse:collapse;font-size:.88rem}
+th,td{padding:.4rem .5rem;text-align:left;border-bottom:1px solid #251317;white-space:nowrap}
+th{color:var(--dim);font-weight:600;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;position:sticky;top:0;background:#120809}
+tbody tr{cursor:pointer}tbody tr:hover{background:#1c0b10}tbody tr.sel{background:#2a0e15;outline:1px solid var(--soft)}
+.scroll{max-height:26rem;overflow:auto;border:1px solid var(--line);border-radius:3px}
+.bar{display:inline-block;width:4.2rem;height:.55rem;background:#241216;border-radius:3px;vertical-align:middle;overflow:hidden}.bar i{display:block;height:100%;background:linear-gradient(90deg,#a50d20,#ff6a78)}
+canvas.vis{display:block;width:100%;height:150px;background:#050203;border:1px solid var(--line);border-radius:3px;margin:.6rem 0}
+.parts{display:grid;grid-template-columns:7rem 1fr 2.6rem;gap:.25rem .6rem;align-items:center;font-size:.82rem;margin:.6rem 0}
+.parts .b{height:.5rem;background:#241216;border-radius:3px;overflow:hidden}.parts .b i{display:block;height:100%}
+label.s{display:grid;grid-template-columns:6.5rem 1fr 3rem;gap:.6rem;align-items:center;font-size:.9rem;margin:.4rem 0;color:var(--dim)}
+input[type=range]{accent-color:var(--red);width:100%}
+.big{font-size:2.6rem;font-weight:800;color:#fff;text-shadow:0 0 18px rgba(209,18,43,.6)}
+.small{font-size:.8rem;color:var(--dim)}
+details{border:1px solid var(--line);border-radius:3px;padding:.7rem 1rem;margin:.6rem 0;background:#0e0709}summary{cursor:pointer;font-weight:600}
+details p,details li{color:#d9c8c8;margin:.4rem 0}details ul{padding-left:1.2rem}
+table.src td{white-space:normal;vertical-align:top}
+footer{margin-top:3rem;padding-top:1.2rem;border-top:1px solid var(--line);color:var(--dim);font-size:.85rem}
+.fire{font-size:1.1rem;padding:.9rem 1.6rem}
+.rr{display:grid;grid-template-columns:repeat(auto-fill,minmax(8.5rem,1fr));gap:.5rem;margin:.8rem 0}
+.rr button{text-align:left;font-size:.8rem;line-height:1.3;padding:.5rem .6rem}.rr button b{display:block;font-size:.9rem}
+.flash{animation:fl .25s}@keyframes fl{from{box-shadow:0 0 0 3px #fff}to{box-shadow:none}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a href="../">&larr; Darklabs</a></div>
+  <header>
+    <h1 class="sign">CRACKSHOT</h1>
+    <p class="tagline">real recordings &middot; sliced, measured, shaped &middot; no generated audio</p>
+  </header>
+
+  <div class="card">
+    <p><span class="pill ok">real recordings</span><span class="pill ok">no AI audio</span><span class="pill">CC0 / CC BY</span></p>
+    <p style="margin-top:.7rem">I was looking for a really good pistol shot for a game I'm working on, and ended up building a small workshop around it. It hunts through real, openly licensed gunshot recordings, <strong>slices</strong> them into single shots, <strong>measures</strong> each one, scores how well it suits a snappy, punchy game pistol, and then <strong>shapes</strong> the best ones to be <em>crisp</em> and <em>crunchy</em>. Everything is classic signal processing. Nothing here is generated by an AI audio model.</p>
+    <p class="small" style="margin-top:.5rem">Turn your volume down a little: these are gunshots, and some of them are sharp.</p>
+  </div>
+
+  <h2>Fire the set</h2>
+  <p class="sub">Eight different shots, level-matched, rotating like a game would: crisp, crunchy and "arc" (crisp with a pitched-down sci-fi sweetener) from eight different real guns. Hit fire and hold <kbd>Space</kbd>, or tap rapidly.</p>
+  <div class="card">
+    <div class="row"><button class="act fire" id="fire">&#128165; Fire</button><button id="auto" aria-pressed="false">Auto-fire</button><label class="small">Rate <input id="rate" type="range" min="2" max="9" value="4" style="width:8rem"> <span id="ratev">4/s</span></label><label class="small">Volume <input id="vol" type="range" min="0" max="100" value="55" style="width:7rem"></label><span class="small" id="lastshot"></span></div>
+    <div class="rr" id="rr"></div>
+  </div>
+
+  <h2>The shot browser</h2>
+  <p class="sub">Every single shot sliced out of the recordings, ranked by suitability. Click a row to hear the raw shot against its crisp, crunchy and arc versions, and to see exactly why it scored what it did.</p>
+  <div class="row" style="margin-bottom:.6rem"><button id="fKept" aria-pressed="true">Pack picks only</button><button id="fAll" aria-pressed="false">All 53 shots</button><span class="small" id="count"></span></div>
+  <div class="grid2">
+    <div class="scroll"><table id="tbl"><thead><tr><th data-k="score">Score</th><th data-k="gun">Gun</th><th data-k="mic">Mic</th><th data-k="crisp">Crisp</th><th data-k="crunch">Crunch</th><th data-k="attack">Attack</th><th data-k="t50">Tail</th><th data-k="room">Room</th></tr></thead><tbody></tbody></table></div>
+    <div class="card" id="detail"><p class="small">Pick a shot on the left.</p></div>
+  </div>
+
+  <h2>Feel it: crisp, crunch and weight</h2>
+  <p class="sub">A live version of the idea. These sliders run a quick processing chain on whichever shot is selected so you can hear what each ingredient does. (The files you download were made by the careful offline chain, which also tames the tail and shapes the attack; this is a sketch for your ears.)</p>
+  <div class="card">
+    <label class="s">Crisp <input id="sCrisp" type="range" min="0" max="100" value="0"><span id="vCrisp">0</span></label>
+    <label class="s">Crunch <input id="sCrunch" type="range" min="0" max="100" value="0"><span id="vCrunch">0</span></label>
+    <label class="s">Weight <input id="sWeight" type="range" min="0" max="100" value="0"><span id="vWeight">0</span></label>
+    <div class="row" style="margin-top:.6rem"><button class="act" id="playLive">&#9654; Play selected, with these settings</button><span class="small" id="liveFor">Select a shot first.</span></div>
+  </div>
+
+  <h2>How it's judged</h2>
+  <p class="sub">The score is a plain checklist, not a mystery. You can read it, disagree with it and change it.</p>
+  <details open><summary>What "crisp" and "crunchy" mean here</summary>
+    <p><strong>Crisp</strong> is a clear, bright, quick transient: it speaks instantly, has a strong 2 to 6 kHz "crack", and doesn't smear. <strong>Crunchy</strong> is texture: dense, gritty harmonics in the 1 to 8 kHz range, the thing saturation adds, so the shot has teeth and not just a click. The numbers on this page are proxies for what you hear: crisp comes from brightness, attack and tail; crunch comes from how squashed the peak is (crest factor, kurtosis) and how dense the spectrum is.</p></details>
+  <details><summary>The suitability score (0 to 100) and its checklist</summary>
+    <ul><li><strong>Attack</strong> (14): how fast it reaches full volume. Under 1.6 ms is ideal.</li>
+    <li><strong>Tail</strong> (11): time to fall 50 dB. 140 to 480 ms is right for a game pistol.</li>
+    <li><strong>Dry</strong> (14): how little room echo is in the first half second. The game adds its own space.</li>
+    <li><strong>Clipping</strong> (13): any shot where the recorder distorted is penalised hard.</li>
+    <li><strong>Clean</strong> (7): the noise floor under the shot.</li>
+    <li><strong>Crack</strong> (14): the share of energy in the 2 to 6 kHz band.</li>
+    <li><strong>Body</strong> (10) and <strong>Weight</strong> (8): how much low end there is, so it feels like a gun and not a clap.</li>
+    <li><strong>Bright</strong> (9): spectral centre between about 1.5 and 4.8 kHz.</li></ul></details>
+  <details><summary>How the shots are shaped</summary>
+    <ul><li><strong>Tail control:</strong> an extra fade after 70 to 80 ms dries out the room.</li>
+    <li><strong>Transient shaping:</strong> where a fast envelope runs ahead of a slow one, a little gain (up to about +6 dB) sharpens the first few milliseconds.</li>
+    <li><strong>Crisp:</strong> a harmonic exciter on the 3.5 kHz+ band plus presence EQ.</li>
+    <li><strong>Crunch:</strong> parallel saturation on 250 Hz to 7 kHz plus a touch of sample-and-hold grit, with the top end kept bright.</li>
+    <li><strong>Weight:</strong> a short, plain sine "thump" falling from about 130 to 58 Hz, generated by code, mixed low so it supports the shot without slowing the attack.</li>
+    <li><strong>Arc:</strong> the crisp version with a pitched-down, high-passed whisper of a sci-fi sound from Kenney's CC0 pack (the same pack the Sonic Smithy uses).</li></ul></details>
+  <details><summary>Match a sound you like (private, runs on your machine)</summary>
+    <p>If there's a pistol sound you want to get close to, record a short clip of it for your own reference and run <code>python tools/match_reference.py yourclip.wav</code>. It measures your clip the same way and lists which shots here are nearest. Nothing is uploaded and your clip is never copied into the pack. My target profile (a punchy, bright, dry, short pistol) is an approximation; a real reference replaces my guess with your ear.</p></details>
+
+  <h2>Credits and licences</h2>
+  <p class="sub">All the raw audio is from real recordings by other people, shared openly. Thank you to them.</p>
+  <div class="card" style="overflow:auto"><table class="src"><tbody id="src"></tbody></table></div>
+  <details><summary>The licence note on one source</summary><p>The "Gunshot Sounds" pack on OpenGameArt is labelled CC0 on its page, but the text bundled inside the download says Creative Commons Attribution 3.0 (Vincent Sevedge, 2009). To be safe, any shot from it (the CZ-52) is credited under CC BY 3.0 here. None of its shots were good enough to make the pack picks anyway.</p></details>
+
+  <h2>Download</h2>
+  <div class="card">
+    <p><a href="crackshot-pack.zip" download>crackshot-pack.zip</a> <span class="small" id="zipinfo"></span></p>
+    <p class="small" style="margin-top:.5rem">Contains the 8 round-robin shots, every crisp / crunch / arc variant of the 14 pack picks (48 kHz, 16-bit mono WAV), the raw slices, <code>LICENSES.txt</code> and the tools to reproduce it. The tools need Python with numpy, scipy and soundfile.</p>
+  </div>
+
+  <footer><p>Crackshot is a Darklabs side project. It isn't listed anywhere on purpose. Real recordings only; the sub thump is a sine wave computed by code; no AI audio model touched any sound here.</p></footer>
+</div>
+
+<script>
+"use strict";
+const $ = (id) => document.getElementById(id);
+let ctx = null, master = null, DATA = null, sel = null, filterKept = true, sortK = "score", sortDir = -1; const BUF = new Map();
+const ac = () => { if (!ctx) { ctx = new (window.AudioContext || window.webkitAudioContext)(); master = ctx.createGain(); master.gain.value = 0.55; const comp = ctx.createDynamicsCompressor(); comp.threshold.value = -4; comp.ratio.value = 12; comp.attack.value = 0.001; master.connect(comp); comp.connect(ctx.destination); } if (ctx.state !== "running") ctx.resume(); return ctx; };
+const decoder = () => new OfflineAudioContext(1, 1, 48000);
+async function load(path) { if (BUF.has(path)) return BUF.get(path); const r = await fetch("audio/" + path); const b = await decoder().decodeAudioData(await r.arrayBuffer()); BUF.set(path, b); return b; }
+async function play(path, vol = 1, rate = 1) { const c = ac(), b = await load(path), s = c.createBufferSource(); s.buffer = b; s.playbackRate.value = rate; const g = c.createGain(); g.gain.value = vol; s.connect(g); g.connect(master); s.start(); return s; }
+
+// ---------- a tiny FFT, for the spectrogram
+function fft(re, im) { const n = re.length; for (let i = 1, j = 0; i < n; i++) { let bit = n >> 1; for (; j & bit; bit >>= 1) j ^= bit; j ^= bit; if (i < j) { [re[i], re[j]] = [re[j], re[i]]; [im[i], im[j]] = [im[j], im[i]]; } } for (let len = 2; len <= n; len <<= 1) { const ang = -2 * Math.PI / len, wr = Math.cos(ang), wi = Math.sin(ang); for (let i = 0; i < n; i += len) { let cr = 1, ci = 0; for (let k = 0; k < len / 2; k++) { const ur = re[i + k], ui = im[i + k], xr = re[i + k + len / 2] * cr - im[i + k + len / 2] * ci, xi = re[i + k + len / 2] * ci + im[i + k + len / 2] * cr; re[i + k] = ur + xr; im[i + k] = ui + xi; re[i + k + len / 2] = ur - xr; im[i + k + len / 2] = ui - xi; const t = cr * wr - ci * wi; ci = cr * wi + ci * wr; cr = t; } } } }
+const RAMP = [[0, 0, 4], [40, 11, 84], [101, 21, 110], [159, 42, 99], [212, 72, 66], [245, 125, 21], [250, 193, 39], [252, 255, 164]];
+const col = (v) => { v = Math.max(0, Math.min(1, v)) * (RAMP.length - 1); const i = Math.min(RAMP.length - 2, v | 0), f = v - i; return RAMP[i].map((a, k) => a + (RAMP[i + 1][k] - a) * f); };
+function draw(cv, buf, dur = 0.4) {
+  const W = cv.width = cv.clientWidth * (devicePixelRatio || 1), H = cv.height = cv.clientHeight * (devicePixelRatio || 1), g = cv.getContext("2d"), d = buf.getChannelData(0), sr = buf.sampleRate, n = Math.min(d.length, Math.floor(dur * sr));
+  g.fillStyle = "#050203"; g.fillRect(0, 0, W, H); const wh = Math.floor(H * 0.3);
+  for (let x = 0; x < W; x++) { const a = Math.floor(x / W * n), b = Math.floor((x + 1) / W * n); let hi = -1, lo = 1; for (let i = a; i < b; i++) { const v = d[i]; if (v > hi) hi = v; if (v < lo) lo = v; } g.fillStyle = "#f0505a"; const y0 = wh / 2 - hi * wh / 2, y1 = wh / 2 - lo * wh / 2; g.fillRect(x, y0, 1, Math.max(1, y1 - y0)); }
+  const N = 512, hop = Math.max(32, Math.floor(n / W / 1 * 1)), cols = Math.floor((n - N) / hop), sh = H - wh - 2, kmax = Math.floor(N / 2 * (18000 / (sr / 2)));
+  const re = new Float64Array(N), im = new Float64Array(N), img = g.createImageData(Math.max(1, cols), sh);
+  for (let c = 0; c < cols; c++) { for (let i = 0; i < N; i++) { re[i] = d[c * hop + i] * (0.5 - 0.5 * Math.cos(2 * Math.PI * i / (N - 1))); im[i] = 0; } fft(re, im);
+    for (let y = 0; y < sh; y++) { const k = Math.min(kmax, Math.floor((1 - y / sh) * kmax)), m = 20 * Math.log10(Math.hypot(re[k], im[k]) / (N / 4) + 1e-9), [r, gg, b] = col((m + 95) / 80), p = (y * cols + c) * 4; img.data[p] = r; img.data[p + 1] = gg; img.data[p + 2] = b; img.data[p + 3] = 255; } }
+  const tmp = document.createElement("canvas"); tmp.width = Math.max(1, cols); tmp.height = sh; tmp.getContext("2d").putImageData(img, 0, 0); g.imageSmoothingEnabled = false; g.drawImage(tmp, 0, wh + 2, W, sh);
+}
+
+// ---------- the browser table and detail panel
+const pct = (v) => `<span class="bar"><i style="width:${Math.max(0, Math.min(100, v))}%"></i></span> ${Math.round(v)}`;
+function rows() { let r = DATA.shots.filter((s) => !filterKept || s.kept); const key = { score: (s) => s.raw.score, gun: (s) => s.gun, mic: (s) => s.mic, crisp: (s) => s.raw.crisp, crunch: (s) => s.raw.crunch, attack: (s) => s.raw.metrics.attack_ms, t50: (s) => s.raw.metrics.t50_ms, room: (s) => s.raw.metrics.room_db }[sortK]; if (sortK === "score" && filterKept) r.sort((a, b) => Math.max(...Object.values(b.variants).map((v) => v.score)) - Math.max(...Object.values(a.variants).map((v) => v.score))); else r.sort((a, b) => (key(a) > key(b) ? 1 : -1) * sortDir); return r; }
+function renderTable() { const tb = $("tbl").querySelector("tbody"); tb.textContent = ""; const r = rows(); $("count").textContent = r.length + " shots"; r.forEach((s) => { const tr = document.createElement("tr"); tr.dataset.id = s.id; if (sel && sel.id === s.id) tr.className = "sel"; const best = s.kept ? Math.max(...Object.values(s.variants).map((v) => v.score)) : null;
+  tr.innerHTML = `<td>${pct(s.kept && sortK === "score" && filterKept ? best : s.raw.score)}</td><td>${s.gun}</td><td>${s.mic}</td><td>${s.raw.crisp}</td><td>${s.raw.crunch}</td><td>${s.raw.metrics.attack_ms} ms</td><td>${s.raw.metrics.t50_ms} ms</td><td>${s.raw.metrics.room_db} dB</td>`; tr.addEventListener("click", () => select(s)); tb.appendChild(tr); }); }
+document.querySelectorAll("#tbl th").forEach((th) => th.addEventListener("click", () => { const k = th.dataset.k; sortDir = sortK === k ? -sortDir : (k === "gun" || k === "mic" ? 1 : -1); sortK = k; renderTable(); }));
+$("fKept").onclick = () => { filterKept = true; $("fKept").setAttribute("aria-pressed", "true"); $("fAll").setAttribute("aria-pressed", "false"); renderTable(); };
+$("fAll").onclick = () => { filterKept = false; $("fAll").setAttribute("aria-pressed", "true"); $("fKept").setAttribute("aria-pressed", "false"); renderTable(); };
+const LABELS = { attack: "Attack", tail: "Tail", dry: "Dry", clip: "No clipping", clean: "Clean", crack: "Crack", body: "Body", bright: "Bright", weight: "Weight" };
+async function select(s) {
+  sel = s; renderTable(); const d = $("detail"); const flavours = [["raw", "Raw", s.raw]].concat(s.kept ? [["crisp", "Crisp", s.variants.crisp], ["crunch", "Crunch", s.variants.crunch], ["arc", "Arc", s.variants.arc]] : []);
+  const parts = (s.kept ? s.variants.crisp : s.raw).parts, scoreFor = (f) => f[2].score;
+  d.innerHTML = `<h3 style="font-size:1.2rem">${s.gun}${s.caliber ? " · " + s.caliber : ""}</h3><p class="small">${s.type} · ${s.mic === "room" || s.mic === "range" ? "recorded at a range" : s.mic + " mic"} · from <em>${s.source}</em></p>
+  <div class="row" id="fl" style="margin:.6rem 0"></div><canvas class="vis" id="cv"></canvas><div id="dscore"></div><div class="parts" id="pp"></div>
+  <p class="small"><span class="pill">${s.license.split(" (")[0]}</span> ${s.credit} · <a href="${s.url}" target="_blank" rel="noopener noreferrer">source</a>${s.sweetener ? " · sweetener: Kenney " + s.sweetener + " (CC0)" : ""}</p>`;
+  const fl = $("fl"); let cur = "raw";
+  const show = async (key, f) => { cur = key; fl.querySelectorAll("button").forEach((b) => b.classList.toggle("on", b.dataset.k === key)); const path = f[2].file; const buf = await load(path); draw($("cv"), buf); $("dscore").innerHTML = `<div class="row"><span class="big">${Math.round(f[2].score)}</span><span class="small">suitability<br>crisp ${f[2].crisp} · crunch ${f[2].crunch}</span><span class="small">attack ${f[2].metrics.attack_ms} ms · tail ${f[2].metrics.t50_ms} ms · room ${f[2].metrics.room_db} dB</span></div>`;
+    const ps = f[2].parts || {}; $("pp").innerHTML = Object.keys(LABELS).map((k) => `<span>${LABELS[k]}</span><span class="b"><i style="width:${(ps[k] ?? 0) * 100}%;background:${(ps[k] ?? 0) > 0.75 ? "#59f0b0" : (ps[k] ?? 0) > 0.4 ? "#f2a541" : "#e8434f"}"></i></span><span class="small">${Math.round((ps[k] ?? 0) * 100)}</span>`).join(""); };
+  flavours.forEach(([k, name, data]) => { const b = document.createElement("button"); b.dataset.k = k; b.textContent = "▶ " + name; b.onclick = async () => { await show(k, [k, name, data]); play(data.file, 0.9); }; fl.appendChild(b); });
+  await show("raw", flavours[0]); $("liveFor").textContent = "Selected: " + s.gun + " (" + s.id + ")";
+}
+
+// ---------- the round-robin set
+let rrFiles = [], rrLast = -1, auto = null;
+function buildRR() { const rr = $("rr"); rr.textContent = ""; DATA.roundrobin.forEach((m, i) => { const b = document.createElement("button"); b.innerHTML = `<b>pistol_${String(i + 1).padStart(2, "0")}</b>${m.gun}<br><span class="small">${m.flavour} · ${Math.round(m.score)}</span>`; b.onclick = () => shoot(i); b.id = "rr" + i; rr.appendChild(b); }); }
+function shoot(forced) { let i = forced; if (i === undefined) { do { i = Math.floor(Math.random() * DATA.roundrobin.length); } while (i === rrLast && DATA.roundrobin.length > 1); } rrLast = i; const m = DATA.roundrobin[i], b = $("rr" + i); play("pack/" + m.file, 1, 0.97 + Math.random() * 0.06); b.classList.remove("flash"); void b.offsetWidth; b.classList.add("flash"); $("lastshot").textContent = m.gun + " · " + m.flavour; }
+$("fire").addEventListener("pointerdown", () => shoot()); addEventListener("keydown", (e) => { if (e.code === "Space" && !e.repeat && !/INPUT|TEXTAREA/.test(document.activeElement.tagName)) { e.preventDefault(); shoot(); } });
+$("rate").oninput = () => { $("ratev").textContent = $("rate").value + "/s"; if (auto) { clearInterval(auto); auto = setInterval(shoot, 1000 / $("rate").value); } };
+$("auto").onclick = () => { const on = $("auto").getAttribute("aria-pressed") !== "true"; $("auto").setAttribute("aria-pressed", String(on)); clearInterval(auto); auto = on ? setInterval(shoot, 1000 / $("rate").value) : null; };
+$("vol").oninput = () => { ac(); master.gain.value = $("vol").value / 100; };
+
+// ---------- the live crisp / crunch / weight sketch
+const curve = (k) => { const c = new Float32Array(1024); for (let i = 0; i < 1024; i++) { const x = i / 511.5 - 1; c[i] = Math.tanh(k * (x + 0.2 * x * x)); } return c; };
+["Crisp", "Crunch", "Weight"].forEach((n) => ($("s" + n).oninput = () => ($("v" + n).textContent = $("s" + n).value)));
+$("playLive").onclick = async () => {
+  if (!sel) return $("liveFor").textContent = "Select a shot in the browser first."; const c = ac(), buf = await load(sel.raw.file), t = c.currentTime + 0.02, cr = $("sCrisp").value / 100, cn = $("sCrunch").value / 100, wt = $("sWeight").value / 100;
+  const src = c.createBufferSource(); src.buffer = buf; const sum = c.createGain(); const dry = c.createGain(); src.connect(dry);
+  const pk = c.createBiquadFilter(); pk.type = "peaking"; pk.frequency.value = 3600; pk.Q.value = 0.8; pk.gain.value = cr * 6; const sh = c.createBiquadFilter(); sh.type = "highshelf"; sh.frequency.value = 9000; sh.gain.value = cr * 3; dry.connect(pk); pk.connect(sh); sh.connect(sum);
+  const hpx = c.createBiquadFilter(); hpx.type = "highpass"; hpx.frequency.value = 3500; const ws = c.createWaveShaper(); ws.curve = curve(4); const hp2 = c.createBiquadFilter(); hp2.type = "highpass"; hp2.frequency.value = 5000; const eg = c.createGain(); eg.gain.value = cr * 0.35; src.connect(hpx); hpx.connect(ws); ws.connect(hp2); hp2.connect(eg); eg.connect(sum);
+  const hpc = c.createBiquadFilter(); hpc.type = "highpass"; hpc.frequency.value = 250; const lpc = c.createBiquadFilter(); lpc.type = "lowpass"; lpc.frequency.value = 7000; const ws2 = c.createWaveShaper(); ws2.curve = curve(3.5); const cg = c.createGain(); cg.gain.value = cn * 0.55; src.connect(hpc); hpc.connect(lpc); lpc.connect(ws2); ws2.connect(cg); cg.connect(sum);
+  if (wt > 0) { const o = c.createOscillator(), og = c.createGain(); o.frequency.setValueAtTime(130, t); o.frequency.exponentialRampToValueAtTime(58, t + 0.03); og.gain.setValueAtTime(0.0001, t); og.gain.linearRampToValueAtTime(0.6 * wt, t + 0.004); og.gain.exponentialRampToValueAtTime(0.001, t + 0.12); o.connect(og); og.connect(sum); o.start(t); o.stop(t + 0.15); }
+  const out = c.createGain(); out.gain.value = 0.8; sum.connect(out); out.connect(master); src.start(t);
+};
+
+// ---------- credits table, zip size, boot
+function buildCredits() {
+  const rows = [["The Free Firearm Sound Library", "Ben Jaszczak, Brian Nelson, Kevin Heras, Matthew Nanney", "CC0 1.0", "https://opengameart.org/content/the-free-firearm-sound-library", "Real firearm recordings (Walther PPQ, 1911, Bersa, S&W 642, Ruger and more), 96 kHz / 24-bit stereo."],
+    ["Gunshots", "kurt", "CC0 1.0", "https://opengameart.org/content/gunshots", ".22 pistol, .22 Magnum, black powder and an unidentified gun. Several shots per file."],
+    ["Gunshot Sounds (CZ-52)", "Vincent Sevedge (\"Tabasco\")", "CC BY 3.0 (see the note)", "https://opengameart.org/content/gunshot-sounds", "Recorded while target shooting; the recorder clipped. Appears in the raw slices only."],
+    ["Sci-Fi Sounds (the sweetener layer)", "Kenney", "CC0 1.0", "https://kenney.nl/assets/sci-fi-sounds", "A few laser sounds, pitched down and high-passed, mixed very low into the \"arc\" versions."]];
+  $("src").innerHTML = rows.map((r) => `<tr><td><strong>${r[0]}</strong><br><span class="small">${r[4]}</span></td><td>${r[1]}</td><td><span class="pill ${r[2].startsWith("CC0") ? "ok" : ""}">${r[2]}</span></td><td><a href="${r[3]}" target="_blank" rel="noopener noreferrer">link</a></td></tr>`).join(""); }
+fetch("audio/index.json").then((r) => r.json()).then((d) => { DATA = d; buildRR(); renderTable(); buildCredits(); const first = DATA.shots.filter((s) => s.kept)[0]; if (first) select(first); }).catch((e) => ($("detail").textContent = "Couldn't load the data: " + e.message));
+fetch("crackshot-pack.zip", { method: "HEAD" }).then((r) => { const n = +r.headers.get("content-length"); if (n) $("zipinfo").textContent = "(" + (n / 1048576).toFixed(1) + " MB)"; }).catch(() => {});
+</script>
+</body>
+</html>
