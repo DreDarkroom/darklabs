@@ -437,7 +437,7 @@ export function scheduleAscentBar(a, bar, t0, V, trk = ASCENT_TRK, opts = {}) {
   // the groove (the opening "pop"): a swung, rolling 16-step bass line over a soft kick, backbeat and offbeat hats, in the spirit of a looping instrument. It carries the intro, then hands over to the drums.
   const G = opts.full ? 0 : (0.55 + 0.45 * sm(0, 0.15)) * (1 - sm(0.52, 0.72));
   if (G > 0.02) {
-    const GP = [0, -1, 0, 2, -1, 4, -1, 3, 0, -1, 5, -1, 4, 2, -1, 7], sw = 0.22 * 2 * sd;
+    const GP = [0, -1, 0, 2, -1, 4, -1, 3, 0, -1, 5, -1, 4, 2, -1, 7], sw = 0.07 * 2 * sd;
     for (let k = 0; k < 8; k++) {
       const i = (bar % 2) * 8 + k, t = T(k * 2) + (k % 2 ? sw : 0), deg = GP[i];
       if (deg >= 0) { const f = mtof(scaleNote(root + 12, deg)); V.acid(t, f, sd * 2 * 0.85, { sq: true, q: 6, top: 1500 + 1800 * a, bot: 240, v: 0.17 * G }); if (deg === 0) V.sub(t, f, sd * 2 * 0.9, { v: 0.2 * G }); }
@@ -449,11 +449,11 @@ export function scheduleAscentBar(a, bar, t0, V, trk = ASCENT_TRK, opts = {}) {
   // harmony: a slow cloud of pad, one chord per two bars
   if (bar % 2 === 0) V.pad(T(0), chord.map(mtof), trk.barDur * 2.04, { v: 0.05 * L.amb + 0.012, cut: 500 + 1500 * a, att: 1.0, rel: 1.0, rev: 0.55, dly: 0.1 });
   // the granular cloud (it thins out as the drums arrive)
-  if (L.grain > 0.03) for (let k = 0; k < 7; k++) if (rnd() < 0.85 * L.grain) { const deg = Math.floor(rnd() * 7), n = scaleNote(root + 36 + 12 * Math.floor(rnd() * 2), deg); V.grain(T(Math.floor(rnd() * 16)), mtof(n), 0.07 + rnd() * 0.12, { v: 0.032 * (0.5 + L.grain), pan: (rnd() - 0.5) * 1.6, type: rnd() < 0.3 ? "triangle" : "sine" }); }
+  if (L.grain > 0.03) for (let k = 0; k < 7; k++) if (rnd() < 0.85 * L.grain) { const deg = Math.floor(rnd() * 7), n = scaleNote(root + 36 + 12 * Math.floor(rnd() * 2), deg); V.grain(T(Math.floor(rnd() * 8) * 2), mtof(n), 0.07 + rnd() * 0.12, { v: 0.032 * (0.5 + L.grain), pan: (rnd() - 0.5) * 1.6, type: rnd() < 0.3 ? "triangle" : "sine" }); }
   // Max Cooper: three cycles of different lengths against the bar (3, 5 and 7 steps), so the pattern keeps shifting
   if (L.arp > 0.03) {
     const cyc = [[3, [0, 2, 4, 2], 36], [5, [1, 3, 5, 4, 2], 48], [7, [4, 6, 3, 5, 2, 6, 1], 36]];
-    for (let s = 0; s < 16; s++) { const gs = bar * 16 + s; cyc.forEach(([len, degs, oct], ci) => { if (gs % len === 0) { if (ci > 0 && L.dnb > 0.5 && L.drop < 0.5 && rnd() < 0.5) return; const deg = degs[Math.floor(gs / len) % degs.length]; V.fmbell(T(s), mtof(scaleNote(root + oct, deg)), { v: (0.085 - 0.02 * ci) * L.arp * (1 - 0.35 * L.drop), len: 0.32 + 0.2 * (ci === 1), rev: 0.5, dly: 0.45 }); } }); }
+    for (let s = 0; s < 16; s++) { const gs = bar * 16 + s; cyc.forEach(([len, degs, oct], ci) => { if (gs % len === 0) { if ((ci === 1 && a < 0.15) || (ci === 2 && a < 0.3)) return; if (ci > 0 && L.dnb > 0.5 && L.drop < 0.5 && rnd() < 0.5) return; const deg = degs[Math.floor(gs / len) % degs.length]; V.fmbell(T(s), mtof(scaleNote(root + oct, deg)), { v: (0.085 - 0.02 * ci) * L.arp * (1 - 0.35 * L.drop), len: 0.32 + 0.2 * (ci === 1), rev: 0.5, dly: 0.45 }); } }); }
   }
   // sparse half-time pulse, then breaks, then two-step drum & bass
   if (L.half > 0.04 && stage === "half") { V.kick(T(0), { f0: 120, f1: 44, len: 0.3, v: 0.62 * L.half, duckAmt: 0.35, duckRel: 0.2 }); if (rnd() < 0.5) V.kick(T(10), { f0: 110, f1: 44, len: 0.25, v: 0.4 * L.half, duck: false }); V.rim(T(8), { v: 0.2 * L.half }); for (const s of [4, 12]) if (rnd() < 0.6) V.rim(T(s), { v: 0.1 * L.half }); }
