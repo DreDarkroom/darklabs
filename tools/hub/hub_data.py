@@ -50,6 +50,10 @@ MAIN = [
 ]
 
 WIP = [
+    dict(id="crate-capture", icon="&#x1F4E6;", title="Crate Capture", badge="WORK IN PROGRESS",
+         desc="Find CC0 and public domain music, check the licence properly, keep the proof, and hand it over cleanly. Guides on searching wide and far, a map of 15 sources (and the things that only look free), and a finds log that fingerprints your files and writes the licence sheet. Everything stays on your device.",
+         note="six checks &middot; provenance sheet and LICENSES.txt &middot; no uploads, no accounts",
+         href="/darklabs/crate/", btn="Open Crate Capture"),
     dict(id="circuitstomp", icon="&#x1F916;", title="CircuitStomp", big=True,
          desc="A drum &amp; bass machine built entirely from synthesised robot voices &mdash; no samples anywhere. Sequencer with pitch and chance per step, live playing, MIDI in and out, "
               "and exports of stems, MIDI and a ready-made Reaper project. Includes 11 lessons and a printable guide.",
@@ -118,6 +122,8 @@ SOON = [
          desc="A developer mode for the phone-first projects: frame rate, how far ahead of the audio clock the scheduler is, audio dropouts, memory, battery drain and heat where the browser reports them, with a log you can copy. Measured, not guessed."),
     dict(id="wordlab-more", icon="&#x1F30D;", title="Word Lab in more languages", teaser=True, badge="BACK BURNER",
          desc="Human-written or human-checked translations of the main explanations, with the same read-aloud buttons. Machine translation is not enough on its own, so each language waits for someone who speaks it."),
+    dict(id="crate-club", icon="&#x1F91D;", title="Crate Club", teaser=True, badge="BACK BURNER",
+         desc="A small community around Crate Capture: share finds with their proof, see who has checked a track, flag licence problems, follow curators. It needs accounts and a database, so it waits for the server. The plan is in the Crate Capture folder."),
     dict(id="ask-dre", icon="&#x1F4AC;", title="Ask Dre", teaser=True, badge="BACK BURNER",
          desc="A little chat that answers the way I would, with a lot of music knowledge behind it. It needs a small server to do properly, so it waits for the migration."),
     dict(id="lobby", icon="&#x1F6F9;", title="The Lobby", teaser=True, badge="BACK BURNER",
@@ -132,6 +138,4 @@ SOON = [
          desc="A visual-only respelling of the name. No links change, nothing breaks, it just looks sharper."),
     dict(id="earshot", icon="&#x1F442;", title="Earshot", teaser=True, badge="BACK BURNER",
          desc="A future audition tool for sorting and rating new material. Not live yet."),
-    dict(id="crate-capture", icon="&#x1F4E6;", title="Crate Capture", teaser=True, badge="BACK BURNER",
-         desc="A future tool for sourcing and tracking audio finds. Not live yet."),
 ]

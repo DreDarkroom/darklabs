@@ -10,7 +10,7 @@ MODEL = {"penrosepulse": "stairs", "chunguscello": "cello", "meowsynth": "cat", 
          "circuitstomp": "robot", "glowgrain": "sun", "blueheronbass": "bass", "radio": "radio", "cratecall": "headphones", "sonicsmithy": "anvil",
          "dark-cinema-lab": "clapper", "promptlab": "flask", "resonance-core": "core", "resonic-toolkit": "gear", "brokebots": "robot",
          "darkography": "camera", "throattapper": "mic", "pipeline-test": "pipe", "contact-sheet": "film", "safelight": "vinyl", "obscura": "eye",
-         "earshot": "spiral", "crate-capture": "crate", "darklabsfm": "radio", "idea": "robot", "vrlab": "eye", "wordlab": "core", "wordlab-more": "core", "wipelight": "core", "mobile-wip": "gear", "perf-lab": "core", "ask-dre": "mic", "lobby": "crate", "penrose-visuals": "spiral", "fm-replies": "radio", "shared-kit": "gear", "darklabs-caps": "core"}
+         "earshot": "spiral", "crate-capture": "crate", "darklabsfm": "radio", "idea": "robot", "vrlab": "eye", "wordlab": "core", "crate-club": "crate", "wordlab-more": "core", "wipelight": "core", "mobile-wip": "gear", "perf-lab": "core", "ask-dre": "mic", "lobby": "crate", "penrose-visuals": "spiral", "fm-replies": "radio", "shared-kit": "gear", "darklabs-caps": "core"}
 
 def hang(c, kind="print"):
     d = round(rnd.uniform(5.5, 9.5), 2); s = round(-rnd.uniform(0, 6), 2); dl = round(rnd.uniform(0.1, 1.4), 2)

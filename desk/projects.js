@@ -89,6 +89,14 @@ export const SEEDS = [
   "group": "on the line"
  },
  {
+  "id": "crate-capture",
+  "title": "Crate Capture",
+  "blurb": "Find CC0 and public domain music, check the licence properly, keep the proof, and hand it over cleanly. Guides on searching wide and far, a map of 15 sources (and the things that only look free), and a finds log that fingerprints your files and writes the licence sheet. Everything stays on your device.",
+  "url": "/darklabs/crate/",
+  "status": "Building",
+  "group": "in the trays"
+ },
+ {
   "id": "circuitstomp",
   "title": "CircuitStomp",
   "blurb": "A drum & bass machine built entirely from synthesised robot voices — no samples anywhere. Sequencer with pitch and chance per step, live playing, MIDI in and out, and exports of stems, MIDI and a ready-made Reaper project. Includes 11 lessons and a printable guide.",
@@ -257,6 +265,14 @@ export const SEEDS = [
   "group": "roadmap"
  },
  {
+  "id": "crate-club",
+  "title": "Crate Club",
+  "blurb": "A small community around Crate Capture: share finds with their proof, see who has checked a track, flag licence problems, follow curators. It needs accounts and a database, so it waits for the server. The plan is in the Crate Capture folder.",
+  "url": "",
+  "status": "Paused",
+  "group": "roadmap"
+ },
+ {
   "id": "ask-dre",
   "title": "Ask Dre",
   "blurb": "A little chat that answers the way I would, with a lot of music knowledge behind it. It needs a small server to do properly, so it waits for the migration.",
@@ -308,14 +324,6 @@ export const SEEDS = [
   "id": "earshot",
   "title": "Earshot",
   "blurb": "A future audition tool for sorting and rating new material. Not live yet.",
-  "url": "",
-  "status": "Paused",
-  "group": "roadmap"
- },
- {
-  "id": "crate-capture",
-  "title": "Crate Capture",
-  "blurb": "A future tool for sourcing and tracking audio finds. Not live yet.",
   "url": "",
   "status": "Paused",
   "group": "roadmap"

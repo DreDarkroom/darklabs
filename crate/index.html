@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0a0305">
+<title>Crate Capture · Darklabs</title>
+<meta name="description" content="Crate Capture: find CC0 and public domain music, check the licence properly, keep the evidence, and hand it over with a clean provenance sheet. Guides, a map of sources, and a local-only finds log.">
+<link rel="stylesheet" href="../robots.css">
+<link rel="stylesheet" href="crate.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to the content</a>
+<header id="top">
+  <a class="back" href="../">← Darklabs</a>
+  <h1 class="glitch-me">Crate Capture</h1>
+  <p class="lead">Find music you are allowed to use, prove it, and hand it over cleanly. Everything you type stays on this device.</p>
+</header>
+<nav id="tabs" aria-label="Sections">
+  <button type="button" data-t="guide">Guide</button>
+  <button type="button" data-t="sources">Sources</button>
+  <button type="button" data-t="log">My finds</button>
+  <button type="button" data-t="tools">Tools</button>
+</nav>
+
+<main id="main">
+
+<!-- ===================== GUIDE ===================== -->
+<section id="t-guide" data-view hidden aria-label="Guide">
+  <h2 class="sect">The short version</h2>
+  <ol class="steps">
+    <li><b>Find</b> it in a place that is built for open music (the <a href="#sources">Sources</a> tab).</li>
+    <li><b>Check</b> the licence in three places: the page, the file, and the uploader. Six checks, below.</li>
+    <li><b>Download</b> the original, from the official button. Never rip a stream.</li>
+    <li><b>Fingerprint and log it</b> in <a href="#log">My finds</a>: where, who, which licence, the evidence, the SHA-256.</li>
+    <li><b>Listen</b> and rate it: Love, Keep, Maybe, Drop. Only keep what you are happy with.</li>
+    <li><b>Prepare</b> it (loudness, names, tags), then <b>export</b> the sheet and LICENSES.txt with it.</li>
+  </ol>
+  <p class="note">The rule that saves you: <b>when in doubt, leave it out.</b> A track you cannot prove is not a track you can submit.</p>
+
+  <details open><summary>1. What CC0 means, and what it does not</summary>
+    <p><b>CC0</b> (say: see-see-zero) is a public domain dedication. The person who made the work gives up all their copyright, everywhere, so anyone can copy, change, sell and share it with no credit and no permission. See <a href="../learn/#licence">licence</a> in the Word Lab.</p>
+    <p>It <b>only</b> waives copyright. It does not cover trademarks, a person's privacy or likeness (a recognisable voice, for example), or rights that other people hold in the work. So a CC0 label is a strong claim, not a guarantee. You are checking whether the claim is true.</p>
+    <p>Public domain <b>by age</b> is different: no one dedicated it, its copyright simply ended. That depends on the country, and a song and a recording of it can end on different dates. Old US recordings from before 1923 are public domain in the US, and 1925 recordings joined them on 1 January 2026. Other countries run different clocks.</p>
+  </details>
+
+  <details open><summary>2. The six checks (every find, every time)</summary>
+    <ol class="steps">
+      <li><b>The licence is on the page.</b> Save the address and, if you can, a screenshot or a saved copy of the page. Pages change.</li>
+      <li><b>The licence is in the download.</b> Open the zip. Read any readme, text file or tags. If it says something stricter than the page, believe the stricter one.</li>
+      <li><b>The uploader is the maker</b> (or the piece is public domain by age). Read the profile. Does the account make this kind of music? Is there a pattern of uploads that look like other people's?</li>
+      <li><b>No samples, covers or borrowed voices.</b> Listen for a recognisable riff, vocal or drum break. Search a distinctive phrase. "Free" remixes of protected songs are not free.</li>
+      <li><b>Both rights are covered.</b> The recording and the composition. A CC0 recording of someone else's song is not enough.</li>
+      <li><b>Nothing else restricts it.</b> A site rule such as "not on its own", a brand name in the title, a person's name or voice.</li>
+    </ol>
+    <p class="note">A real example from this project's own sound work: a pack labelled CC0 on its page contained a text file saying CC BY 3.0. It was logged and credited as CC BY, and kept out of the CC0 set.</p>
+  </details>
+
+  <details><summary>3. Searching wide and far (how to find more)</summary>
+    <ul>
+      <li><b>Start narrow, then widen.</b> Search by mood and use ("slow dark ambient loop"), then by instrument, then by tempo, then by collection. Write down the searches that worked.</li>
+      <li><b>Follow creators, not just tracks.</b> If one creator publishes everything as CC0, their whole page is a source. Kenney and the Open Goldberg Variations are examples.</li>
+      <li><b>Use a finder, then go to the original.</b> Openverse searches several open sites at once. Always open the original page for the checks.</li>
+      <li><b>Use the filters.</b> Freesound, OpenGameArt, Openverse, Free Music Archive, ccMixter and the Internet Archive can all limit results to CC0 or public domain. The <a href="#tools">Tools</a> tab has the exact settings and commands.</li>
+      <li><b>Look at collections and tags,</b> then check each item anyway. A tag is a hint, not proof.</li>
+      <li><b>Old music, new performance.</b> Public domain scores (IMSLP, Mutopia) plus your own recording make music you can dedicate yourself.</li>
+      <li><b>Write your own.</b> Nothing beats it: you know exactly where every sound came from.</li>
+      <li><b>Keep a "searched" list</b> (the Notes field in each find, or your own file) so you do not repeat yourself.</li>
+    </ul>
+    <p>The <a href="#sources">Sources</a> tab lists 15 places with what to expect from each, and the list of things that look free but are not.</p>
+  </details>
+
+  <details><summary>4. Downloading safely</summary>
+    <ul>
+      <li>Use the site's own download button or its official API or command-line tool. Do not record a stream or use a "downloader" site.</li>
+      <li>Keep the <b>original file</b> and the <b>whole zip</b> with its readme. Do not re-encode the original: make a copy to work on.</li>
+      <li>Make the original read-only, and keep it in a folder named after the source.</li>
+      <li>Check the file really is what the page said (length, format) and that it opens.</li>
+      <li>Compute its <b>SHA-256 fingerprint</b> straight away. Crate Capture does this for you in the browser (nothing is uploaded), or use the command in the Tools tab.</li>
+      <li>Large or many files: use the site's official tool (for example the Internet Archive's <code>ia</code>) rather than clicking one at a time, and be kind: do not hammer a small site.</li>
+    </ul>
+  </details>
+
+  <details><summary>5. Documenting: the provenance record</summary>
+    <p><b>Provenance</b> means the history of where something came from. For each find, write down:</p>
+    <ul>
+      <li>Title, creator, the page address, and the day you checked.</li>
+      <li>Which licence, the licence address, and <b>the evidence</b>: exactly where you saw it ("licence box on the page; readme.txt line 3").</li>
+      <li>The six checks, ticked only when true.</li>
+      <li>The file name, size, and SHA-256 fingerprint.</li>
+      <li>Your rating and notes.</li>
+    </ul>
+    <p>In <a href="#log">My finds</a> a track is marked <b>Ready</b> only when all of that is present. Export a <b>provenance sheet</b> (CSV), a <b>LICENSES.txt</b> and the whole log (JSON) to go with whatever you hand over. Keep a copy of the JSON somewhere safe: clearing the browser's data erases the log.</p>
+  </details>
+
+  <details><summary>6. Listening, choosing, and being happy with it</summary>
+    <ul>
+      <li>Listen on speakers and on headphones, at a normal volume, all the way through.</li>
+      <li>Rate it in <a href="#log">My finds</a>: <b>Love</b> (I would be proud to submit it), <b>Keep</b>, <b>Maybe</b>, <b>Drop</b>.</li>
+      <li>Ask: does it have a clear start and end? Is it clean (no clipping, no hiss, no stray noise)? Does it loop if it should? Does it fit with the rest of what you are sending?</li>
+      <li>A short, honest set of tracks you love beats a long list you are unsure about.</li>
+    </ul>
+  </details>
+
+  <details><summary>7. Preparing files (loudness, names, tags)</summary>
+    <ul>
+      <li><b>Keep the original untouched.</b> Prepare a copy.</li>
+      <li><b>Loudness:</b> measure first, then adjust only if needed. Commands are in the Tools tab. Do not make things louder just to be louder: leave headroom (a true peak under about -1 dBTP).</li>
+      <li><b>Names:</b> <code>source_title_creator_licence</code> in lower case, no spaces. Crate Capture suggests one.</li>
+      <li><b>Tags:</b> write the licence and the source address into the file's metadata, so the information travels with the file.</li>
+      <li><b>Format:</b> WAV or FLAC for delivery unless the receiver asks for something else. Do not turn an MP3 into a WAV and call it lossless.</li>
+    </ul>
+  </details>
+
+  <details><summary>8. Handing it over</summary>
+    <p>A tidy pack is easy to trust:</p>
+    <pre class="code">my-cc0-pack/
+  audio/                     the prepared files
+  originals/                 optional: the untouched downloads
+  LICENSES.txt               from Crate Capture
+  provenance.csv             from Crate Capture
+  README.txt                 who you are, what this is, the date</pre>
+    <p>Read the receiver's own rules first (format, length, naming, what they want to know). If you do not know where you are sending it yet, build the pack anyway: it will be ready.</p>
+    <p>If it is <b>your own</b> music: say so plainly in the README ("I made every part of these tracks and dedicate them to the public domain under CC0 1.0"), name any collaborators and say they agreed, and remember CC0 cannot be undone.</p>
+  </details>
+
+  <details><summary>9. If something turns out to be wrong</summary>
+    <p>Mark it Rejected in your log and keep the note about why. If it was on a site, use that site's report option (Freesound has "Flag it" on each sound). If you already sent it, tell the person you sent it to straight away and offer to remove it. Everyone makes this mistake at some point; hiding it is the only real mistake.</p>
+  </details>
+</section>
+
+<!-- ===================== SOURCES ===================== -->
+<section id="t-sources" data-view hidden aria-label="Sources">
+  <h2 class="sect">Where to look</h2>
+  <p class="note">Checked 5 October 2026 against each site's own pages. Sites change, and a site being on this list never replaces the six checks. "Open" just opens the site in a new tab.</p>
+  <div id="trustfilter" class="chips" role="group" aria-label="Show only"></div>
+  <div id="srclist" class="stack"></div>
+  <h2 class="sect">Looks free, is not CC0</h2>
+  <ul id="notcc0" class="plain"></ul>
+</section>
+
+<!-- ===================== LOG ===================== -->
+<section id="t-log" data-view hidden aria-label="My finds">
+  <h2 class="sect">My finds</h2>
+  <p class="note" id="logstate"></p>
+  <div class="row"><button type="button" class="btn primary" id="addfind">+ Add a find</button><button type="button" class="btn" id="exportbtn">Export…</button><button type="button" class="btn" id="importbtn">Import</button><input id="importfile" type="file" accept=".json,application/json" hidden></div>
+  <div id="logfilters" class="chips" role="group" aria-label="Show only"></div>
+  <div id="loglist" class="stack"></div>
+</section>
+
+<!-- ===================== TOOLS ===================== -->
+<section id="t-tools" data-view hidden aria-label="Tools">
+  <h2 class="sect">Using the tools together</h2>
+  <ol class="steps">
+    <li><b>Crate Capture (this page)</b> keeps the record, fingerprints a file, plays it for a first listen, and writes the sheet and LICENSES.txt. It never uploads anything.</li>
+    <li><b><a href="../earshot/">Earshot</a></b> is the Darklabs audition tool with Love / Keep / Maybe / Drop tagging. At the moment it is a prototype that works on its own built-in tracks and does not load your own files yet: use the player in Crate Capture for now. Loading your files into Earshot is on its roadmap.</li>
+    <li><b><a href="../desk/">DarkDesk</a></b> can remember the work around this ("check the licence on three tracks", "send the pack by Friday") with reminders. It does not know about your finds; it is only a notebook.</li>
+    <li><b><a href="../learn/">Word Lab</a></b> explains the words (licence, public domain, sample, loop, BPM…).</li>
+  </ol>
+  <p class="note">Everything below is an instruction for you to run yourself. This page does not run commands, download music or contact any site.</p>
+
+  <h2 class="sect">Fingerprint a file</h2>
+  <p>The SHA-256 is a short code that changes if even one byte of the file changes. It proves the file you submit is the file you checked.</p>
+  <div class="cmd"><b>Windows (PowerShell)</b><pre class="code" data-copy>Get-FileHash .\track.wav -Algorithm SHA256</pre></div>
+  <div class="cmd"><b>Mac or Linux</b><pre class="code" data-copy>shasum -a 256 track.wav</pre></div>
+
+  <h2 class="sect">Look inside a file (needs ffmpeg)</h2>
+  <div class="cmd"><b>Length, format</b><pre class="code" data-copy>ffprobe -v error -show_entries format=duration:stream=codec_name,sample_rate,channels -of default=nw=1 track.wav</pre></div>
+  <div class="cmd"><b>Measure loudness and peak (changes nothing)</b><pre class="code" data-copy>ffmpeg -hide_banner -i track.wav -af ebur128=peak=true -f null -</pre><p class="note">Read the summary at the end: Integrated loudness (LUFS), Loudness range, True peak (dBTP).</p></div>
+  <div class="cmd"><b>Make a normalised copy (the original stays as it is)</b><pre class="code" data-copy>ffmpeg -i track.wav -af loudnorm=I=-16:TP=-1.5:LRA=11 -ar 48000 track_norm.wav</pre><p class="note">This one-pass version is fine for listening. For delivery, normalise by measuring first and applying a gain, and always listen to the result.</p></div>
+  <div class="cmd"><b>Write the licence into the file's tags (FLAC)</b><pre class="code" data-copy>ffmpeg -i track.wav -c:a flac -metadata title="Title" -metadata artist="Creator" -metadata copyright="CC0 1.0" -metadata comment="Source: https://example.org/page" track.flac</pre></div>
+
+  <h2 class="sect">Search recipes</h2>
+  <div class="cmd"><b>Freesound API (CC0 loops and sounds).</b> You need your own free API key from freesound.org. The API gives you previews to listen to; to get the original file, download it from the sound's page while signed in.<pre class="code" data-copy>curl "https://freesound.org/apiv2/search/text/?query=ambient+loop&amp;filter=license:%22Creative%20Commons%200%22&amp;fields=id,name,username,license,url,duration&amp;page_size=30&amp;token=YOUR_KEY"</pre></div>
+  <div class="cmd"><b>Openverse API (open audio from several sites; no key for light use, rate limited).</b><pre class="code" data-copy>curl "https://api.openverse.org/v1/audio/?q=ambient&amp;license=cc0&amp;page_size=20"</pre><p class="note">Each result links to the original site: open that and do the six checks.</p></div>
+  <div class="cmd"><b>Internet Archive command line.</b> Install once, then search and read the item's details before downloading.<pre class="code" data-copy>pip install internetarchive
+ia search "mediatype:audio AND licenseurl:*publicdomain/zero*" --itemlist
+ia metadata ITEM_ID
+ia download ITEM_ID --glob="*.flac"</pre><p class="note">The licence address is written in different ways on different items, so also try <code>licenseurl:*zero*</code>. An item with no licence is not CC0.</p></div>
+  <div class="cmd"><b>OpenGameArt (in the browser).</b> Browse, choose Art type "Music" and License "CC0". Open each page, read the credits, then the text file in the download.</div>
+  <div class="cmd"><b>Wikimedia Commons (in the browser).</b> Search with the Audio filter, then read each file page's licensing box and author.</div>
+  <div class="cmd"><b>ccMixter.</b> It has a public query interface that accepts a licence filter. See its Query API page, and check each upload.</div>
+
+  <h2 class="sect">If you work in Python</h2>
+  <p>The sound-slicing tools used for the Darklabs sound packs are command-line Python (numpy, scipy, soundfile). They find and score events in a recording; they do not download anything. They are private working tools, so the notes for them are kept with the project, not on this public page.</p>
+</section>
+
+</main>
+
+<dialog id="dlg" aria-label="Find details"></dialog>
+<div id="toast" role="status" aria-live="polite"></div>
+<footer>
+  <p>Crate Capture is a notebook and a checklist, not legal advice. It cannot tell you a claim is true, only help you check and keep the proof. <a href="../learn/">Word Lab</a> · <a href="#" data-ctx-toggle>Use the browser's right-click menu</a></p>
+</footer>
+<script type="module" src="app.js"></script>
+<script type="module" src="../robots.js"></script>
+<script type="module" src="../kit/ctx.js"></script>
+</body>
+</html>
