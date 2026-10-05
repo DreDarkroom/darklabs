@@ -24,7 +24,7 @@ p.sub{color:var(--dim);margin-bottom:1rem;max-width:46rem}
 .card{border:1px solid var(--line);border-radius:3px;background:linear-gradient(180deg,#1b0c0f,#0e0709);padding:1.1rem;box-shadow:0 14px 30px rgba(0,0,0,.6)}
 .pill{display:inline-block;font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;border:1px solid var(--soft);color:var(--soft);border-radius:3px;padding:.15rem .45rem;margin-right:.3rem}
 .pill.ok{border-color:var(--ok);color:var(--ok)}
-button{font:inherit;cursor:pointer;color:var(--text);background:transparent;border:1px solid var(--line);border-radius:3px;padding:.5rem .9rem;min-height:2.6rem}
+button{font:inherit;cursor:pointer;color:var(--text);background:transparent;border:1px solid var(--line);border-radius:3px;padding:.5rem .9rem;min-height:44px}
 button:hover{border-color:var(--soft)}
 button.act{font-weight:800;color:#fff;background:linear-gradient(180deg,#e0243a,#a50d20);border:1px solid #ff6a78;box-shadow:0 0 18px rgba(209,18,43,.4)}
 button[aria-pressed=true],button.on{background:var(--red);border-color:var(--red);color:#fff}
@@ -32,16 +32,17 @@ button[aria-pressed=true],button.on{background:var(--red);border-color:var(--red
 .grid2{display:grid;grid-template-columns:1.25fr 1fr;gap:1.2rem}
 @media(max-width:860px){.grid2{grid-template-columns:1fr}}
 table{width:100%;border-collapse:collapse;font-size:.88rem}
-th,td{padding:.4rem .5rem;text-align:left;border-bottom:1px solid #251317;white-space:nowrap}
+th,td{padding:.8rem .5rem;text-align:left;border-bottom:1px solid #251317;white-space:nowrap}
 th{color:var(--dim);font-weight:600;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;position:sticky;top:0;background:#120809}
 tbody tr{cursor:pointer}tbody tr:hover{background:#1c0b10}tbody tr.sel{background:#2a0e15;outline:1px solid var(--soft)}
+th:focus-visible,tbody tr:focus-visible{outline:2px solid #fff;outline-offset:-2px}
 .scroll{max-height:26rem;overflow:auto;border:1px solid var(--line);border-radius:3px}
 .bar{display:inline-block;width:4.2rem;height:.55rem;background:#241216;border-radius:3px;vertical-align:middle;overflow:hidden}.bar i{display:block;height:100%;background:linear-gradient(90deg,#a50d20,#ff6a78)}
 canvas.vis{display:block;width:100%;height:150px;background:#050203;border:1px solid var(--line);border-radius:3px;margin:.6rem 0}
 .parts{display:grid;grid-template-columns:7rem 1fr 2.6rem;gap:.25rem .6rem;align-items:center;font-size:.82rem;margin:.6rem 0}
 .parts .b{height:.5rem;background:#241216;border-radius:3px;overflow:hidden}.parts .b i{display:block;height:100%}
 label.s{display:grid;grid-template-columns:6.5rem 1fr 3rem;gap:.6rem;align-items:center;font-size:.9rem;margin:.4rem 0;color:var(--dim)}
-input[type=range]{accent-color:var(--red);width:100%}
+input[type=range]{accent-color:var(--red);width:100%;min-height:44px}
 .big{font-size:2.6rem;font-weight:800;color:#fff;text-shadow:0 0 18px rgba(209,18,43,.6)}
 .small{font-size:.8rem;color:var(--dim)}
 details{border:1px solid var(--line);border-radius:3px;padding:.7rem 1rem;margin:.6rem 0;background:#0e0709}summary{cursor:pointer;font-weight:600}
@@ -50,7 +51,7 @@ table.src td{white-space:normal;vertical-align:top}
 footer{margin-top:3rem;padding-top:1.2rem;border-top:1px solid var(--line);color:var(--dim);font-size:.85rem}
 .fire{font-size:1.1rem;padding:.9rem 1.6rem}
 .rr{display:grid;grid-template-columns:repeat(auto-fill,minmax(8.5rem,1fr));gap:.5rem;margin:.8rem 0}
-.rr button{text-align:left;font-size:.8rem;line-height:1.3;padding:.5rem .6rem}.rr button b{display:block;font-size:.9rem}
+.rr button{text-align:left;font-size:.8rem;line-height:1.3;padding:.5rem .6rem;min-height:44px}.rr button b{display:block;font-size:.9rem}
 .flash{animation:fl .25s}@keyframes fl{from{box-shadow:0 0 0 3px #fff}to{box-shadow:none}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
@@ -72,16 +73,16 @@ footer{margin-top:3rem;padding-top:1.2rem;border-top:1px solid var(--line);color
   <h2>Fire the set</h2>
   <p class="sub">Eight different shots, level-matched, rotating like a game would: crisp, crunchy and "arc" (crisp with a pitched-down sci-fi sweetener) from eight different real guns. Hit fire and hold <kbd>Space</kbd>, or tap rapidly.</p>
   <div class="card">
-    <div class="row"><button class="act fire" id="fire">&#128165; Fire</button><button id="auto" aria-pressed="false">Auto-fire</button><label class="small">Rate <input id="rate" type="range" min="2" max="9" value="4" style="width:8rem"> <span id="ratev">4/s</span></label><label class="small">Volume <input id="vol" type="range" min="0" max="100" value="55" style="width:7rem"></label><span class="small" id="lastshot"></span></div>
+    <div class="row"><button class="act fire" id="fire">&#128165; Fire</button><button id="auto" aria-pressed="false">Auto-fire</button><label class="small">Rate <input id="rate" type="range" min="2" max="9" value="4" style="width:8rem"> <span id="ratev">4/s</span></label><label class="small">Volume <input id="vol" type="range" min="0" max="100" value="55" style="width:7rem"></label><span class="small" id="lastshot" aria-live="polite"></span></div>
     <div class="rr" id="rr"></div>
   </div>
 
   <h2>The shot browser</h2>
   <p class="sub">Every single shot sliced out of the recordings, ranked by suitability. Click a row to hear the raw shot against its crisp, crunchy and arc versions, and to see exactly why it scored what it did.</p>
-  <div class="row" style="margin-bottom:.6rem"><button id="fKept" aria-pressed="true">Pack picks only</button><button id="fAll" aria-pressed="false">All 53 shots</button><span class="small" id="count"></span></div>
+  <div class="row" style="margin-bottom:.6rem"><button id="fKept" aria-pressed="true">Pack picks only</button><button id="fAll" aria-pressed="false">All 53 shots</button><span class="small" id="count" aria-live="polite"></span></div>
   <div class="grid2">
-    <div class="scroll"><table id="tbl"><thead><tr><th data-k="score">Score</th><th data-k="gun">Gun</th><th data-k="mic">Mic</th><th data-k="crisp">Crisp</th><th data-k="crunch">Crunch</th><th data-k="attack">Attack</th><th data-k="t50">Tail</th><th data-k="room">Room</th></tr></thead><tbody></tbody></table></div>
-    <div class="card" id="detail"><p class="small">Pick a shot on the left.</p></div>
+    <div class="scroll"><table id="tbl"><thead><tr><th data-k="score" tabindex="0" role="button">Score</th><th data-k="gun" tabindex="0" role="button">Gun</th><th data-k="mic" tabindex="0" role="button">Mic</th><th data-k="crisp" tabindex="0" role="button">Crisp</th><th data-k="crunch" tabindex="0" role="button">Crunch</th><th data-k="attack" tabindex="0" role="button">Attack</th><th data-k="t50" tabindex="0" role="button">Tail</th><th data-k="room" tabindex="0" role="button">Room</th></tr></thead><tbody></tbody></table></div>
+    <div class="card" id="detail" aria-live="polite"><p class="small">Pick a shot on the left.</p></div>
   </div>
 
   <h2>Feel it: crisp, crunch and weight</h2>
@@ -157,9 +158,9 @@ function draw(cv, buf, dur = 0.4) {
 // ---------- the browser table and detail panel
 const pct = (v) => `<span class="bar"><i style="width:${Math.max(0, Math.min(100, v))}%"></i></span> ${Math.round(v)}`;
 function rows() { let r = DATA.shots.filter((s) => !filterKept || s.kept); const key = { score: (s) => s.raw.score, gun: (s) => s.gun, mic: (s) => s.mic, crisp: (s) => s.raw.crisp, crunch: (s) => s.raw.crunch, attack: (s) => s.raw.metrics.attack_ms, t50: (s) => s.raw.metrics.t50_ms, room: (s) => s.raw.metrics.room_db }[sortK]; if (sortK === "score" && filterKept) r.sort((a, b) => Math.max(...Object.values(b.variants).map((v) => v.score)) - Math.max(...Object.values(a.variants).map((v) => v.score))); else r.sort((a, b) => (key(a) > key(b) ? 1 : -1) * sortDir); return r; }
-function renderTable() { const tb = $("tbl").querySelector("tbody"); tb.textContent = ""; const r = rows(); $("count").textContent = r.length + " shots"; r.forEach((s) => { const tr = document.createElement("tr"); tr.dataset.id = s.id; if (sel && sel.id === s.id) tr.className = "sel"; const best = s.kept ? Math.max(...Object.values(s.variants).map((v) => v.score)) : null;
-  tr.innerHTML = `<td>${pct(s.kept && sortK === "score" && filterKept ? best : s.raw.score)}</td><td>${s.gun}</td><td>${s.mic}</td><td>${s.raw.crisp}</td><td>${s.raw.crunch}</td><td>${s.raw.metrics.attack_ms} ms</td><td>${s.raw.metrics.t50_ms} ms</td><td>${s.raw.metrics.room_db} dB</td>`; tr.addEventListener("click", () => select(s)); tb.appendChild(tr); }); }
-document.querySelectorAll("#tbl th").forEach((th) => th.addEventListener("click", () => { const k = th.dataset.k; sortDir = sortK === k ? -sortDir : (k === "gun" || k === "mic" ? 1 : -1); sortK = k; renderTable(); }));
+function renderTable() { const tb = $("tbl").querySelector("tbody"); tb.textContent = ""; const r = rows(); $("count").textContent = r.length + " shots"; r.forEach((s) => { const tr = document.createElement("tr"); tr.dataset.id = s.id; tr.tabIndex = 0; tr.setAttribute("role", "button"); if (sel && sel.id === s.id) tr.className = "sel"; const best = s.kept ? Math.max(...Object.values(s.variants).map((v) => v.score)) : null;
+  tr.innerHTML = `<td>${pct(s.kept && sortK === "score" && filterKept ? best : s.raw.score)}</td><td>${s.gun}</td><td>${s.mic}</td><td>${s.raw.crisp}</td><td>${s.raw.crunch}</td><td>${s.raw.metrics.attack_ms} ms</td><td>${s.raw.metrics.t50_ms} ms</td><td>${s.raw.metrics.room_db} dB</td>`; tr.addEventListener("click", () => select(s)); tr.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); select(s); } }); tb.appendChild(tr); }); }
+document.querySelectorAll("#tbl th").forEach((th) => { th.addEventListener("click", () => { const k = th.dataset.k; sortDir = sortK === k ? -sortDir : (k === "gun" || k === "mic" ? 1 : -1); sortK = k; renderTable(); }); th.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); th.click(); } }); });
 $("fKept").onclick = () => { filterKept = true; $("fKept").setAttribute("aria-pressed", "true"); $("fAll").setAttribute("aria-pressed", "false"); renderTable(); };
 $("fAll").onclick = () => { filterKept = false; $("fAll").setAttribute("aria-pressed", "true"); $("fKept").setAttribute("aria-pressed", "false"); renderTable(); };
 const LABELS = { attack: "Attack", tail: "Tail", dry: "Dry", clip: "No clipping", clean: "Clean", crack: "Crack", body: "Body", bright: "Bright", weight: "Weight" };
@@ -167,7 +168,7 @@ async function select(s) {
   sel = s; renderTable(); const d = $("detail"); const flavours = [["raw", "Raw", s.raw]].concat(s.kept ? [["crisp", "Crisp", s.variants.crisp], ["crunch", "Crunch", s.variants.crunch], ["arc", "Arc", s.variants.arc]] : []);
   const parts = (s.kept ? s.variants.crisp : s.raw).parts, scoreFor = (f) => f[2].score;
   d.innerHTML = `<h3 style="font-size:1.2rem">${s.gun}${s.caliber ? " · " + s.caliber : ""}</h3><p class="small">${s.type} · ${s.mic === "room" || s.mic === "range" ? "recorded at a range" : s.mic + " mic"} · from <em>${s.source}</em></p>
-  <div class="row" id="fl" style="margin:.6rem 0"></div><canvas class="vis" id="cv"></canvas><div id="dscore"></div><div class="parts" id="pp"></div>
+  <div class="row" id="fl" style="margin:.6rem 0"></div><canvas class="vis" id="cv"></canvas><div id="dscore" aria-live="polite"></div><div class="parts" id="pp"></div>
   <p class="small"><span class="pill">${s.license.split(" (")[0]}</span> ${s.credit} · <a href="${s.url}" target="_blank" rel="noopener noreferrer">source</a>${s.sweetener ? " · sweetener: Kenney " + s.sweetener + " (CC0)" : ""}</p>`;
   const fl = $("fl"); let cur = "raw";
   const show = async (key, f) => { cur = key; fl.querySelectorAll("button").forEach((b) => b.classList.toggle("on", b.dataset.k === key)); const path = f[2].file; const buf = await load(path); draw($("cv"), buf); $("dscore").innerHTML = `<div class="row"><span class="big">${Math.round(f[2].score)}</span><span class="small">suitability<br>crisp ${f[2].crisp} · crunch ${f[2].crunch}</span><span class="small">attack ${f[2].metrics.attack_ms} ms · tail ${f[2].metrics.t50_ms} ms · room ${f[2].metrics.room_db} dB</span></div>`;
