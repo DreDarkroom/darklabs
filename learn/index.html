@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<title>Word Lab · Darklabs</title>
+<meta name="description" content="The Word Lab: plain-English meanings for the words used in Darklabs, with a portmanteau maker, read-aloud buttons and easy-reading settings.">
+<link rel="stylesheet" href="../robots.css">
+<style>
+*{box-sizing:border-box}
+:root{--red:#d1122b;--soft:#ff7d89;--ink:#050304;--text:#f3e9e9;--dim:#c4b2b2;--card:#140a0c;--line:rgba(209,18,43,.45)}
+html{background:var(--ink);scroll-behavior:smooth}
+body{margin:0;color:var(--text);font:1.06rem/1.65 system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:radial-gradient(ellipse at 50% -10%,#240609,#090405 55%,#030203)}
+a{color:var(--soft)}
+.skip{position:absolute;left:-999px;top:0;background:#000;color:#fff;padding:.7rem 1rem;z-index:99}.skip:focus{left:8px;top:8px}
+.wrap{max-width:860px;margin:0 auto;padding:1rem 1.1rem 5rem}
+.tools{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;padding:.6rem;margin:.4rem 0 1rem;border:1px solid var(--line);border-radius:6px;background:rgba(20,8,10,.85)}
+.tools b{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--soft);margin-right:.2rem}
+button,.btn{font:inherit;min-height:44px;padding:0 .95rem;border-radius:5px;border:1px solid var(--line);background:#1d0d10;color:var(--text);cursor:pointer;font-weight:600}
+button[aria-pressed=true]{background:var(--red);border-color:var(--red);color:#fff}
+button:hover{border-color:var(--soft)}
+button:focus-visible,input:focus-visible,a:focus-visible,summary:focus-visible{outline:3px solid #fff;outline-offset:2px}
+h1{font-size:clamp(2rem,7vw,3.2rem);line-height:1.1;margin:.4rem 0 .4rem;letter-spacing:.02em;text-shadow:0 0 22px rgba(209,18,43,.7)}
+h2{margin:2.6rem 0 .4rem;font-size:1.5rem;letter-spacing:.06em;color:var(--soft)}
+.lead{font-size:1.2rem;color:#e8d8d8;max-width:46ch}
+.card{padding:1.1rem 1.2rem;border:1px solid var(--line);border-radius:6px;background:linear-gradient(180deg,#1a0b0e,#0e0709);margin:1rem 0}
+.big{font-size:1.5rem;font-weight:700;color:#fff}
+.maker{display:grid;gap:.7rem}
+.maker .row{display:flex;flex-wrap:wrap;gap:.6rem;align-items:end}
+label{display:grid;gap:.25rem;font-weight:600}
+input[type=text],input[type=search]{font:inherit;min-height:48px;padding:0 .8rem;border-radius:5px;border:1px solid var(--line);background:#0a0506;color:var(--text);min-width:0;width:min(100%,15rem)}
+.result{display:flex;flex-wrap:wrap;gap:1rem;align-items:center;min-height:90px}
+.result .name{font:700 1.8rem/1 ui-monospace,Consolas,monospace;color:#fff;word-break:break-all}
+.result .bot{pointer-events:none;width:64px;height:80px}
+.note{color:var(--dim);font-size:.95rem}
+.robots{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem}
+.robots .card{margin:0;display:grid;grid-template-columns:64px 1fr;gap:.8rem;align-items:start}
+.robots .bot{pointer-events:none;width:60px;height:76px}
+.robots h3{margin:0;font-size:1.1rem}
+.robots .eq{font:600 .86rem ui-monospace,Consolas,monospace;color:var(--soft)}
+.filters{display:flex;flex-wrap:wrap;gap:.5rem;margin:.8rem 0}
+#terms{display:grid;gap:.9rem;margin-top:.6rem}
+.term{padding:1rem 1.1rem;border:1px solid var(--line);border-radius:6px;background:linear-gradient(180deg,#1a0b0e,#0e0709);scroll-margin-top:1rem}
+.term:target,.term.hit{border-color:#fff;box-shadow:0 0 0 2px rgba(255,255,255,.55),0 0 30px rgba(209,18,43,.5)}
+.term h3{margin:0 0 .2rem;font-size:1.25rem;display:flex;gap:.6rem;align-items:center;flex-wrap:wrap}
+.term .emoji{font-size:1.7rem}
+.term .say{font:500 .9rem ui-monospace,Consolas,monospace;color:var(--dim)}
+.term p{margin:.3rem 0}
+.term .ex{color:#e0cfcf}
+.term .acts{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.6rem}
+.empty{padding:1rem;color:var(--dim)}
+ol.tips li{margin:.4rem 0}
+.status{min-height:1.5em;color:var(--soft);font-weight:600}
+footer{margin-top:3rem;padding-top:1.2rem;border-top:1px solid #2a1719;color:var(--dim);font-size:.92rem}
+@media (max-width:560px){.tools b{width:100%}}
+@media print{.tools,.companion-wrap,.acts{display:none!important}body{background:#fff;color:#000}.term,.card{border-color:#999;background:#fff}h1,h2,.big,.result .name{color:#000;text-shadow:none}a{color:#00e}}
+</style>
+</head>
+<body>
+<a class="skip" href="#words">Skip to the word list</a>
+<div class="wrap">
+<p><a href="../">← Back to Darklabs</a></p>
+<h1 class="glitch-me">Word Lab</h1>
+<p class="lead">Short, simple meanings for the words you meet in Darklabs. Press <b>Listen</b> to hear a word. No hard words are needed here.</p>
+
+<div class="tools" role="group" aria-label="Reading settings">
+  <b>Make it easier to read</b>
+  <button type="button" id="sm" aria-label="Normal text size">A</button>
+  <button type="button" id="md" aria-label="Bigger text">A+</button>
+  <button type="button" id="lg" aria-label="Biggest text">A++</button>
+  <button type="button" id="easy" aria-pressed="false">Easy reading</button>
+  <button type="button" id="hc" aria-pressed="false">High contrast</button>
+  <button type="button" id="calm" aria-pressed="false">Calm (no movement)</button>
+  <button type="button" id="readintro" hidden>Listen to this page</button>
+</div>
+
+<section aria-labelledby="port">
+<h2 id="port" class="sect">What is a portmanteau?</h2>
+<div class="card" id="portmanteau-card">
+  <p class="big">A portmanteau (say: port-MAN-toh) is a new word made from two words.</p>
+  <p>You take a piece of one word and a piece of another word. You join them. The new word means both things.</p>
+  <ul>
+    <li><b>breakfast + lunch = brunch</b> (a meal between the two)</li>
+    <li><b>smoke + fog = smog</b> (a dirty fog)</li>
+    <li><b>motor + hotel = motel</b> (a hotel for people with cars)</li>
+  </ul>
+  <p>At Darklabs, the robots have names made from two whole words. We write them as one word, and the second word starts with a <b>capital letter in the middle</b>. This is called <b>CamelCase</b>, because the capitals look like the humps of a camel. The two words also start with the same sound. That is called <b>alliteration</b>.</p>
+  <p class="note"><b>ClankCog</b> = Clank + Cog. <b>BeepBolt</b> = Beep + Bolt. Programmers use CamelCase too, because names in code cannot have spaces.</p>
+</div>
+
+<div class="card maker" aria-labelledby="make">
+  <h3 id="make" style="margin:0">Make your own robot name</h3>
+  <p class="note" style="margin:0">Type two simple words. Letters only. For an alliteration, start both with the same letter.</p>
+  <div class="row">
+    <label>First word<input id="w1" type="text" maxlength="12" autocomplete="off" autocapitalize="none" spellcheck="false" value="spark"></label>
+    <label>Second word<input id="w2" type="text" maxlength="12" autocomplete="off" autocapitalize="none" spellcheck="false" value="sprocket"></label>
+    <button type="button" id="rand">Surprise me</button>
+  </div>
+  <div class="result" aria-live="polite"><span id="mini"></span><div><div class="name" id="out">SparkSprocket</div><div class="note" id="why"></div></div></div>
+  <div class="row"><button type="button" id="copy">Copy the name</button><span class="status" id="mstatus" role="status"></span></div>
+</div>
+</section>
+
+<section aria-labelledby="meet">
+<h2 id="meet" class="sect">Meet the robots</h2>
+<p>Press a robot on the Darklabs home page to hear it talk. Each one teaches one word.</p>
+<div class="robots" id="robots"></div>
+</section>
+
+<section aria-labelledby="words">
+<h2 id="words" class="sect">Words you may meet</h2>
+<label>Search for a word<input id="q" type="search" placeholder="for example: offline" autocomplete="off"></label>
+<div class="filters" id="filters" role="group" aria-label="Show only"></div>
+<p class="status" id="count" role="status"></p>
+<div id="terms"></div>
+<div class="card">
+  <h3 style="margin-top:0">A word is missing?</h3>
+  <p class="note">Tell me the word. I will add it. It is sent through ntfy.sh, a free notification service. Please do not write personal details.</p>
+  <div class="row" style="display:flex;gap:.6rem;flex-wrap:wrap"><label>Your word<input id="miss" type="text" maxlength="60" autocomplete="off"></label><button type="button" id="send">Send</button></div>
+  <p class="status" id="sstatus" role="status"></p>
+</div>
+</section>
+
+<section aria-labelledby="tips">
+<h2 id="tips" class="sect">Help for reading and using this site</h2>
+<ol class="tips">
+  <li><b>Another language?</b> Your browser can translate this page. In Chrome, open the menu (three dots) and choose <b>Translate</b>. The short sentences here help the translation.</li>
+  <li><b>Hear it.</b> Press <b>Listen</b> on any word. The voice comes from your own device, so it works offline and sends nothing anywhere. If you see no Listen buttons, your device has no voice for English.</li>
+  <li><b>Too much movement?</b> Press <b>Calm</b>. The robots stop, the glitch effects stop, and nothing flashes. Your device’s “reduce motion” setting does this by itself.</li>
+  <li><b>Keyboard.</b> Use <b>Tab</b> to move and <b>Enter</b> to press. The right-click menu opens with the <b>Menu</b> key.</li>
+  <li><b>The right-click menu.</b> Darklabs has its own menu with the usual things (copy, paste, back, reload, open link). To use your browser’s menu, hold <b>Shift</b> while you right-click, or use the link at the bottom of the home page.</li>
+  <li><b>Tell me what is hard.</b> If something on Darklabs is hard to read or use, please tell me. I want to fix it.</li>
+</ol>
+</section>
+
+<footer>
+  <p>Words are written in plain English: short sentences, everyday words, one idea at a time. <a href="https://github.com/DreDarkroom/darklabs/blob/main/learn/README.md">How the words are written</a>.</p>
+  <p><a href="../">Darklabs</a> · <a href="#" data-ctx-toggle>Use the browser’s right-click menu</a></p>
+</footer>
+</div>
+<script type="module" src="learn.js"></script>
+<script type="module" src="../robots.js"></script>
+<script type="module" src="../kit/ctx.js"></script>
+</body>
+</html>
