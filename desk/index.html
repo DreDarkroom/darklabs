@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en" data-robots="off">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0a0305">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'none'">
+<title>DarkDesk</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../robots.css">
+<link rel="stylesheet" href="desk.css">
+</head>
+<body>
+<a class="skip" href="#app">Skip to the content</a>
+<header id="top">
+  <h1 class="logo glitch-text" data-text="DarkDesk">DarkDesk</h1>
+  <span class="tag">private · nothing is sent anywhere</span>
+  <button id="lockbtn" class="ico" type="button" aria-label="Lock, or open the vault">🔒</button>
+</header>
+<main id="app" tabindex="-1"></main>
+<section id="sheet" hidden aria-label="Details"></section>
+<section id="lock" hidden aria-label="Locked"></section>
+<button id="fab" type="button" aria-label="Capture a note, idea or reminder">+</button>
+<nav id="nav" aria-label="Sections" hidden>
+  <button type="button" data-v="today"><span aria-hidden="true">◉</span>Today</button>
+  <button type="button" data-v="projects"><span aria-hidden="true">▦</span>Projects</button>
+  <span class="gap" aria-hidden="true"></span>
+  <button type="button" data-v="review"><span aria-hidden="true">✓</span>Review</button>
+  <button type="button" data-v="vault"><span aria-hidden="true">⚿</span>Vault</button>
+</nav>
+<div id="toast" role="status" aria-live="polite"></div>
+<noscript><p style="padding:2rem">DarkDesk needs JavaScript. It keeps your notes on this device only.</p></noscript>
+<script type="module" src="app.js"></script>
+<script type="module" src="../kit/ctx.js"></script>
+</body>
+</html>

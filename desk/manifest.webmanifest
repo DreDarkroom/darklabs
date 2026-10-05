@@ -1,0 +1,11 @@
+{
+  "name": "DarkDesk",
+  "short_name": "DarkDesk",
+  "description": "A private desk for remembering and organising the Darklabs projects. Nothing is sent anywhere.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0a0305",
+  "theme_color": "#0a0305",
+  "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }]
+}
