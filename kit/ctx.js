@@ -8,7 +8,7 @@
      - hold Shift and right-click: the browser's menu, any time
      - "Use the browser's menu" in this menu turns this one off on every Darklabs page (turn it back on the same way, from the footer link or from this menu's page)
      - mark any element data-native-menu to keep the browser's menu there (instruments that use right-click themselves do this)
-   Only pages that load this file are affected. Touch screens: a long press opens it (with bigger buttons). Keyboard: the Menu key opens it; Shift + F10 gives the browser's. */
+   Only pages that load this file are affected. Touch screens: a long press keeps the phone's own menu (text selection, share and so on), because overriding it breaks selecting text. Keyboard: the Menu key opens it; Shift + F10 gives the browser's. */
 import { prefs } from './prefs.js';
 
 const EDITABLE = 'textarea, input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=button]):not([type=submit]):not([type=file]):not([type=color]), [contenteditable=""], [contenteditable="true"]';
@@ -91,7 +91,7 @@ function build(target) {
     it('Print', () => print(), { key: 'Ctrl P' }),
     !editable && it('Select all', () => getSelection().selectAllChildren(document.body), { key: 'Ctrl A' }),
     it('View page source', async () => {
-      try { const t = await (await fetch(location.href)).text(); window.open(URL.createObjectURL(new Blob([t], { type: 'text/plain;charset=utf-8' })), '_blank'); } catch (err) { toast('Could not load the source.'); }
+      try { const t = await (await fetch(location.href)).text(); window.open(URL.createObjectURL(new Blob([t], { type: 'text/plain;charset=utf-8' })), '_blank', 'noopener'); } catch (err) { toast('Could not load the source.'); }
     }),
     it('Copy page address', () => copyText(location.href).then((ok) => toast(ok ? 'Address copied.' : 'Could not copy.'))),
     navigator.share && it('Share this page', () => navigator.share({ title: document.title, url: location.href }).catch(() => {})),
@@ -159,8 +159,11 @@ function open(x, y, target, fromKeyboard) {
 }
 
 /* ---------- when does it open? ---------- */
+let lastInput = 'mouse';                                                                         // a long press on a touch screen is how people select text and use the phone's own menu: leave that alone
+addEventListener('pointerdown', (e) => { lastInput = e.pointerType || 'mouse'; }, true);
+addEventListener('keydown', () => { lastInput = 'key'; }, true);
 addEventListener('contextmenu', (e) => {
-  if (e.shiftKey || prefs.get('ctx') === 'off' || e.defaultPrevented) return;                  // Shift + right-click, or a choice made: the browser's own menu
+  if (e.shiftKey || prefs.get('ctx') === 'off' || e.defaultPrevented || lastInput === 'touch') return;                  // Shift + right-click, or a choice made: the browser's own menu
   const t = e.target instanceof Element ? e.target : document.body;
   if (t.closest('[data-native-menu]')) return;
   e.preventDefault();

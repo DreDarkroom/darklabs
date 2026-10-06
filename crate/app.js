@@ -123,7 +123,8 @@ function editFind(id) {
     h('h3', { text: 'Your verdict' }), rate, h('label', { class: 'field' }, 'Status', status), tagField, h('label', { class: 'field' }, 'Notes', notes),
     h('button', { type: 'button', class: 'btn danger wide', onclick: () => { if (confirm('Delete this find from the log?')) { items = items.filter((x) => x !== f); save(); close(); renderLog(); } } }, 'Delete this find')));
   paintReady();
-  dlg.addEventListener('close', () => { renderLog(); }, { once: true });
+  const returnFocus = document.activeElement;
+  dlg.addEventListener('close', () => { renderLog(); if (returnFocus && returnFocus.focus) { returnFocus.focus(); } }, { once: true });
   dlg.showModal();
 }
 $('#addfind').addEventListener('click', () => { const f = L.blankFind(); items.push(f); save(); editFind(f.id); });
@@ -131,6 +132,7 @@ $('#addfind').addEventListener('click', () => { const f = L.blankFind(); items.p
 /* ---------- export and import ---------- */
 $('#exportbtn').addEventListener('click', () => {
   const pack = h('input', { type: 'text', value: 'My CC0 pack', maxlength: 60, 'aria-label': 'Pack name' }), ready = items.filter(L.ready);
+  const returnFocus = document.activeElement;
   dlg.replaceChildren(h('div', { class: 'sheetform' }, h('div', { class: 'sheet-head' }, h('h2', { text: 'Export' }), h('button', { type: 'button', class: 'btn', onclick: () => dlg.close() }, 'Close')),
     h('p', { class: 'dim', text: `${ready.length} of ${items.length} finds are ready. LICENSES.txt lists only the ready ones; the sheet and the backup contain everything.` }),
     h('label', { class: 'field' }, 'Pack name (for LICENSES.txt)', pack),
@@ -138,6 +140,7 @@ $('#exportbtn').addEventListener('click', () => {
     h('button', { type: 'button', class: 'btn wide', onclick: () => download('provenance.csv', L.toCSV(items), 'text/csv;charset=utf-8') }, 'Download provenance.csv'),
     h('button', { type: 'button', class: 'btn wide', onclick: () => download('ATTRIBUTION.md', L.toAttribution(ready), 'text/markdown;charset=utf-8') }, 'Download ATTRIBUTION.md'),
     h('button', { type: 'button', class: 'btn wide', onclick: () => download(`crate-capture-backup-${today()}.json`, L.toJSON(items), 'application/json') }, 'Download a backup (JSON)')));
+  dlg.addEventListener('close', () => { if (returnFocus && returnFocus.focus) { returnFocus.focus(); } }, { once: true });
   dlg.showModal();
 });
 $('#importbtn').addEventListener('click', () => $('#importfile').click());

@@ -318,7 +318,10 @@ function showLock(msg) {
     const st = JSON.parse(localStorage.getItem(FAILS) || '{"n":0,"until":0}');
     if (Date.now() < st.until) { err.textContent = `Too many tries. Wait ${Math.ceil((st.until - Date.now()) / 1000)} seconds.`; return; }
     f.querySelector('button').disabled = true; err.textContent = 'Opening…';
-    try { const { key: k, value } = await V.unlockWith(input.value, record); key = k; S = L.sanitize(value); localStorage.removeItem(FAILS); box.hidden = true; $('#nav').hidden = false; bumpIdle(); render(); }
+    try {
+      const { key: k, value, needsUpgrade } = await V.unlockWith(input.value, record); key = k; S = L.sanitize(value); localStorage.removeItem(FAILS);
+      if (needsUpgrade) { const up = await V.lockWith(input.value, S); key = up.key; record = up.record; store.set(record); }               // an older record is re-sealed with the stronger setting while the passcode is to hand
+       box.hidden = true; $('#nav').hidden = false; bumpIdle(); render(); }
     catch (ex) { st.n++; st.until = Date.now() + Math.min(300000, 1000 * 2 ** Math.min(st.n, 9)); localStorage.setItem(FAILS, JSON.stringify(st)); err.textContent = st.n >= 3 ? `Wrong passcode. Wait a moment before the next try.` : 'Wrong passcode.'; input.value = ''; }
     f.querySelector('button').disabled = false;
   } }, robot(), h('h1', { class: 'glitch-text', 'data-text': 'DarkDesk', text: 'DarkDesk' }), h('p', { class: 'dim', text: 'Locked. Your notes are encrypted on this device.' }), input, h('button', { class: 'btn primary wide', type: 'submit' }, 'Unlock'), err);

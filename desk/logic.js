@@ -13,8 +13,8 @@ export function view(seed, rec = {}) {
 export const allSeeds = (state, seeds) => seeds.concat(state.custom.map((c) => ({ ...c, custom: true, status: c.status || 'Idea' })));
 export const allViews = (state, seeds) => allSeeds(state, seeds).map((s) => view(s, state.projects[s.id]));
 
-export const today = (now = Date.now()) => { const d = new Date(now); return new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime(); };
-export const parseDay = (s) => { const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s || ''); if (!m) return null; const d = new Date(+m[1], +m[2] - 1, +m[3]); return d.getFullYear() === +m[1] && d.getMonth() === +m[2] - 1 && d.getDate() === +m[3] ? d.getTime() : null; };
+export const today = (now = Date.now()) => { const d = new Date(now); return Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()); };
+export const parseDay = (s) => { const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s || ''); if (!m) return null; const d = new Date(+m[1], +m[2] - 1, +m[3]); return d.getFullYear() === +m[1] && d.getMonth() === +m[2] - 1 && d.getDate() === +m[3] ? Date.UTC(+m[1], +m[2] - 1, +m[3]) : null; };
 export const daysUntil = (s, now = Date.now()) => { const t = parseDay(s); return t == null ? null : Math.round((t - today(now)) / DAY); };
 export const daysSince = (ts, now = Date.now()) => (ts ? Math.floor((now - ts) / DAY) : null);
 export const active = (p) => p.status === 'Building' || p.status === 'Testing';
@@ -77,7 +77,7 @@ export function toICS(items, now = Date.now()) {
 const str = (v, max) => (typeof v === 'string' ? v.slice(0, max) : '');
 const num = (v) => (Number.isFinite(v) ? v : 0);
 const day = (v) => (parseDay(v) ? v : '');
-const safeUrl = (u) => { u = str(u, LIM.url); return /^(https?:\/\/|\/|\.\.?\/)/.test(u) ? u : ''; };
+const safeUrl = (u) => { u = str(u, LIM.url); return /^(https?:\/\/|\/|\.\.?\/)/.test(u) && !/^\s*javascript:/i.test(u) ? u : ''; };
 export function sanitize(doc) {
   if (!doc || typeof doc !== 'object' || doc.v !== 1) throw new Error('This is not a DarkDesk backup.');
   const s = blank();

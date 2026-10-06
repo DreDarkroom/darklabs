@@ -1,0 +1,7 @@
+[
+    {
+        "source": "index.html",
+        "target": "obscura/hero.mp4",
+        "comment": "Pre-existing broken video link in hero."
+    }
+]

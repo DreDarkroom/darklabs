@@ -2,7 +2,7 @@
 
 ## Where it is now (0.1)
 
-A guide to finding and checking CC0 and public domain music, a map of 15 sources, and a local-only finds log: six checks, evidence, a file fingerprint (SHA-256), a first-listen player, ratings, and exports (provenance sheet, LICENSES.txt, ATTRIBUTION.md, a JSON backup). No accounts, no uploads, no network calls.
+A guide to finding and checking CC0 and public domain music, a map of 16 sources, and a local-only finds log: six checks, evidence, a file fingerprint (SHA-256), a first-listen player, ratings, and exports (provenance sheet, LICENSES.txt, ATTRIBUTION.md, a JSON backup). No accounts, no uploads, no network calls.
 Not verified yet: use on a real phone (picking a file, long fingerprints), and the exports opened in a real spreadsheet.
 
 ## Next, without a server
@@ -37,7 +37,7 @@ Accounts, a database, moderation, a privacy notice and a way to remove people's 
 | Sign-in | A passkey, or a one-time link sent to an email address, with a chosen nickname | No passwords to store. Keep the nickname separate from any real name. |
 | Data | users (nickname, created), finds (url, licence, evidence, fingerprint, creator, source), checks (who ticked what), flags, collections, follows | A find's proof fields are the same as the local log, so a local log can be shared with one tap. |
 | Abuse | Rate limits, new-account limits, one report path, and a person who looks at reports | The part people forget. Budget time for it before building. |
-| Law | Terms, privacy notice, takedown contact, delete-my-data | Needed before any public launch. Not legal advice: get it looked over. |
+| Law | Terms, privacy notice, takedown contact, delete-my-data. If it ever holds other people's content in the US, registering a designated agent for takedown notices is what gives a site legal protection from claims over what its users post; in the UK and EU other rules apply | Needed before any public launch. Not legal advice: get it looked over by someone qualified. |
 
 ### Order of work
 

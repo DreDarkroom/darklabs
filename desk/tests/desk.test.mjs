@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { blank, suggest, focus, toICS, sanitize, daysUntil, parseDay, view, allViews, DAY } from '../logic.js';
-import { lockWith, unlockWith, strength } from '../vault.js';
+import { lockWith, unlockWith, strength, deriveKey, seal } from '../vault.js';
 
 const seeds = [{ id: 'a', title: 'Alpha', blurb: '', status: 'Building' }, { id: 'b', title: 'Beta', blurb: '', status: 'Live' }, { id: 'c', title: 'Gamma', blurb: '', status: 'Testing' }];
 const NOW = new Date(2026, 9, 5, 12).getTime();
@@ -96,4 +96,13 @@ test('the vault round-trips, rejects the wrong passcode, and detects tampering',
 test('passcode strength is only a hint', () => {
   assert.match(strength('abc').label, /Weak/);
   assert.match(strength('correct horse battery staple').label, /Strong/);
+});
+
+test('an older, weaker record still opens, and says it wants upgrading; a new one does not', async () => {
+  const salt = new Uint8Array(16).fill(7), key = await deriveKey('old passcode', salt, 310000), box = await seal({ v: 1, hello: 'there' }, key);
+  const old = { v: 1, mode: 'locked', salt: Buffer.from(salt).toString('base64'), iter: 310000, ...box };
+  const res = await unlockWith('old passcode', old);
+  assert.equal(res.value.hello, 'there'); assert.equal(res.needsUpgrade, true);
+  const fresh = await lockWith('new passcode', { v: 1 });
+  assert.equal(fresh.record.iter, 600000); assert.equal((await unlockWith('new passcode', fresh.record)).needsUpgrade, false);
 });

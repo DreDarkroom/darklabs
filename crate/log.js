@@ -47,7 +47,7 @@ export const ready = (f) => missing(f).length === 0;
 /* ---------- exports ---------- */
 const csvCell = (v) => {
   let s = String(v == null ? '' : v);
-  if (/^[=+\-@\t\r]/.test(s)) s = `'${s}`;                       // a spreadsheet must never run a cell as a formula
+  if (/^[\s]*[=+\-@\t\r]/.test(s)) s = `'${s}`;                       // a spreadsheet must never run a cell as a formula
   return /[",\n\r]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
 };
 const COLS = ['id', 'title', 'creator', 'source', 'url', 'licence', 'licence_url', 'evidence', 'checked_at', 'file', 'sha256', 'bytes', 'duration', 'rating', 'status', 'ready', 'missing', 'tags', 'notes'];

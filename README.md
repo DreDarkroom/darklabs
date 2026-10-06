@@ -62,8 +62,7 @@ Audio API, live at **[dredarkroom.github.io/darklabs](https://dredarkroom.github
   `obscura/hero.mp4` and it replaces the drawn scene), four developer trays,
   a crimson safelight switch, a print-developing timing game, two micro games
   (Silver Rush, Light Dash) and a roll of 24 hidden frames to find.
-- **Earshot** and **Crate Capture** — not live yet, placeholders on the hub
-  for now.
+- **Earshot** and **Crate Capture** — Crate Capture is a local-only tool to find CC0 music, verify licenses, and generate provenance sheets. Earshot is an audition tool for sorting and rating new material.
 
 ## Running any of it locally
 
@@ -83,3 +82,7 @@ Built by [Dre](https://github.com/DreDarkroom).
 
 Darklabs has little robots on its home page, named with **portmanteaus**: two simple words joined into one, with a capital letter in the middle (ClankCog, WobbleWire, SparkSprocket, PixelPatch, GlitchGizmo, BeepBolt). The **Word Lab** (`learn/`) explains what a portmanteau is, has a name maker, and defines the words used across the labs in plain English with read-aloud and easy-reading settings.
 `learn/README.md` explains the idea and how the words are written. `kit/prefs.js` holds the shared reading and motion settings (Calm, Easy reading, High contrast, text size); `kit/ctx.js` is the Darklabs right-click menu (Shift + right-click always gives the browser's own). The home page's build script is `tools/hub/`.
+
+## Testing
+
+See `TESTING.md` for information on how to run tests and the link checker.

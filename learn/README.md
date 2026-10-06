@@ -44,5 +44,6 @@ The page uses short sentences and plain words so that the browser's own translat
 ## The right-click menu
 
 Pages that load `kit/ctx.js` (the home page, this page, the VR Lab) replace the browser's right-click menu with a Darklabs-styled one that does the same things where a web page is allowed to (back, forward, reload, print, select all, copy, cut, paste, open and copy links, copy and save images, view page source, media controls), plus the meaning of a selected word, read-aloud, and the reading settings.
+On a touch screen a long press keeps the phone's own menu, so selecting text still works.
 The browser's own menu is always available: hold **Shift** while right-clicking, or choose *Use the browser's menu instead* in the menu, or use the link in the footer. Mark an element `data-native-menu` to keep the browser's menu there. Instruments that use right-click themselves (Glass Groove, DevelopDrop and the like) do not load this file.
 Some browser-menu items cannot be done by a web page at all (*Inspect*, *Save page as*, *Translate*, *Cast*); the Shift route is the way to those.

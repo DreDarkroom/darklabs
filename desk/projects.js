@@ -91,7 +91,7 @@ export const SEEDS = [
  {
   "id": "crate-capture",
   "title": "Crate Capture",
-  "blurb": "Find CC0 and public domain music, check the licence properly, keep the proof, and hand it over cleanly. Guides on searching wide and far, a map of 15 sources (and the things that only look free), and a finds log that fingerprints your files and writes the licence sheet. Everything stays on your device.",
+  "blurb": "Find CC0 and public domain music, check the licence properly, keep the proof, and hand it over cleanly. Guides on searching wide and far, a map of 16 sources (and the things that only look free), and a finds log that fingerprints your files and writes the licence sheet. Everything stays on your device.",
   "url": "/darklabs/crate/",
   "status": "Building",
   "group": "in the trays"

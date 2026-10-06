@@ -1,8 +1,8 @@
 /* DarkDesk: the vault. Your notes are kept on this device only. With a passcode they are encrypted before they are stored:
-   the passcode is stretched into a key with PBKDF2 (SHA-256, 310 000 rounds, a random salt), and the data is sealed with AES-GCM (a fresh random number for each save).
+   the passcode is stretched into a key with PBKDF2 (SHA-256, 600 000 rounds, a random salt), and the data is sealed with AES-GCM (a fresh random number for each save).
    A wrong passcode cannot open it (GCM checks the data), and nothing here can recover a forgotten passcode: that is the point.
    The key lives only in memory while the desk is unlocked, and is dropped when it locks. No network is used anywhere in this file. */
-const ITER = 310000;
+const ITER = 600000;                                     // OWASP's 2023+ guidance for PBKDF2-HMAC-SHA256; older records (310 000) still open and are upgraded on the next unlock
 const enc = new TextEncoder(), dec = new TextDecoder();
 const b64 = (buf) => { let s = ''; for (const b of new Uint8Array(buf)) s += String.fromCharCode(b); return btoa(s); };
 const unb64 = (s) => Uint8Array.from(atob(s), (c) => c.charCodeAt(0));
@@ -39,7 +39,7 @@ export async function unlockWith(passcode, record) {
   if (!record || record.v !== 1 || record.mode !== 'locked') throw new Error('Nothing to unlock.');
   if (!Number.isInteger(record.iter) || record.iter < 100000 || record.iter > 2000000) throw new Error('This record cannot be read.');
   const key = await deriveKey(passcode, unb64(record.salt), record.iter);
-  return { key, value: await open(record, key) };
+  return { key, value: await open(record, key), needsUpgrade: record.iter < ITER };
 }
 
 /** A rough judgement of a passcode: only to help, never to block. */

@@ -51,7 +51,7 @@ MAIN = [
 
 WIP = [
     dict(id="crate-capture", icon="&#x1F4E6;", title="Crate Capture", badge="WORK IN PROGRESS",
-         desc="Find CC0 and public domain music, check the licence properly, keep the proof, and hand it over cleanly. Guides on searching wide and far, a map of 15 sources (and the things that only look free), and a finds log that fingerprints your files and writes the licence sheet. Everything stays on your device.",
+         desc="Find CC0 and public domain music, check the licence properly, keep the proof, and hand it over cleanly. Guides on searching wide and far, a map of 16 sources (and the things that only look free), and a finds log that fingerprints your files and writes the licence sheet. Everything stays on your device.",
          note="six checks &middot; provenance sheet and LICENSES.txt &middot; no uploads, no accounts",
          href="/darklabs/crate/", btn="Open Crate Capture"),
     dict(id="circuitstomp", icon="&#x1F916;", title="CircuitStomp", big=True,

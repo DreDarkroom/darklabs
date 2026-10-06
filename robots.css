@@ -7,7 +7,7 @@ body::after { content: ""; position: fixed; left: 0; right: 0; top: -20%; height
 
 /* ---- glitch text: a copy sliced and shifted in red and cyan, on hover, focus, and now and then ---- */
 .glitch-text { position: relative; }
-.glitch-text::before, .glitch-text::after { content: attr(data-text); position: absolute; inset: 0; pointer-events: none; opacity: 0; }
+.glitch-text::before, .glitch-text::after { content: attr(data-text); content: attr(data-text) / ""; position: absolute; inset: 0; pointer-events: none; opacity: 0; }
 .glitch-text::before { color: #ff2f6d; }
 .glitch-text::after { color: #3cdcff; }
 .glitch-text.glitching::before, .glitch-text:hover::before, .glitch-text.glitching::after, .glitch-text:hover::after { opacity: .75; }

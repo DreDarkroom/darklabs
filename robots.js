@@ -8,20 +8,8 @@
    Nothing here is needed to use the page: with Calm mode on (or reduced motion), or without JavaScript, everything is simply there and still. */
 import { prefs } from './kit/prefs.js';
 
-export const ROBOTS = [
-  { id: 'ClankCog', parts: ['Clank', 'Cog'], role: 'builder', body: '#6b5a5e', accent: '#ff7a3d', head: 'box', term: 'portmanteau',
-    lines: ['Clank! I join parts together. Clank + Cog = ClankCog. That is a portmanteau.', 'I build things one piece at a time.', 'A portmanteau is a new word made from two words. Press the link to learn more.'] },
-  { id: 'WobbleWire', parts: ['Wobble', 'Wire'], role: 'cable keeper', body: '#566a6a', accent: '#40f0d0', head: 'round', term: 'offline',
-    lines: ['I plug everything in. I wobble a lot, but it works.', 'No internet? Many labs still work. That is called offline.', 'Wires, wires, everywhere!'] },
-  { id: 'SparkSprocket', parts: ['Spark', 'Sprocket'], role: 'sound maker', body: '#6a6350', accent: '#ffe14d', head: 'tall', term: 'synthesiser',
-    lines: ['Spark! I make sounds from nothing. No recordings.', 'A machine that makes sound from numbers is a synthesiser.', 'Every sound in these labs is made live.'] },
-  { id: 'PixelPatch', parts: ['Pixel', 'Patch'], role: 'picture fixer', body: '#5e5670', accent: '#9670ff', head: 'visor', term: 'pixel',
-    lines: ['I paint pictures with tiny dots. Each dot is a pixel.', 'I fix the little holes in the picture.', 'Look closely at your screen. Dots, dots, dots.'] },
-  { id: 'GlitchGizmo', parts: ['Glitch', 'Gizmo'], role: 'mischief maker', body: '#6b4e5c', accent: '#ff2f6d', head: 'box', term: 'glitch',
-    lines: ['A glitch is a small mistake that looks strange. I do it on purpose.', 'Did you see that? Zzzt!', 'Do not worry. It is only style.'] },
-  { id: 'BeepBolt', parts: ['Beep', 'Bolt'], role: 'tester', body: '#4f6070', accent: '#6ab8ff', head: 'round', term: 'bpm',
-    lines: ['Beep. I count the beat. BPM means beats per minute.', 'Fast music has more beats in a minute.', 'Beep beep. Test passed!'] },
-];
+import { ROBOTS } from './robots-data.js';
+export { ROBOTS };
 
 /* ---------- drawing a robot (plain SVG, no images) ---------- */
 export function botSVG(r) {
@@ -82,11 +70,18 @@ function scramble(h) {
   h.setAttribute('aria-label', final);
   const t0 = performance.now(), dur = 700;
   (function tick(now) {
+    if (document.hidden) {
+      h.textContent = final;
+      return;
+    }
     const p = Math.min(1, (now - t0) / dur);
     h.textContent = [...final].map((ch, i) => (ch === ' ' || i < p * final.length * 1.15 ? ch : NOISE[(Math.random() * NOISE.length) | 0])).join('');
-    if (p < 1) requestAnimationFrame(tick); else h.textContent = final;
+    if (p < 1) requestAnimationFrame(tick); else {
+      h.textContent = final;
+      h.removeAttribute('aria-label');
+    }
   })(t0);
-  setTimeout(() => { h.textContent = final; }, dur + 150);                   // if the page was not drawing (a hidden tab), still end with the real words
+  setTimeout(() => { h.textContent = final; h.removeAttribute('aria-label'); }, dur + 150);                   // if the page was not drawing (a hidden tab), still end with the real words
 }
 
 /* ---------- the page ---------- */
@@ -150,6 +145,12 @@ function init() {
   };
   comp.onclick = () => { say(ROBOTS[cur], comp); comp.classList.add('glitch'); setTimeout(() => comp.classList.remove('glitch'), 380); };
 
+  let headTops = [];
+  const measureHeads = () => { headTops = heads.map((h) => h.getBoundingClientRect().top + scrollY); };   // from the top of the page, whatever the heading sits inside
+  measureHeads();
+  addEventListener('load', measureHeads);
+  if (typeof ResizeObserver === 'function') { let rt = 0; new ResizeObserver(() => { clearTimeout(rt); rt = setTimeout(measureHeads, 150); }).observe(document.body); }   // images, fonts and built-in cards change the height
+
   function update() {
     ticking = false;
     const y = scrollY, dy = y - lastY, now = performance.now(), dt = Math.max(1, now - lastT);
@@ -167,13 +168,15 @@ function init() {
     comp.classList.toggle('fast', speed > 2.2);
     if (speed > 3.2 && !comp.classList.contains('glitch')) { comp.classList.add('glitch'); setTimeout(() => comp.classList.remove('glitch'), 380); }
     /* which section are we in? the nearest heading above the middle of the screen picks the robot */
-    let k = -1; heads.forEach((h, i) => { if (h.getBoundingClientRect().top < innerHeight * 0.55) k = i; });
+    let k = -1;
+    const targetY = y + innerHeight * 0.55;
+    headTops.forEach((top, i) => { if (top < targetY) k = i; });
     setRobot(k < 0 ? 4 : (k + 1) % ROBOTS.length);
     clearTimeout(update.t);
     update.t = setTimeout(() => { comp.classList.remove('rolling', 'working', 'fast'); comp.classList.add('nap'); }, 650);
   }
   addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
-  addEventListener('resize', update);
+  addEventListener('resize', () => { measureHeads(); update(); });
   addEventListener('darklabs:prefs', () => { if (!calm()) { $$('.hang.unbuilt').forEach((h) => io.observe(h)); } update(); });
   setRobot(4); update(); comp.classList.add('nap');
 
