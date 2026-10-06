@@ -32,6 +32,11 @@ Audio API, live at **[dredarkroom.github.io/darklabs](https://dredarkroom.github
   a two-deck DJ mixer (EQ, filter, loops, hot cues, sync, crossfader), an
   8-pad sampler (files, mic, resample), a master FX rack and an SFX maker
   that exports WAV. Everything is synthesised; bring your own audio to DJ.
+  A **Beta** lives at [`drumdj/beta/`](drumdj/beta/) (lower latency, keyboard
+  shortcuts, guided tour, colour coding, in-page feedback prompts). The
+  original stays the default at `drumdj/` until the Beta is tested. Beta
+  feedback arrives as GitHub issues labelled `beta-feedback`, or privately if
+  `FB.endpoint` in `drumdj/beta/index.html` is set to a form URL.
 - **Both Together** — MeowSynth and MonkeyBeat side by side on one page.
 
 ## Work in progress
