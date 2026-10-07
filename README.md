@@ -38,6 +38,13 @@ Audio API, live at **[dredarkroom.github.io/darklabs](https://dredarkroom.github
   feedback arrives as GitHub issues labelled `beta-feedback`, or privately if
   `FB.endpoint` in `drumdj/beta/index.html` is set to a form URL.
 - **Both Together** — MeowSynth and MonkeyBeat side by side on one page.
+- **KlartextKit** — a small modular toolkit for learning the German gamers
+  use (strategy chat, VR team-shooter callouts, heist talk): big colour-coded
+  callout buttons you tap to hear, spaced-repetition flashcards, quiz, chat
+  practice, timers that call out in German, a VR break guard, and a stress lab
+  that ramps a device until it breaks and records where. About 21 KB to start,
+  each tool loads on demand, white-label via `brand.json`, big-button layout
+  for the Quest Browser. See [`klartext/`](klartext/).
 
 ## Work in progress
 

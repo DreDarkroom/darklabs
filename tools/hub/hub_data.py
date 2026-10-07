@@ -7,6 +7,11 @@ HERO = dict(
 )
 
 MAIN = [
+    dict(id="klartext", icon="&#x1F5E3;&#xFE0F;", title="KlartextKit", badge="NEW",
+         desc="A small toolkit for learning the German gamers use in strategy and VR chat. Big colour-coded callout buttons you tap to hear, spaced-repetition flashcards, a quiz, chat practice, timers that count down in German, a VR break guard, and a stress lab that pushes your device until it breaks and writes down where. "
+              "A nod to C&amp;C: Rivals, Hyper Dash // Hero Drop and heist games like GTA 5. Modular and light (about 21 KB to start; every tool loads only when you open it), works offline, and switches to big buttons by itself in the Quest Browser.",
+         note="The German is AI-written and not yet checked by native speakers: tell me what is wrong &middot; no account, nothing uploaded &middot; white-label ready",
+         href="/darklabs/klartext/", btn="Open KlartextKit"),
     dict(id="wordlab", icon="&#x1F4D6;", title="Word Lab", badge="NEW",
          desc="Plain-English meanings for the words used across Darklabs, with a portmanteau maker, read-aloud buttons, a robot-name generator and easy-reading settings. Made so that people who find tech words hard, or who do not speak English as a first language, can follow along.",
          note="short sentences &middot; listen to any word &middot; easy reading, big text, calm mode",

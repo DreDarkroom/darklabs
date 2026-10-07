@@ -15,5 +15,5 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-      - run: node --test desk/tests/desk.test.mjs crate/tests/log.test.mjs tests/content.test.mjs
+      - run: node --test desk/tests/desk.test.mjs crate/tests/log.test.mjs tests/content.test.mjs tests/klartext.test.mjs
       - run: node tools/linkcheck.mjs

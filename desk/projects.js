@@ -9,6 +9,14 @@ export const SEEDS = [
   "group": "featured"
  },
  {
+  "id": "klartext",
+  "title": "KlartextKit",
+  "blurb": "A small toolkit for learning the German gamers use in strategy and VR chat. Big colour-coded callout buttons you tap to hear, spaced-repetition flashcards, a quiz, chat practice, timers that count down in German, a VR break guard, and a stress lab that pushes your device until it breaks and writes down where. A nod to C&C: Rivals, Hyper Dash // Hero Drop and heist games like GTA 5. Modular and light (about 21 KB to start; every tool loads only when you open it), works offline, and switches to big buttons by itself in the Quest Browser.",
+  "url": "/darklabs/klartext/",
+  "status": "Live",
+  "group": "on the line"
+ },
+ {
   "id": "wordlab",
   "title": "Word Lab",
   "blurb": "Plain-English meanings for the words used across Darklabs, with a portmanteau maker, read-aloud buttons, a robot-name generator and easy-reading settings. Made so that people who find tech words hard, or who do not speak English as a first language, can follow along.",

@@ -1,0 +1,12 @@
+{
+  "name": "KlartextKit",
+  "owner": "DreDarkroom",
+  "tagline": "Gaming-Deutsch für Funk, Strategie und VR",
+  "logo": "icon-512.png",
+  "accent": "#ff2500",
+  "modules": null,
+  "footer": "",
+  "feedback": true,
+  "credit": true,
+  "feedbackUrl": "https://ntfy.sh/glassgroove-fb-kw0ofz6geo83rn"
+}
