@@ -41,7 +41,7 @@ export const TEMPLATES = [
       { id: 'w', label: 'Wohin? (where to)', opts: PLACES.map((p) => o(p.to, p.en)) },
     ],
     make: (s) => `Ich ${s.v} ${s.w}!`,
-    hint: 'Wohin? takes the accusative: auf DIE Brücke, in DEN Turm.',
+    hint: 'Wohin? usually takes the accusative: auf DIE Brücke, in DEN Turm. With "zu" it is the dative: zum Tor, zur Flagge.',
   },
   {
     id: 'need', de: 'Ich brauche …', en: 'Ask for something', cat: 'help',

@@ -33,7 +33,7 @@ export const RULES = [
   },
   {
     id: 'wo-wohin', title: 'Where, and where to',
-    body: ['Where something IS (Wo?): the dative. Where it is GOING (Wohin?): the accusative.', 'Same words, different article. This is the most useful rule for callouts.', 'Masculine shows it best: der Turm becomes "im Turm" (is there) and "in den Turm" (goes there).'],
+    body: ['With words like auf, in and an: where something IS (Wo?) takes the dative; where it is GOING (Wohin?) takes the accusative.', 'Same words, different article. This is the most useful rule for callouts.', 'Masculine shows it best: der Turm becomes "im Turm" (is there) and "in den Turm" (goes there). With "zu" (zum Tor, zur Flagge) the dative is used for going, too.'],
     ex: [{ de: 'Er ist auf der Brücke.', en: 'He is on the bridge.' }, { de: 'Ich dashe auf die Brücke.', en: 'I dash onto the bridge.' }, { de: 'Er ist im Turm.', en: 'He is in the tower.' }, { de: 'Ich renne in den Turm.', en: 'I run into the tower.' }],
   },
   {
