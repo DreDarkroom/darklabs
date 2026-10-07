@@ -5,7 +5,7 @@ import { CATS } from '../data/cats.js';
 import { PHRASES } from '../data/phrases.js';
 import { filterPhrases } from '../core/select.js';
 import { schedule, buildQueue, stats } from '../core/srs.js';
-import { head, chips, catOpts, gameOpts, toggle, regTag, crudeNote } from './_ui.js';
+import { head, chips, catOpts, gameOpts, toggle, regTag, crudeNote } from './ui.js';
 
 export default {
   mount(root, ctx) {

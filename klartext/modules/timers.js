@@ -1,7 +1,7 @@
 /* Zeit (timers): countdowns that call out in German, and a stopwatch with laps. Times are stored as end-moments (not "ticks left"), so a slow or throttled
    tab can never drift. The page only ticks while something is running (one interval, switched off when idle). Needs this page open to ring. */
 import { h, icon, delegate, put, fill } from '../core/dom.js';
-import { head, toggle } from './_ui.js';
+import { head, toggle } from './ui.js';
 
 export const fmt = (ms) => {
   const s = Math.max(0, Math.ceil(ms / 1000)), m = Math.floor(s / 60), r = s % 60;

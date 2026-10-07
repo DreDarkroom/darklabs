@@ -1,9 +1,9 @@
 // KlartextKit service worker: makes the kit installable and usable offline. Network-first (so updates land straight away), cache as the fallback.
 // Only the small core is pre-cached; each tool is cached the first time you open it, so a phone never stores tools it does not use.
-const CACHE = "klartext-v1";
+const CACHE = "klartext-v2";
 const CORE = ["./", "index.html", "kk.css", "brand.json", "manifest.webmanifest", "icon-192.png", "icon-512.png",
   "core/app.js", "core/dom.js", "core/store.js", "core/tts.js", "core/attend.js", "core/vr.js", "core/perf.js", "core/brand.js", "core/color.js", "core/registry.js", "core/progress.js", "core/prefs.js", "core/srs.js", "core/select.js", "core/german.js",
-  "data/cats.js", "modules/_ui.js"];
+  "data/cats.js", "modules/ui.js"];
 
 self.addEventListener("install", (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(CORE)).then(() => self.skipWaiting()).catch(() => {}));

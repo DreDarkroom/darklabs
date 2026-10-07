@@ -1,4 +1,4 @@
-/* KlartextKit: small UI pieces shared by the modules. (The leading underscore means this file is a helper, not a tool.) */
+/* KlartextKit: small UI pieces shared by the modules. (A helper, not a tool: it is not listed in core/registry.js. Its name must not start with an underscore: GitHub Pages silently skips such files.) */
 import { h, icon, put, fill } from '../core/dom.js';
 import { CATS, GAMES, REG } from '../data/cats.js';
 

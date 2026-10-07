@@ -5,7 +5,7 @@ import { PHRASES } from '../data/phrases.js';
 import { TERMS } from '../data/terms.js';
 import { RULES } from '../data/grammar.js';
 import { filterPhrases } from '../core/select.js';
-import { head, chips, catOpts, gameOpts, regTag, crudeNote } from './_ui.js';
+import { head, chips, catOpts, gameOpts, regTag, crudeNote } from './ui.js';
 
 const ART = { der: 'm', die: 'f', das: 'n' };
 

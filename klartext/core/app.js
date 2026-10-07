@@ -109,7 +109,10 @@ async function route() {
   if (!id || !def || !visible(brand).includes(def)) { document.title = brand.name + ' · DreDarkroom'; home(root); finish(root); return; }
   const t0 = performance.now();
   try {
-    const mod = (await def.load()).default; const t1 = performance.now();
+    // A failed dynamic import is remembered by the browser for the life of the page, so a second try uses a different URL (a flaky headset connection should not break a tool until reload).
+    let mod;
+    try { mod = (await def.load()).default; } catch (first) { mod = (await def.load('?r=' + Date.now())).default; }
+    const t1 = performance.now();
     if (current !== id) return;                                  // the user already moved on
     const out = await mod.mount(root, { ...ctx, params });
     if (current !== id) { try { out?.(); } catch (err) { /* ignore */ } return; }
@@ -117,7 +120,7 @@ async function route() {
     timings.push({ id, loadMs: +(t1 - t0).toFixed(1), mountMs: +(performance.now() - t1).toFixed(1), nodes: root.getElementsByTagName('*').length });
     document.title = `${def.de} · ${brand.name}`;
   } catch (err) {
-    root.replaceChildren(h('h1', { tabindex: '-1' }, 'Das hat nicht geklappt'), h('p', null, 'This tool did not load. Check your connection and try again.'), h('p', { class: 'fine' }, String(err?.message || err)), h('a', { class: 'btn', href: '#/' }, 'Zurück'));
+    root.replaceChildren(h('h1', { tabindex: '-1' }, 'Das hat nicht geklappt'), h('p', null, 'This tool did not load. Check your connection and try again.'), h('p', { class: 'fine' }, String(err?.message || err)), h('div', { class: 'row' }, h('button', { class: 'btn', type: 'button', onclick: () => location.reload() }, 'Neu laden'), h('a', { class: 'btn ghost', href: '#/' }, 'Zurück')));
   }
   finish(root);
 }

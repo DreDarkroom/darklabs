@@ -2,7 +2,7 @@
    moment the attention system is for). It keeps the screen awake while you play if the browser allows it. General comfort advice only: not medical advice.
    `start(ctx)` is also called at boot when the guard is switched on, so it keeps running while you use other tools. */
 import { h, put, fill } from '../core/dom.js';
-import { head, chips, toggle } from './_ui.js';
+import { head, chips, toggle } from './ui.js';
 
 export const nextBreak = (since, minutes) => since + minutes * 60000;
 export const clock = (ms) => { const s = Math.floor(Math.max(0, ms) / 1000); return `${Math.floor(s / 3600) ? Math.floor(s / 3600) + ':' : ''}${String(Math.floor(s / 60) % 60).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`; };

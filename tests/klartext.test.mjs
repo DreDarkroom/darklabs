@@ -42,6 +42,24 @@ test('every kit script parses as an ES module', () => {
   }
 });
 
+/* GitHub Pages builds with Jekyll, which silently SKIPS any file or folder whose name starts with an underscore or a dot.
+   The kit worked locally and failed live once because of a file called _ui.js: this test makes that impossible to repeat. */
+test('no file or folder in the kit has a name Pages would skip', () => {
+  for (const f of walk(ROOT)) for (const part of path.relative(ROOT, f).split(path.sep)) assert.ok(!/^[_.]/.test(part), `${f}: GitHub Pages (Jekyll) skips names starting with "_" or "."`);
+});
+
+test('every file a module imports exists on disk', () => {
+  for (const f of files.filter((x) => x.endsWith('.js') && !x.endsWith('sw.js'))) {
+    for (const m of read(f).matchAll(/(?:from\s+|import\()\s*['"`](\.{1,2}\/[^'"`$]+)['"`]/g)) {
+      const target = path.join(path.dirname(f), m[1]);
+      assert.ok(fs.existsSync(target), `${f} imports ${m[1]}, which does not exist`);
+    }
+  }
+  for (const m of MODULES) assert.ok(read('klartext/core/registry.js').includes(`../modules/${m.id}.js`), `${m.id} is not loaded from the right place`);
+  const sw = read('klartext/sw.js');
+  for (const m of sw.matchAll(/"((?:core|data|modules)\/[\w.-]+\.js)"/g)) assert.ok(fs.existsSync(path.join(ROOT, m[1])), `sw.js pre-caches ${m[1]}, which does not exist`);
+});
+
 /* ---------------- content ---------------- */
 test('phrases: unique ids, valid tags, no stray whitespace', () => {
   const ids = new Set();

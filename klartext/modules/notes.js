@@ -1,7 +1,7 @@
 /* Notiz (notepad): a notepad that stays on this device. Saves as you type. Drop in your favourite phrases (from Funk) with one tap. Copy or download it as a text file. */
 import { h, put, fill } from '../core/dom.js';
 import { PHRASES } from '../data/phrases.js';
-import { head } from './_ui.js';
+import { head } from './ui.js';
 
 export default {
   mount(root, ctx) {

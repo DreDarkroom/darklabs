@@ -2,7 +2,7 @@
    nothing here is copied from any game, its dialogue, its art or its manuals. This kit is not made, endorsed or approved by any of the studios named. */
 import { h, icon, put, fill } from '../core/dom.js';
 import { CATS } from '../data/cats.js';
-import { head } from './_ui.js';
+import { head } from './ui.js';
 
 const card = (cat, title, sub, lines, game, fine, extra) => h('section', { class: 'panel game', 'data-cat': cat },
   h('h2', null, icon(CATS[cat].shape, 'ic shape'), title, ' ', h('span', { class: 'en' }, sub)),

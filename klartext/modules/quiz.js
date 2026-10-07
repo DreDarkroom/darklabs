@@ -4,7 +4,7 @@ import { h, icon, shuffle, put, fill } from '../core/dom.js';
 import { PHRASES } from '../data/phrases.js';
 import { filterPhrases, makeQuestion, isCorrect, MODES } from '../core/select.js';
 import { schedule } from '../core/srs.js';
-import { head, chips, catOpts, gameOpts } from './_ui.js';
+import { head, chips, catOpts, gameOpts } from './ui.js';
 
 export default {
   mount(root, ctx) {

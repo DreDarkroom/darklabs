@@ -1,6 +1,6 @@
 /* Los (picker): coin, dice, pick-one-from-a-list, and a team splitter. Randomness comes from the browser's crypto source, with no bias (see core/dom.js randInt). */
 import { h, randInt, shuffle, put, fill } from '../core/dom.js';
-import { head, chips } from './_ui.js';
+import { head, chips } from './ui.js';
 
 export const rollDice = (count, sides, rnd = randInt) => Array.from({ length: count }, () => rnd(sides) + 1);
 /** Split names into two teams as evenly as possible (the first team gets the extra person if the count is odd). */

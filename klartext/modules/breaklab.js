@@ -5,7 +5,7 @@
    Frame rates inside a hidden or software-rendered browser are unreliable: judge real numbers on the real device (a Quest, a phone), not on a desktop preview. */
 import { h, icon, delegate, put, fill } from '../core/dom.js';
 import { MODULES } from '../core/registry.js';
-import { head, chips, toggle } from './_ui.js';
+import { head, chips, toggle } from './ui.js';
 
 /* ---- pure helpers (tested) ---- */
 export const nextLevel = (start, grow, k) => Math.max(1, Math.round(start * Math.pow(grow, k)));

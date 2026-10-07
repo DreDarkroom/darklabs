@@ -3,7 +3,7 @@ import { h, put, fill } from '../core/dom.js';
 import { applyPrefs, SIZES } from '../core/prefs.js';
 import { LEVELS } from '../core/attend.js';
 import { VR_PREFS } from '../core/vr.js';
-import { head, chips, toggle } from './_ui.js';
+import { head, chips, toggle } from './ui.js';
 
 export default {
   mount(root, ctx) {

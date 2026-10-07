@@ -2,7 +2,7 @@
 import { h, icon, shuffle, put, fill } from '../core/dom.js';
 import { SCENES } from '../data/scenes.js';
 import { GAMES } from '../data/cats.js';
-import { head, chips } from './_ui.js';
+import { head, chips } from './ui.js';
 
 export default {
   mount(root, ctx) {

@@ -7,7 +7,7 @@ import { CATS } from '../data/cats.js';
 import { PHRASES } from '../data/phrases.js';
 import { filterPhrases } from '../core/select.js';
 import { onColor } from '../core/color.js';
-import { head } from './_ui.js';
+import { head } from './ui.js';
 
 export const W = 1280, H = 800;
 

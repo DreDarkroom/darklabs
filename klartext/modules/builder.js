@@ -4,7 +4,7 @@ import { h, icon, put, fill } from '../core/dom.js';
 import { CATS } from '../data/cats.js';
 import { PLACES, TEMPLATES, compose } from '../data/build.js';
 import { conjugateWeak } from '../core/german.js';
-import { head, chips } from './_ui.js';
+import { head, chips } from './ui.js';
 
 export default {
   mount(root, ctx) {
