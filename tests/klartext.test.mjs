@@ -274,7 +274,7 @@ test('vr room: the panel layout is tappable and consistent', () => {
 /* ---------------- privacy and weight ---------------- */
 test('privacy: the kit only ever mentions a short list of known hosts', () => {
   // the first entry is an XML namespace name (never fetched); the rest are the only links and the one feedback endpoint
-  const allowed = [/^https?:\/\/www\.w3\.org\/2000\/svg$/, /^https:\/\/ntfy\.sh\/glassgroove-fb-/, /^https:\/\/www\.patreon\.com\/HeroDropVR$/, /^https:\/\/www\.rockstargames\.com\/$/, /^https:\/\/developers\.meta\.com\//, /^https:\/\/developer\.mozilla\.org\//];
+  const allowed = [/^https?:\/\/www\.w3\.org\/2000\/svg$/, /^https:\/\/ntfy\.sh\/glassgroove-fb-/, /^https:\/\/www\.patreon\.com\/HeroDropVR$/, /^https:\/\/developers\.meta\.com\//, /^https:\/\/developer\.mozilla\.org\//];
   for (const f of files) {
     if (f.endsWith('README.md')) continue;
     const text = read(f).replace(/https?:\/\/[\w.-]+\/?[^\s"'`)<\\]*/g, (u) => { assert.ok(allowed.some((a) => a.test(u)), `${f}: unexpected URL ${u}`); return ''; });

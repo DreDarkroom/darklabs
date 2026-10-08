@@ -117,7 +117,8 @@ function close(refocus = true) {
   if (refocus && returnFocus && returnFocus.focus) { try { returnFocus.focus({ preventScroll: true }); } catch (err) { /* gone */ } }
 }
 const outside = (e) => { if (menu && !menu.contains(e.target)) close(false); };
-const onAway = () => close(false);
+/* the page moving away under the menu closes it; the menu's own scrolling (its slider, wheel, arrow keys) must not */
+const onAway = (e) => { if (e && e.type === 'scroll' && menu && (e.target === menu || menu.contains(e.target))) return; close(false); };
 
 function open(x, y, target, fromKeyboard) {
   close(false);
@@ -186,7 +187,7 @@ document.querySelectorAll('[data-ctx-toggle]').forEach((n) => { n.textContent = 
 /* ---------- style ---------- */
 const css = el('style'); css.id = 'dl-ctx-css';
 css.textContent = `
-.dl-menu { position: fixed; z-index: 100000; min-width: 232px; max-width: min(92vw, 320px); max-height: 92vh; overflow: auto; padding: 6px; border-radius: 6px;
+.dl-menu { position: fixed; z-index: 100000; min-width: 232px; max-width: min(92vw, 320px); max-height: 92vh; overflow: auto; overscroll-behavior: contain; padding: 6px; border-radius: 6px;
   background: linear-gradient(180deg, rgba(30, 10, 14, .97), rgba(12, 5, 7, .97)); border: 1px solid rgba(209, 18, 43, .7);
   box-shadow: 0 18px 50px rgba(0, 0, 0, .85), 0 0 0 1px rgba(255, 255, 255, .03) inset, 0 0 36px rgba(209, 18, 43, .28);
   font: 600 .92rem/1.25 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; color: #eadede; animation: dl-open .16s steps(4) both; -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }

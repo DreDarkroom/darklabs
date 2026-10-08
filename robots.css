@@ -1,33 +1,5 @@
-/* Darklabs: glitchy, robotic style and the little robots. Everything moving is switched off by Calm mode (html.calm) and by reduced motion. */
+/* Darklabs: the little robots (loaded only when they are switched on, or on the Word Lab where they are shown). Calm mode (html.calm) stops every movement. */
 
-/* ---- a faint scan-line screen over everything, and a slow bar rolling down it ---- */
-body::before { content: ""; position: fixed; inset: 0; z-index: 49; pointer-events: none; background: repeating-linear-gradient(0deg, rgba(255, 255, 255, .022) 0 1px, transparent 1px 3px); mix-blend-mode: overlay; }
-body::after { content: ""; position: fixed; left: 0; right: 0; top: -20%; height: 18%; z-index: 49; pointer-events: none; background: linear-gradient(180deg, transparent, rgba(209, 18, 43, .06), transparent); animation: roll 11s linear infinite; }
-@keyframes roll { to { top: 120%; } }
-
-/* ---- glitch text: a copy sliced and shifted in red and cyan, on hover, focus, and now and then ---- */
-.glitch-text { position: relative; }
-.glitch-text::before, .glitch-text::after { content: attr(data-text); content: attr(data-text) / ""; position: absolute; inset: 0; pointer-events: none; opacity: 0; }
-.glitch-text::before { color: #ff2f6d; }
-.glitch-text::after { color: #3cdcff; }
-.glitch-text.glitching::before, .glitch-text:hover::before, .glitch-text.glitching::after, .glitch-text:hover::after { opacity: .75; }
-.glitch-text.glitching::before, .glitch-text:hover::before { animation: gl1 .32s steps(2) 1; transform: translate(-2px, 0); clip-path: inset(10% 0 55% 0); }
-.glitch-text.glitching::after, .glitch-text:hover::after { animation: gl2 .32s steps(2) 1; transform: translate(2px, 0); clip-path: inset(58% 0 6% 0); }
-@keyframes gl1 { 0% { clip-path: inset(0 0 80% 0); transform: translate(-3px, 0); } 50% { clip-path: inset(40% 0 30% 0); transform: translate(2px, 0); } 100% { clip-path: inset(10% 0 55% 0); transform: translate(-2px, 0); } }
-@keyframes gl2 { 0% { clip-path: inset(70% 0 0 0); transform: translate(3px, 0); } 50% { clip-path: inset(20% 0 55% 0); transform: translate(-2px, 0); } 100% { clip-path: inset(58% 0 6% 0); transform: translate(2px, 0); } }
-
-/* ---- projects build themselves: sliced in, with a jitter, while a robot hammers ---- */
-.hang.unbuilt .print { opacity: 0; clip-path: inset(0 0 100% 0); }
-.hang.unbuilt:not(.built) .print { pointer-events: none; }
-.print.assembling { animation: assemble .9s steps(9) both; }
-@keyframes assemble {
-  0% { opacity: 0; clip-path: inset(0 0 100% 0); filter: hue-rotate(60deg) saturate(2); }
-  22% { opacity: 1; clip-path: inset(0 0 70% 0); transform: perspective(900px) translateX(-8px); }
-  44% { clip-path: inset(0 0 45% 0); transform: perspective(900px) translateX(6px) skewX(-3deg); filter: hue-rotate(-40deg); }
-  66% { clip-path: inset(0 0 20% 0); transform: perspective(900px) translateX(-3px); }
-  100% { opacity: 1; clip-path: inset(0); transform: perspective(900px); filter: none; }
-}
-.hang.built .print { opacity: 1; clip-path: inset(0); }
 
 /* ---- the robots ---- */
 .bot { position: relative; display: block; width: 52px; height: 64px; padding: 0; border: 0; background: none; cursor: pointer; filter: drop-shadow(0 4px 6px rgba(0, 0, 0, .7)); }
@@ -49,11 +21,6 @@ body::after { content: ""; position: fixed; left: 0; right: 0; top: -20%; height
 .bot.working .b-arm-r { animation: hammer .42s steps(3) infinite; }
 .bot.nap .botsvg { animation: nap 3.2s ease-in-out infinite; }
 .bot.nap .b-eye { animation: none; transform: scaleY(.15); }
-.bot.companion .botsvg { transform: scaleX(var(--dir, 1)); }
-.rowbot { position: absolute; top: -50px; left: 4%; width: 40px; height: 50px; z-index: 6; pointer-events: auto; animation: patrol 26s ease-in-out infinite alternate; }
-@keyframes patrol { from { left: 3%; } to { left: calc(100% - 52px); } }
-.rowbot.working { animation-play-state: paused; }
-.rowbot.working .b-arm-r { animation: hammer .42s steps(3) infinite; }
 .companion-wrap { position: fixed; left: 8px; bottom: 6px; z-index: 55; display: flex; flex-direction: column; align-items: center; pointer-events: none; transition: transform .25s linear; }
 .companion-wrap > * { pointer-events: auto; }
 .bot-name { margin-top: -2px; font: 700 .62rem/1 ui-monospace, Consolas, monospace; letter-spacing: .1em; color: #e8434f; text-shadow: 0 0 6px rgba(209, 18, 43, .7); background: rgba(8, 3, 4, .8); padding: 2px 5px; border-radius: 3px; }
@@ -65,9 +32,7 @@ body::after { content: ""; position: fixed; left: 0; right: 0; top: -20%; height
 .bot-credit { margin-top: .6rem; font-size: .82rem; color: #9c8a8a; }
 .linklike { font: inherit; color: var(--red-soft, #e8434f); background: none; border: 0; padding: 0; text-decoration: underline; cursor: pointer; }
 .linklike:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
-@media (max-width: 600px) { .companion-wrap { bottom: 2px; } .bot { width: 44px; height: 54px; } .rowbot { top: -42px; } }
-html.calm body::before, html.calm body::after { display: none; }
-html.calm .rowbot { animation: none; left: 4%; }
+@media (max-width: 600px) { .companion-wrap { bottom: 2px; } .bot { width: 44px; height: 54px; } }
 html.calm .companion-wrap { transform: none !important; }
 html.calm .botsvg .b-eye { animation: none; }
-@media print { .companion-wrap, .rowbot, body::before, body::after, #bot-say { display: none !important; } }
+@media print { .companion-wrap, #bot-say { display: none !important; } }

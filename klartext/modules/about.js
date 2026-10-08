@@ -67,7 +67,7 @@ export default {
       h('div', { class: 'panel' }, h('h2', null, 'Über das Kit'),
         h('p', null, `${brand.name}: ein kleines, modulares Werkzeug-Set, gebaut von ${brand.owner}. Es lädt nur die Werkzeuge, die du öffnest. Kein Framework, keine Anzeigen, keine Schriften von fremden Servern, keine Konten.`),
         h('p', null, 'Lizenz: MIT. Der VR-Raum nutzt three.js (MIT-Lizenz), sonst kein fremder Code. Die deutschen Texte sind neu geschrieben.'),
-        h('p', { class: 'fine' }, 'C&C, Hyper Dash, Hero Drop, GTA und alle anderen Namen gehören ihren Inhabern. Nicht verbunden mit und nicht gebilligt von Electronic Arts, Triangle Factory, Rockstar Games oder Take-Two.'),
+        h('p', { class: 'fine' }, 'C&C, Hyper Dash, Hero Drop, GTA und alle anderen Namen gehören ihren Inhabern. Nicht verbunden mit und nicht gebilligt von den Inhabern der genannten Spiele.'),
         h('p', { class: 'fine' }, h('a', { href: '../' }, 'Zurück zu Darklabs'))));
   },
 };

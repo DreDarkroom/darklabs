@@ -12,7 +12,7 @@ const speak = (text) => { if (!canSpeak) return; speechSynthesis.cancel(); const
 const switches = [['easy', 'easy'], ['hc', 'hc'], ['calm', 'calm']];
 const paint = () => {
   for (const [id, key] of switches) $(`#${id}`).setAttribute('aria-pressed', String(prefs.get(key)));
-  for (const [id, n] of [['sm', 100], ['md', 125], ['lg', 150]]) $(`#${id}`).setAttribute('aria-pressed', Stringprefs.get('size') === n);
+  for (const [id, n] of [['sm', 100], ['md', 125], ['lg', 150]]) $(`#${id}`).setAttribute('aria-pressed', String(prefs.get('size') === n));
 };
 for (const [id, key] of switches) $(`#${id}`).addEventListener('click', () => prefs.toggle(key));
 $('#sm').addEventListener('click', () => prefs.set('size', 100));
@@ -102,6 +102,7 @@ function render() {
 }
 $('#q').addEventListener('input', (e) => { query = e.target.value; render(); });
 addEventListener('hashchange', render);
+addEventListener('wordlab:open', render);       // the robots' "Learn the word" link, pressed while already here
 {
   const p = new URLSearchParams(location.search).get('q');
   if (p) { query = p.slice(0, 60); $('#q').value = query; }

@@ -1,0 +1,103 @@
+/* Darklabs hub. The default look is a calm, readable dark room: no darkness overlay, no animation, almost no script.
+   Atmosphere is opt-in from the page settings (the gear): html.fx-motion (swaying cards, neon), html.fx-beam (the safelight), plus lazy robots, dust and 3D icons. */
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--red:#d1122b;--red-soft:#ff6b78;--ink:#0d0709;--panel:#241218;--panel2:#190c11;--line:rgba(255,107,120,.55);--text:#f7eded;--dim:#d8c8c8;--mx:50vw;--my:30vh;--beam:330px}
+html{background:var(--ink)}
+body{position:relative;min-height:100vh;color:var(--text);font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;overflow-x:hidden;background:radial-gradient(ellipse at 50% -10%,#331017 0,#1a0b0f 55%,#0e0709 100%)}
+a{color:var(--red-soft)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.skip{position:absolute;left:-999px;top:0;background:#000;color:#fff;padding:.6rem 1rem;z-index:99}.skip:focus{left:8px;top:8px}
+:focus-visible{outline:2px solid #fff;outline-offset:3px}
+/* the room: static, behind everything */
+#bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}#bg .layer{position:absolute;inset:-4%}
+.wall{background:repeating-linear-gradient(0deg,rgba(255,255,255,.02) 0 1px,transparent 1px 74px),repeating-linear-gradient(90deg,rgba(255,255,255,.014) 0 1px,transparent 1px 74px)}
+.shelf{background:radial-gradient(ellipse 60px 120px at 9% 14%,rgba(110,18,28,.28),transparent 70%),radial-gradient(ellipse 48px 130px at 88% 22%,rgba(110,18,28,.24),transparent 70%)}
+.pipes{background:linear-gradient(90deg,transparent 0 6%,rgba(60,22,26,.55) 6% 6.8%,transparent 6.8% 93%,rgba(60,22,26,.55) 93% 93.8%,transparent 93.8%)}
+.strips{background:repeating-linear-gradient(90deg,transparent 0 160px,rgba(80,20,28,.22) 160px 162px,transparent 162px 330px)}
+#vignette{position:fixed;inset:0;z-index:2;pointer-events:none;background:radial-gradient(ellipse at 50% 40%,transparent 55%,rgba(0,0,0,.45) 100%)}
+.wrap{position:relative;z-index:10;max-width:1120px;margin:0 auto;padding:1.2rem 1.1rem 3rem}
+.topbar a{font-size:.9rem;font-weight:600;text-decoration:none}.topbar a:hover{text-decoration:underline}
+header{text-align:center;margin:2.2rem 0 1.4rem}
+.sign{font-weight:800;letter-spacing:.34em;text-indent:.34em;font-size:clamp(2rem,7.4vw,4.2rem);color:#ffe3e6;text-shadow:0 0 14px rgba(209,18,43,.8),0 0 40px rgba(209,18,43,.4)}
+.tagline{margin-top:.6rem;color:var(--dim);letter-spacing:.3em;font-size:.82rem;text-transform:uppercase}
+/* the symbols: a legend, and a chip on each card */
+.legend{display:flex;flex-wrap:wrap;justify-content:center;gap:.5rem .6rem;margin:1.1rem auto 0;max-width:46rem;list-style:none}
+.legend .tag{font-size:.8rem}
+.tags{position:absolute;top:.7rem;right:.7rem;display:flex;gap:.3rem;z-index:3}
+.tag{position:relative;display:inline-flex;align-items:center;gap:.35em;min-width:2rem;min-height:2rem;padding:.1rem .45rem;border:1px solid var(--line);border-radius:999px;background:rgba(14,6,9,.88);color:var(--text);font-size:.95rem;line-height:1;cursor:help;justify-content:center}
+.legend .tag{padding-inline:.7rem}.legend .tag b{font-weight:600;font-size:.78rem;letter-spacing:.04em}
+.tag[data-t=featured]{color:#ffd84a;border-color:#a98a1a}.tag[data-t=vr]{color:#7fd6ff;border-color:#2f7fa6}.tag[data-t=wip]{color:#ffb26b;border-color:#a65f20}
+.tag[data-t=idea]{color:#fff08a;border-color:#8f8420}.tag[data-t=experimental]{color:#c9a4ff;border-color:#6d49a8}.tag[data-t=learn]{color:#8fe3b0;border-color:#2f8a55}.tag[data-t=mobile]{color:#ff9fc4;border-color:#a8466f}.tag[data-t=retired]{color:#a89c9c;border-color:#5a4e4e}
+.tag::after{content:var(--tip);position:absolute;right:0;top:calc(100% + 8px);width:min(15rem,70vw);padding:.55rem .7rem;border:1px solid var(--line);border-radius:6px;background:#0c0507;color:var(--text);font:500 .8rem/1.4 system-ui,sans-serif;text-align:left;opacity:0;pointer-events:none;transform:translateY(-3px);transition:opacity .15s,transform .15s;z-index:40}
+.legend .tag::after{right:auto;left:50%;margin-left:-7.5rem}
+.tag:hover::after,.tag:focus::after,.tag:focus-visible::after{opacity:1;transform:none}
+/* what suits this device */
+.devnote{margin:.9rem auto 0;max-width:46rem;text-align:center;color:var(--dim);font-size:.9rem}.devnote button{font:inherit;color:var(--red-soft);background:none;border:0;text-decoration:underline;cursor:pointer;padding:.2rem}
+.reco{border-color:#ffd84a!important;box-shadow:0 0 0 2px rgba(255,216,74,.25),0 16px 34px rgba(0,0,0,.7)!important}
+.reco-flag{display:block;margin:-.2rem 0 .5rem;font-size:.72rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#ffd84a}
+h2.sect{margin:3rem 0 .3rem;text-align:center;font-size:1.5rem;letter-spacing:.2em;text-transform:uppercase;color:var(--red-soft)}
+p.sect-sub{text-align:center;color:var(--dim);font-size:.85rem;letter-spacing:.12em;text-transform:uppercase;margin-bottom:1.6rem}
+.roadnote{max-width:46rem;margin:-.6rem auto 1.8rem;text-align:center;color:var(--dim);font-size:.95rem}
+/* the hero */
+.hero-print{position:relative;display:grid;grid-template-columns:minmax(200px,340px) 1fr;gap:2rem;align-items:center;padding:2.2rem;border:1px solid var(--line);border-radius:4px;background:linear-gradient(180deg,#2a1218,#160a0e);box-shadow:0 20px 50px rgba(0,0,0,.6)}
+.kaleido{position:relative;aspect-ratio:1;border-radius:50%;overflow:hidden;box-shadow:0 0 40px rgba(209,18,43,.45),inset 0 0 40px #000}
+.kaleido i,.kaleido b{position:absolute;inset:0}
+.kaleido i:nth-child(1){background:conic-gradient(from 0deg,#d1122b,#2a0710,#ff6a3d,#1b0610,#d1122b,#7a0b2a,#d1122b)}
+.kaleido i:nth-child(2){background:conic-gradient(from 40deg,transparent,rgba(255,200,200,.35),transparent 20%,rgba(255,120,120,.25) 40%,transparent 60%,rgba(255,220,200,.3) 80%,transparent);mix-blend-mode:screen}
+.kaleido i:nth-child(3){background:repeating-conic-gradient(from 0deg,rgba(0,0,0,.55) 0 15deg,transparent 15deg 30deg)}
+.kaleido b{background:radial-gradient(circle,transparent 30%,rgba(0,0,0,.6) 100%)}
+.eyebrow{font-size:.78rem;letter-spacing:.3em;text-transform:uppercase;color:var(--red-soft);margin-bottom:.5rem}
+.hero-text h2{font-size:clamp(2rem,5vw,3.2rem);line-height:1.05;color:#fff;margin-bottom:.8rem}
+.hero-desc{font-size:1.08rem;color:#ecdede;margin-bottom:1rem;max-width:44ch}
+.btn{display:inline-block;align-self:flex-start;margin-top:auto;font-weight:700;text-decoration:none;color:#fff;background:linear-gradient(180deg,#e0243a,#a50d20);padding:.7rem 1.3rem;border-radius:3px;border:1px solid #ff6a78;min-height:44px}
+.btn:hover,.btn:focus-visible{filter:brightness(1.15)}.btn--hero{padding:.9rem 1.8rem;font-size:1.05rem}
+/* the cards */
+.line,.trays,.sheet{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:1.6rem;align-items:stretch}
+.hang{display:flex;flex-direction:column}
+.print{position:relative;display:flex;flex-direction:column;flex:1;padding:1.7rem 1.5rem 1.5rem;border:1px solid var(--line);border-radius:3px;background:linear-gradient(180deg,var(--panel),var(--panel2));box-shadow:0 12px 28px rgba(0,0,0,.55)}
+.print:hover{border-color:#ff9aa4}
+.print .icon{display:flex;align-items:center;justify-content:center;width:84px;height:84px;margin:-.4rem 0 .1rem -.4rem;font-size:2.6rem}
+html.gl3d-on .print .icon .emoji{visibility:hidden}
+.print h3{font-size:1.35rem;color:#fff;letter-spacing:.03em;margin-bottom:.5rem;padding-right:5.5rem}
+.print h3 .sub{display:block;font-size:.7rem;letter-spacing:.34em;text-transform:uppercase;color:var(--red-soft);font-weight:600;margin-top:.3rem}
+.print p{color:#ecdede;font-size:.95rem;margin-bottom:1.1rem}.print .note{color:#c8b8b8;font-size:.82rem;margin-top:-.4rem}
+.print--big{grid-column:1/-1}
+.trays .print{border-style:dashed}.trays .print--big{border-style:solid}
+.print--retired{background:#171213;border-color:#4a4040;box-shadow:none}.print--retired .icon{filter:grayscale(1);opacity:.6}
+.print--retired h3{color:#b2a6a6}.print--retired p{color:#a89c9c}.print--retired .note{color:#8f8484}
+.print--retired .btn{background:#3a3030;border-color:#5a4e4e;color:#d0c4c4}.print--retired:hover{border-color:#7a6e6e}
+.print--safelight{border-color:#a8742a;background:radial-gradient(ellipse at 85% 0%,rgba(242,165,65,.16),transparent 60%),#1a1410}
+.print--safelight h3{color:#f6b256}.print--safelight .btn{background:#f2a541;border-color:#f2a541;color:#0e0b0a}
+.print--obscura{border-color:#e0243a;background:radial-gradient(circle at 50% 0,rgba(255,255,255,.1),transparent 30%),#170809}
+.sheet .print{background:#150f11;border-color:#3a2b2e}.sheet .print[aria-disabled=true]{opacity:.7;pointer-events:none}
+.apk{margin-top:1.1rem;padding-top:1.1rem;border-top:1px solid #4a3a3a}.apk-badge{display:inline-block;background:var(--red);color:#fff;padding:.2rem .6rem;border-radius:3px;font-size:.7rem;font-weight:700;margin-bottom:.6rem}
+.apk-box{background:#0e0709;border:1px solid #4a3a3a;border-radius:4px;padding:.8rem;font-size:.82rem;color:#d0c0c0}.apk-box ol{margin:.4rem 0 0 1.2rem}
+footer{position:relative;z-index:10;text-align:center;color:var(--dim);font-size:.85rem;padding:2.4rem 1rem 5rem;border-top:1px solid #2e1a1e;margin-top:3rem}footer a{color:var(--red-soft);text-decoration:none}
+/* the page settings: a gear that stays put, and a panel. It can be hidden down to a dot. */
+#fxbtn{position:fixed;right:12px;bottom:12px;z-index:70;display:inline-flex;align-items:center;gap:.4rem;min-height:44px;font:inherit;font-size:.8rem;color:#f0e2e2;background:rgba(14,6,9,.92);border:1px solid var(--line);border-radius:999px;padding:.4rem .9rem;cursor:pointer}
+#fxbtn:hover,#fxbtn[aria-expanded=true]{border-color:#fff;color:#fff}
+#fxpanel{position:fixed;right:12px;bottom:64px;z-index:71;width:min(23rem,calc(100vw - 24px));max-height:calc(100vh - 90px);overflow:auto;padding:1rem 1rem .8rem;border:1px solid var(--line);border-radius:8px;background:#0e0709;box-shadow:0 18px 50px rgba(0,0,0,.8)}
+#fxpanel[hidden]{display:none}#fxpanel h2{font-size:.8rem;letter-spacing:.24em;text-transform:uppercase;color:var(--red-soft);margin-bottom:.2rem}#fxpanel .lead{color:var(--dim);font-size:.82rem;margin-bottom:.7rem}
+.fxrow{display:flex;align-items:flex-start;gap:.7rem;padding:.45rem 0;border-top:1px solid #2a1a1e}.fxrow:first-of-type{border-top:0}
+.fxrow button.sw{flex:none;width:46px;height:26px;margin-top:.15rem;border-radius:999px;border:1px solid #6a5a5a;background:#2a2020;position:relative;cursor:pointer}
+.fxrow button.sw::after{content:"";position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:#d8c8c8;transition:transform .15s}
+.fxrow button.sw[aria-checked=true]{background:#8a0f20;border-color:#ff6b78}.fxrow button.sw[aria-checked=true]::after{transform:translateX(20px);background:#fff}
+.fxrow b{display:block;font-size:.88rem}.fxrow span{display:block;color:var(--dim);font-size:.76rem;line-height:1.35}
+.fxfoot{display:flex;flex-wrap:wrap;gap:.4rem .9rem;margin-top:.6rem;padding-top:.6rem;border-top:1px solid #2a1a1e}.fxfoot button{font:inherit;font-size:.78rem;color:var(--red-soft);background:none;border:0;text-decoration:underline;cursor:pointer;min-height:36px}
+.fxdot{position:fixed;right:6px;bottom:6px;z-index:70;width:22px;height:22px;border-radius:50%;border:1px solid var(--line);background:rgba(14,6,9,.7);color:var(--dim);font-size:.7rem;cursor:pointer;opacity:.55;padding:0}.fxdot:hover,.fxdot:focus-visible{opacity:1}
+/* optional atmosphere (each part loads only when switched on) */
+html.fx-beam #dark{position:fixed;inset:0;z-index:50;pointer-events:none;background:radial-gradient(circle var(--beam) at var(--mx) var(--my),rgba(2,0,0,0) 0%,rgba(2,0,0,.04) 34%,rgba(2,0,0,.62) 100%)}
+html.fx-beam #glow{position:fixed;inset:0;z-index:51;pointer-events:none;mix-blend-mode:screen;background:radial-gradient(circle calc(var(--beam)*.85) at var(--mx) var(--my),rgba(209,18,43,.34),rgba(209,18,43,.1) 46%,transparent 74%)}
+#dust{position:fixed;inset:0;z-index:3;pointer-events:none}#gl3d{position:fixed;inset:0;width:100%;height:100%;z-index:12;pointer-events:none}
+html.fx-motion .print{transform:perspective(900px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transition:transform .16s ease,border-color .2s}
+html.fx-motion .hang{animation:sway var(--d,7s) ease-in-out infinite alternate;transform-origin:50% 0}
+html.fx-motion .sign .L3{animation:neon 6s infinite}html.fx-motion .sign .L6{animation:neon 9s infinite 1.4s}
+html.fx-motion .kaleido i:nth-child(1){animation:spin 16s linear infinite}html.fx-motion .kaleido i:nth-child(2){animation:spin 9s linear infinite reverse}html.fx-motion .kaleido i:nth-child(3){animation:spin 40s linear infinite}
+html.fx-motion .trays .print::after{content:"";position:absolute;left:0;right:0;bottom:0;height:26px;pointer-events:none;background:linear-gradient(180deg,rgba(209,18,43,.12),rgba(80,6,16,.4));animation:liquid 7s linear infinite;background-size:120px 100%}
+@keyframes sway{from{transform:rotate(-.6deg)}to{transform:rotate(.6deg)}}@keyframes neon{0%,100%{opacity:1}4%{opacity:.4}6%{opacity:1}8%{opacity:.55}10%{opacity:1}}
+@keyframes spin{to{transform:rotate(360deg)}}@keyframes liquid{to{background-position:120px 0}}
+/* devices */
+html[data-device=vr] .btn{padding:.9rem 1.5rem;font-size:1.05rem}html[data-device=vr] .tag{min-width:2.6rem;min-height:2.6rem;font-size:1.1rem}
+html[data-device=mobile] .line,html[data-device=mobile] .trays,html[data-device=mobile] .sheet{grid-template-columns:1fr}
+@media (max-width:760px){.hero-print{grid-template-columns:1fr;padding:1.4rem}.kaleido{max-width:240px;margin:0 auto}header{margin-top:1.4rem}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}

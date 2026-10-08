@@ -9,6 +9,30 @@ export const SEEDS = [
   "group": "featured"
  },
  {
+  "id": "chunguscello",
+  "title": "ChungusCello",
+  "blurb": "A physically-modelled cello — every note is a simulated bowed string, not a recording. Bow it, pluck it, tremolo it, or chug it through the Chungus amp. Fretless touch fingerboard with slides and vibrato, a loop station, sing-to-play, a tuner, and a sampler that turns any sound into an instrument (MeowSynth's meow included). MIDI and MPE in and out, WAV/MIDI/stem exports with a Reaper project, and it installs offline.",
+  "url": "/darklabs/chunguscello/",
+  "status": "Live",
+  "group": "on the line"
+ },
+ {
+  "id": "wipelight",
+  "title": "Glass Groove",
+  "blurb": "Wipe the fog off a glowing picture and make music with your thumbs. A bass, three drummers and a picture that reacts to everything you touch, built for one hand on a phone. Two-finger double tap for a Surge: a long rise with a countdown and colours that climb with the sound. Keeps playing when you leave, works offline, and shares a beat as a link.",
+  "url": "https://dredarkroom.github.io/GlassGroove/",
+  "status": "Building",
+  "group": "on the line"
+ },
+ {
+  "id": "drevelopdrop",
+  "title": "DreVelopDrop",
+  "blurb": "The experimental parallel version of DevelopDrop: a wetter squeegee with drips, buttons that squash and feed the picture, an ink scene, a developer mode with live numbers, and a Studio that keeps what you play so you can edit it on a timeline, render it to WAV and stems, and record it as video. New ideas land here first and may change or break.",
+  "url": "https://dredarkroom.github.io/DreVelopDrop/",
+  "status": "Testing",
+  "group": "on the line"
+ },
+ {
   "id": "klartext",
   "title": "KlartextKit",
   "blurb": "A small toolkit for learning the German gamers use in strategy and VR chat. Big colour-coded callout buttons you tap to hear, spaced-repetition flashcards, a quiz, chat practice, timers that count down in German, a VR break guard, and a stress lab that pushes your device until it breaks and writes down where. A nod to C&C: Rivals, Hyper Dash // Hero Drop and heist games like GTA 5. Modular and light (about 21 KB to start; every tool loads only when you open it), works offline, and switches to big buttons by itself in the Quest Browser.",
@@ -25,18 +49,18 @@ export const SEEDS = [
   "group": "on the line"
  },
  {
-  "id": "wipelight",
-  "title": "Glass Groove",
-  "blurb": "Wipe the fog off a glowing picture and make music with your thumbs. A bass, three drummers and a picture that reacts to everything you touch, built for one hand on a phone. Two-finger double tap for a Surge: a long rise with a countdown and colours that climb with the sound. Keeps playing when you leave, works offline, and shares a beat as a link.",
-  "url": "https://dredarkroom.github.io/GlassGroove/",
-  "status": "Building",
+  "id": "penrosepulse",
+  "title": "PenrosePulse",
+  "blurb": "An infinite staircase of sound. It starts as one soft felt piano, then you press Climb: a pad breathes in, a marimba circles your phrase, a shuffling shaker and a soft tom arrive, the chord swells and rolls into the drop — then the key lifts a whole step and it climbs again, forever. Endless-zoom light visuals, an endlessly rising staircase tone, touch / keys / pads / MIDI, and it installs offline.",
+  "url": "/darklabs/penrosepulse/",
+  "status": "Live",
   "group": "on the line"
  },
  {
-  "id": "vrlab",
-  "title": "VR Lab",
-  "blurb": "A short, honest course in making VR apps in the browser with three.js and WebXR, with a live example you can step into. Plus where to point your support, and a way to get alerts.",
-  "url": "/darklabs/vr/",
+  "id": "drumdj",
+  "title": "DarkDeck",
+  "blurb": "Modelled acoustic drum kit with sequencer, a two-deck DJ mixer (load your own tracks), a sampler, a master effects rack and an SFX maker. Bring your own audio or use the built-in demos.",
+  "url": "/darklabs/drumdj/",
   "status": "Live",
   "group": "on the line"
  },
@@ -49,18 +73,10 @@ export const SEEDS = [
   "group": "on the line"
  },
  {
-  "id": "penrosepulse",
-  "title": "PenrosePulse",
-  "blurb": "An infinite staircase of sound. It starts as one soft felt piano, then you press Climb: a pad breathes in, a marimba circles your phrase, a shuffling shaker and a soft tom arrive, the chord swells and rolls into the drop — then the key lifts a whole step and it climbs again, forever. Endless-zoom light visuals, an endlessly rising staircase tone, touch / keys / pads / MIDI, and it installs offline.",
-  "url": "/darklabs/penrosepulse/",
-  "status": "Live",
-  "group": "on the line"
- },
- {
-  "id": "chunguscello",
-  "title": "ChungusCello",
-  "blurb": "A physically-modelled cello — every note is a simulated bowed string, not a recording. Bow it, pluck it, tremolo it, or chug it through the Chungus amp. Fretless touch fingerboard with slides and vibrato, a loop station, sing-to-play, a tuner, and a sampler that turns any sound into an instrument (MeowSynth's meow included). MIDI and MPE in and out, WAV/MIDI/stem exports with a Reaper project, and it installs offline.",
-  "url": "/darklabs/chunguscello/",
+  "id": "vrlab",
+  "title": "VR Lab",
+  "blurb": "A short, honest course in making VR apps in the browser with three.js and WebXR, with a live example you can step into. Plus where to point your support, and a way to get alerts.",
+  "url": "/darklabs/vr/",
   "status": "Live",
   "group": "on the line"
  },
@@ -89,12 +105,20 @@ export const SEEDS = [
   "group": "on the line"
  },
  {
-  "id": "drumdj",
-  "title": "DarkDeck",
-  "blurb": "Modelled acoustic drum kit with sequencer, a two-deck DJ mixer (load your own tracks), a sampler, a master effects rack and an SFX maker. Bring your own audio or use the built-in demos.",
-  "url": "/darklabs/drumdj/",
-  "status": "Live",
-  "group": "on the line"
+  "id": "circuitstomp",
+  "title": "CircuitStomp",
+  "blurb": "A drum & bass machine built entirely from synthesised robot voices — no samples anywhere. Sequencer with pitch and chance per step, live playing, MIDI in and out, and exports of stems, MIDI and a ready-made Reaper project. Includes 11 lessons and a printable guide.",
+  "url": "/darklabs/circuitstomp/",
+  "status": "Building",
+  "group": "in the trays"
+ },
+ {
+  "id": "blueheronbass",
+  "title": "BlueHeronBass",
+  "blurb": "A five-string bass with a blue heron in its voice: finger, pick, slap, pop, tap and harmonics, a fuzz and envelope-filter amp, a loop station and MIDI. No samples, no sign-up.",
+  "url": "/darklabs/blueheronbass/",
+  "status": "Building",
+  "group": "in the trays"
  },
  {
   "id": "crate-capture",
@@ -105,35 +129,11 @@ export const SEEDS = [
   "group": "in the trays"
  },
  {
-  "id": "circuitstomp",
-  "title": "CircuitStomp",
-  "blurb": "A drum & bass machine built entirely from synthesised robot voices — no samples anywhere. Sequencer with pitch and chance per step, live playing, MIDI in and out, and exports of stems, MIDI and a ready-made Reaper project. Includes 11 lessons and a printable guide.",
-  "url": "/darklabs/circuitstomp/",
-  "status": "Live",
-  "group": "in the trays"
- },
- {
-  "id": "glowgrain",
-  "title": "GlowGrain",
-  "blurb": "A sunlit felt piano that blooms: turn up Bloom and a pad, a warm bass, a marimba figure, light percussion, a voice and a self-playing piano wake in turn. Synthesised in the browser, with tape warmth, a loop station and WAV / MIDI export.",
-  "url": "/darklabs/glowgrain/",
-  "status": "Live",
-  "group": "in the trays"
- },
- {
-  "id": "blueheronbass",
-  "title": "BlueHeronBass",
-  "blurb": "A five-string bass with a blue heron in its voice: finger, pick, slap, pop, tap and harmonics, a fuzz and envelope-filter amp, a loop station and MIDI. No samples, no sign-up.",
-  "url": "/darklabs/blueheronbass/",
-  "status": "Live",
-  "group": "in the trays"
- },
- {
   "id": "radio",
   "title": "Darklabs Radio",
   "blurb": "A cleared-for-use radio station with a TTS presenter reading idents between tracks — built to be hosted or broadcast, with room to adapt to other environments later on.",
   "url": "/darklabs/radio/",
-  "status": "Live",
+  "status": "Building",
   "group": "in the trays"
  },
  {
@@ -141,7 +141,7 @@ export const SEEDS = [
   "title": "CrateCall",
   "blurb": "An audition tool for the VR game's music and SFX pool — rate tracks Love/Keep/Maybe/Drop, trim and export a loop, and send picks to the team in one click.",
   "url": "/darklabs/cratecall/",
-  "status": "Live",
+  "status": "Building",
   "group": "in the trays"
  },
  {
@@ -149,7 +149,7 @@ export const SEEDS = [
   "title": "Sonic Smithy",
   "blurb": "The SFX counterpart to CrateCall: audition and auto-rate CC0 sound packs, layer and slice/loop them, generate new sci-fi SFX from scratch (with a dedicated Pistol Lab and Rail Lab), then export a Godot-ready folder with a manifest and autoload script.",
   "url": "/darklabs/sonicsmithy/",
-  "status": "Live",
+  "status": "Building",
   "group": "in the trays"
  },
  {
@@ -157,7 +157,7 @@ export const SEEDS = [
   "title": "Dark Cinema Lab",
   "blurb": "A dark reference hub for cinema ideas and looks. Work in progress.",
   "url": "/darklabs/dark-cinema-lab/",
-  "status": "Live",
+  "status": "Building",
   "group": "in the trays"
  },
  {
@@ -165,7 +165,7 @@ export const SEEDS = [
   "title": "Prompt Lab",
   "blurb": "A browser-based experimental laboratory for comparing and evaluating AI prompts.",
   "url": "/darklabs/promptlab/",
-  "status": "Live",
+  "status": "Building",
   "group": "in the trays"
  },
  {
@@ -173,7 +173,7 @@ export const SEEDS = [
   "title": "Resonance Core",
   "blurb": "A game prototype that runs in the browser. Rough edges expected.",
   "url": "/darklabs/resonance-core/",
-  "status": "Live",
+  "status": "Building",
   "group": "in the trays"
  },
  {
@@ -181,7 +181,7 @@ export const SEEDS = [
   "title": "Resonic CLI Toolkit",
   "blurb": "A command-line generator for Resonic Player: a fast, visual way to build launch arguments for musicians and sound designers.",
   "url": "/darklabs/resonic-toolkit/",
-  "status": "Live",
+  "status": "Building",
   "group": "in the trays"
  },
  {
@@ -189,7 +189,7 @@ export const SEEDS = [
   "title": "BrokeBots",
   "blurb": "An experimental browser game for PC (with a mobile version and two-player potential), made by chain-prompting five independent models. Potentially broken robots here.",
   "url": "https://dredarkroom.github.io/BrokeBots/",
-  "status": "Live",
+  "status": "Building",
   "group": "in the trays"
  },
  {
@@ -201,19 +201,27 @@ export const SEEDS = [
   "group": "in the trays"
  },
  {
-  "id": "throattapper",
-  "title": "ThroatTapper",
-  "blurb": "Percussion made from throat flicks and taps. Four tap articulations on keys 1–4, plus a chromatic tonal hum across the QWERTY middle row.",
-  "url": "/darklabs/throattapper/",
-  "status": "Live",
-  "group": "in the trays"
- },
- {
   "id": "pipeline-test",
   "title": "Pipeline Test",
   "blurb": "A deployment pipeline test page. Nothing to see here. (Probably.)",
   "url": "/darklabs/pipeline-test/",
-  "status": "Live",
+  "status": "Paused",
+  "group": "in the trays"
+ },
+ {
+  "id": "throattapper",
+  "title": "ThroatTapper",
+  "blurb": "Percussion made from throat flicks and taps. Four tap articulations on keys 1–4, plus a chromatic tonal hum across the QWERTY middle row.",
+  "url": "/darklabs/throattapper/",
+  "status": "Paused",
+  "group": "in the trays"
+ },
+ {
+  "id": "glowgrain",
+  "title": "GlowGrain",
+  "blurb": "A sunlit felt piano that blooms: turn up Bloom and a pad, a warm bass, a marimba figure, light percussion, a voice and a self-playing piano wake in turn. Synthesised in the browser, with tape warmth, a loop station and WAV / MIDI export.",
+  "url": "/darklabs/glowgrain/",
+  "status": "Paused",
   "group": "in the trays"
  },
  {
@@ -221,7 +229,7 @@ export const SEEDS = [
   "title": "IDEA: Drunk Bots",
   "blurb": "Two teams of identical, very drunk bots wander into a huge flat-pack maze, each quite sure they know the way out. Shout directions at your team and be first to get four through the checkout. A quick game with a tabletop VR mode.",
   "url": "/darklabs/idea/",
-  "status": "Paused",
+  "status": "Building",
   "group": "roadmap"
  },
  {
@@ -229,7 +237,7 @@ export const SEEDS = [
   "title": "Contact Sheet",
   "blurb": "A small pipeline that pulls new clips and stills off a VR headset's gallery, renames them cleanly, and gets them ready to publish — unlisted on YouTube until you say otherwise, stills backed up to your own cloud storage.",
   "url": "https://dredarkroom.github.io/contact-sheet/",
-  "status": "Live",
+  "status": "Paused",
   "group": "roadmap"
  },
  {

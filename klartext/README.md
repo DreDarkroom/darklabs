@@ -90,4 +90,4 @@ Twelve load generators that really slow pages and headsets down: DOM nodes, CSS 
 
 ## Provenance and licences
 
-Code: MIT (repo licence). Text and phrases: written for this kit by an AI assistant (Claude), then tested; not yet native-checked. The logo is DreDarkroom's own. three.js (VR Room only): MIT, see `../chunguscello/vendor/THREE-LICENSE.txt`. No images, fonts, sounds or data from any game. C&C, Command & Conquer, Rivals, Hyper Dash, Hero Drop, GTA and Grand Theft Auto belong to their owners; this kit is not made, endorsed or approved by Electronic Arts, Triangle Factory, Rockstar Games or Take-Two, and links only to official pages.
+Code: MIT (repo licence). Text and phrases: written for this kit by an AI assistant (Claude), then tested; not yet native-checked. The logo is DreDarkroom's own. three.js (VR Room only): MIT, see `../chunguscello/vendor/THREE-LICENSE.txt`. No images, fonts, sounds or data from any game. C&C, Command & Conquer, Rivals, Hyper Dash, Hero Drop, GTA and Grand Theft Auto belong to their owners; this kit is not made, endorsed or approved by their owners, and links only to official pages.

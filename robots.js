@@ -1,183 +1,117 @@
-/* Darklabs: the little robots, and the glitchy way things build themselves as you scroll.
+/* Darklabs: the little robots. Optional and lazy: nothing here runs until someone switches "Little robots" on in the page settings
+   (hub/hub.js then imports this file and calls init()). The Word Lab and the desk import only the data (ROBOTS, botSVG) and cost nothing.
 
    Six characters, each named with a portmanteau: two simple words joined into one, with a capital letter in the middle (ClankCog = Clank + Cog).
-   - A companion rolls along the bottom of the page as you scroll (forward as you go down, back as you go up), hammers while you scroll, and naps when you stop.
-   - Each row of projects has a worker on its line. When a project scrolls into view the worker stops, hammers, and the project builds itself in glitchy slices.
-   - Headings scramble into place when they arrive.
-   - Press a robot to hear what it says. Every robot teaches one word, and links to it in the Word Lab.
-   Nothing here is needed to use the page: with Calm mode on (or reduced motion), or without JavaScript, everything is simply there and still. */
+   One companion rolls along the bottom of the page as you scroll, naps when you stop, and changes with the section you are in.
+   Press a robot to hear what it says. Every robot teaches one word and links to it in the Word Lab.
+   They always face forward (no 2D swivelling). Calm mode, or reduced motion, keeps them still. */
 import { prefs } from './kit/prefs.js';
-
 import { ROBOTS, botSVG } from './robots-data.js';
-export { ROBOTS };
+export { ROBOTS, botSVG };
 
-export { botSVG };
-
-const calm = () => prefs.get('calm');
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const LEARN = new URL('./learn/', import.meta.url).href;
-const learnHref = (id) => `${LEARN}#${id}`;
-let bubble = null, bubbleTimer = 0;
+const label = (r) => `${r.id}, a little ${r.role} robot. ${r.parts[0]} plus ${r.parts[1]}. Press to hear what it says.`;
 
+let bubble = null, bubbleTimer = 0, sayN = 0;
 function say(robot, anchor) {
-  const i = (say.n = ((say.n || 0) + 1) % robot.lines.length);
+  const i = (sayN = (sayN + 1) % robot.lines.length);
   bubble = bubble || document.body.appendChild(Object.assign(document.createElement('div'), { id: 'bot-say', role: 'status' }));
   bubble.replaceChildren();
-  const who = document.createElement('b'); who.textContent = robot.id;
-  const p = document.createElement('p'); p.textContent = robot.lines[i];
-  const a = document.createElement('a'); a.href = learnHref(robot.term); a.textContent = `Learn the word “${robot.term}” →`;
+  const who = Object.assign(document.createElement('b'), { textContent: robot.id });
+  const p = Object.assign(document.createElement('p'), { textContent: robot.lines[i] });
+  const a = Object.assign(document.createElement('a'), { href: `${LEARN}#${robot.term}`, textContent: `Learn the word “${robot.term}” →` });
   bubble.append(who, p, a);
+  bubble.classList.add('on');
   const r = anchor.getBoundingClientRect();
   bubble.style.left = `${Math.max(8, Math.min(r.left, innerWidth - 270))}px`;
   bubble.style.top = `${Math.max(8, r.top - bubble.offsetHeight - 10)}px`;
-  bubble.classList.add('on');
-  bubble.style.top = `${Math.max(8, r.top - bubble.offsetHeight - 10)}px`;
-  clearTimeout(bubbleTimer); bubbleTimer = setTimeout(() => bubble.classList.remove('on'), 9000);
-}
-addEventListener('pointerdown', (e) => { if (bubble && !e.target.closest('#bot-say, .bot')) bubble.classList.remove('on'); }, true);
-addEventListener('keydown', (e) => { if (e.key === 'Escape' && bubble) bubble.classList.remove('on'); });
-
-function makeBot(robot, cls) {
-  const b = document.createElement('button');
-  b.type = 'button'; b.className = `bot ${cls || ''}`;
-  b.setAttribute('aria-label', `${robot.id}, a little ${robot.role} robot. ${robot.parts[0]} plus ${robot.parts[1]}. Press to hear what it says.`);
-  b.innerHTML = botSVG(robot);
-  b.addEventListener('click', () => { say(robot, b); b.classList.add('glitch'); setTimeout(() => b.classList.remove('glitch'), 380); });
-  return b;
+  clearTimeout(bubbleTimer); bubbleTimer = setTimeout(() => bubble && bubble.classList.remove('on'), 9000);
 }
 
-/* ---------- headings: scramble into place ---------- */
-const NOISE = '▒▓░#%&@$*+=/<>?01';
-function scramble(h) {
-  if (calm() || h.dataset.done) return;
-  h.dataset.done = '1';
-  const final = h.textContent;
-  h.setAttribute('aria-label', final);
-  const t0 = performance.now(), dur = 700;
-  (function tick(now) {
-    if (document.hidden) {
-      h.textContent = final;
-      return;
-    }
-    const p = Math.min(1, (now - t0) / dur);
-    h.textContent = [...final].map((ch, i) => (ch === ' ' || i < p * final.length * 1.15 ? ch : NOISE[(Math.random() * NOISE.length) | 0])).join('');
-    if (p < 1) requestAnimationFrame(tick); else {
-      h.textContent = final;
-      h.removeAttribute('aria-label');
-    }
-  })(t0);
-  setTimeout(() => { h.textContent = final; h.removeAttribute('aria-label'); }, dur + 150);                   // if the page was not drawing (a hidden tab), still end with the real words
+/* A link whose only difference from the current address is the hash does not make the Word Lab re-read it once it has been opened that way.
+   So a "Learn the word" link to the Word Lab, pressed while you are in the Word Lab, is handled here: set the hash and tell the page to show it. */
+function onLink(e) {
+  const a = e.target.closest && e.target.closest('#bot-say a');
+  if (!a || e.defaultPrevented || e.button || e.metaKey || e.ctrlKey || e.shiftKey) return;
+  const to = new URL(a.href);
+  if (to.pathname !== location.pathname) return;
+  e.preventDefault();
+  history.replaceState(null, '', to.hash);
+  dispatchEvent(new CustomEvent('wordlab:open', { detail: to.hash.slice(1) }));
+  if (bubble) bubble.classList.remove('on');
 }
+function onPointer(e) { if (bubble && !e.target.closest('#bot-say, .bot')) bubble.classList.remove('on'); }
+function onKey(e) { if (e.key === 'Escape' && bubble) bubble.classList.remove('on'); }
 
-/* ---------- the page ---------- */
-function init() {
-  const root = document.documentElement;
-  if (root.dataset.robots === 'off') return;
+let wrap = null, comp = null, name = null, cur = -1, headTops = [], heads = [], lastY = 0, ticking = false, napT = 0, ro = null, on = false;
 
-  /* glitch text: a heading gets a data-text copy that the stylesheet slices and shifts, now and then and on hover */
-  const glitchy = $$('h2.sect, .print h3, .hero-text h2, .glitch-me');
-  glitchy.forEach((h) => { h.classList.add('glitch-text'); h.dataset.text = h.textContent; });
-  const burst = () => {
-    if (!calm() && !document.hidden && glitchy.length) {
-      const h = glitchy[(Math.random() * glitchy.length) | 0], r = h.getBoundingClientRect();
-      if (r.bottom > 0 && r.top < innerHeight) { h.classList.add('glitching'); setTimeout(() => h.classList.remove('glitching'), 320); }
-    }
-    setTimeout(burst, 5000 + Math.random() * 7000);
-  };
-  setTimeout(burst, 3500);
+function setRobot(i) {
+  if (i === cur) return;
+  cur = i;
+  comp.innerHTML = botSVG(ROBOTS[i]);
+  comp.setAttribute('aria-label', label(ROBOTS[i]));
+  name.textContent = ROBOTS[i].id;
+}
+const measure = () => { headTops = heads.map((h) => h.getBoundingClientRect().top + scrollY); };
 
-  /* a row of projects: a worker on the line, and each project builds itself when it arrives */
-  const rows = $$('.line, .trays, .sheet');
-  const workers = rows.map((row, i) => {
-    const robot = ROBOTS[(i + 1) % ROBOTS.length], w = makeBot(robot, 'rowbot');
-    w.tabIndex = -1; w.setAttribute('aria-hidden', 'true');
-    row.append(w);
-    return { row, w, robot };
-  });
-  const prints = $$('.hang');
-  const io = new IntersectionObserver((entries) => {
-    for (const e of entries) {
-      if (!e.isIntersecting) continue;
-      io.unobserve(e.target);
-      const p = e.target.querySelector('.print'), host = workers.find((x) => x.row.contains(e.target));
-      if (!p || calm()) { e.target.classList.add('built'); continue; }
-      if (host) { host.w.classList.add('working'); setTimeout(() => host.w.classList.remove('working'), 1300); }
-      p.classList.add('assembling');
-      setTimeout(() => { p.classList.remove('assembling'); e.target.classList.add('built'); }, 900);
-    }
-  }, { threshold: 0.18 });
-  prints.forEach((h) => { if (!calm() && h.getBoundingClientRect().top > innerHeight * 0.9) { h.classList.add('unbuilt'); io.observe(h); } else h.classList.add('built'); });
+function update() {
+  ticking = false;
+  if (!on) return;
+  if (prefs.get('calm')) { wrap.style.transform = 'none'; comp.classList.remove('rolling', 'working'); comp.classList.add('nap'); return; }
+  const y = scrollY, moving = Math.abs(y - lastY) > 0.5;
+  lastY = y;
+  const max = Math.max(1, document.documentElement.scrollHeight - innerHeight);
+  wrap.style.transform = `translateX(${((y / max) * Math.max(0, innerWidth - 120)).toFixed(1)}px)`;
+  if (moving) {
+    comp.classList.remove('nap'); comp.classList.add('rolling', 'working');
+    clearTimeout(napT); napT = setTimeout(() => { if (comp) { comp.classList.remove('rolling', 'working'); comp.classList.add('nap'); } }, 650);
+  }
+  const target = y + innerHeight * 0.55;
+  let k = -1; headTops.forEach((top, i) => { if (top < target) k = i; });
+  setRobot(k < 0 ? 4 : (k + 1) % ROBOTS.length);                 // the nearest heading above the middle of the screen picks the robot
+}
+const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } };
+const onResize = () => { measure(); onScroll(); };
 
-  const heads = $$('h2.sect');
-  const hio = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { hio.unobserve(e.target); scramble(e.target); } }), { threshold: 0.6 });
-  heads.forEach((h) => hio.observe(h));
-
-  /* the companion: rolls along the bottom as you scroll */
-  const comp = makeBot(ROBOTS[0], 'companion');
-  const label = document.createElement('span'); label.className = 'bot-name'; label.textContent = ROBOTS[0].id;
-  const wrap = document.createElement('div'); wrap.className = 'companion-wrap'; wrap.append(comp, label);
+export function init() {
+  if (on || document.documentElement.dataset.robots === 'off') return;
+  on = true;
+  comp = document.createElement('button');
+  comp.type = 'button'; comp.className = 'bot companion nap';
+  comp.setAttribute('aria-label', label(ROBOTS[4])); comp.innerHTML = botSVG(ROBOTS[4]); cur = 4;
+  name = Object.assign(document.createElement('span'), { className: 'bot-name', textContent: ROBOTS[4].id });
+  wrap = Object.assign(document.createElement('div'), { className: 'companion-wrap' });
+  wrap.append(comp, name);
   document.body.append(wrap);
-  let cur = 0, lastY = scrollY, idleT = 0, x = 0, dir = 1, ticking = false, speed = 0, lastT = performance.now();
-  const setRobot = (i) => {
-    if (i === cur) return;
-    cur = i;
-    const r = ROBOTS[i];
-    comp.innerHTML = botSVG(r);
-    comp.setAttribute('aria-label', `${r.id}, a little ${r.role} robot. ${r.parts[0]} plus ${r.parts[1]}. Press to hear what it says.`);
-    comp.onclick = () => { say(r, comp); comp.classList.add('glitch'); setTimeout(() => comp.classList.remove('glitch'), 380); };
-    label.textContent = r.id;
-    comp.classList.add('glitch'); setTimeout(() => comp.classList.remove('glitch'), 380);
-  };
-  comp.onclick = () => { say(ROBOTS[cur], comp); comp.classList.add('glitch'); setTimeout(() => comp.classList.remove('glitch'), 380); };
-
-  let headTops = [];
-  const measureHeads = () => { headTops = heads.map((h) => h.getBoundingClientRect().top + scrollY); };   // from the top of the page, whatever the heading sits inside
-  measureHeads();
-  addEventListener('load', measureHeads);
-  if (typeof ResizeObserver === 'function') { let rt = 0; new ResizeObserver(() => { clearTimeout(rt); rt = setTimeout(measureHeads, 150); }).observe(document.body); }   // images, fonts and built-in cards change the height
-
-  function update() {
-    ticking = false;
-    const y = scrollY, dy = y - lastY, now = performance.now(), dt = Math.max(1, now - lastT);
-    lastY = y; lastT = now; idleT = now;
-    if (calm()) { wrap.style.transform = 'translateX(0)'; comp.classList.remove('rolling', 'working', 'nap'); return; }
-    const max = Math.max(1, document.documentElement.scrollHeight - innerHeight);
-    const travel = Math.max(0, innerWidth - 120);
-    x = (y / max) * travel;
-    if (Math.abs(dy) > 0.5) dir = dy > 0 ? 1 : -1;
-    speed = Math.abs(dy) / dt;
-    wrap.style.transform = `translateX(${x.toFixed(1)}px)`;
-    comp.style.setProperty('--dir', dir);
-    comp.classList.remove('nap');
-    comp.classList.add('rolling', 'working');
-    comp.classList.toggle('fast', speed > 2.2);
-    if (speed > 3.2 && !comp.classList.contains('glitch')) { comp.classList.add('glitch'); setTimeout(() => comp.classList.remove('glitch'), 380); }
-    /* which section are we in? the nearest heading above the middle of the screen picks the robot */
-    let k = -1;
-    const targetY = y + innerHeight * 0.55;
-    headTops.forEach((top, i) => { if (top < targetY) k = i; });
-    setRobot(k < 0 ? 4 : (k + 1) % ROBOTS.length);
-    clearTimeout(update.t);
-    update.t = setTimeout(() => { comp.classList.remove('rolling', 'working', 'fast'); comp.classList.add('nap'); }, 650);
-  }
-  addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
-  addEventListener('resize', () => { measureHeads(); update(); });
-  addEventListener('darklabs:prefs', () => { if (!calm()) { $$('.hang.unbuilt').forEach((h) => io.observe(h)); } update(); });
-  setRobot(4); update(); comp.classList.add('nap');
-
-  /* the footer: the portmanteau, plainly */
-  const foot = document.querySelector('footer');
-  if (foot && !foot.querySelector('.bot-credit')) {
-    const p = document.createElement('p'); p.className = 'bot-credit';
-    p.innerHTML = `The robots are named with <a href="${LEARN}#portmanteau">portmanteaus</a>: two words joined into one, with a capital letter in the middle. ${ROBOTS.map((r) => r.id).join(', ')}.`;
-    foot.append(p);
-    const q = document.createElement('p'); q.className = 'bot-credit';
-    q.innerHTML = `<a href="${LEARN}">Word Lab</a> &middot; <button type="button" class="linklike" data-calm-toggle>Calm mode</button> &middot; <button type="button" class="linklike" data-easy-toggle>Easy reading</button> &middot; <a href="#" data-ctx-toggle>Use the browser’s right-click menu</a>`;
-    foot.append(q);
-    const sync = () => { q.querySelector('[data-calm-toggle]').textContent = `Calm mode: ${prefs.get('calm') ? 'on' : 'off'}`; q.querySelector('[data-easy-toggle]').textContent = `Easy reading: ${prefs.get('easy') ? 'on' : 'off'}`; };
-    q.querySelector('[data-calm-toggle]').addEventListener('click', () => prefs.toggle('calm'));
-    q.querySelector('[data-easy-toggle]').addEventListener('click', () => prefs.toggle('easy'));
-    addEventListener('darklabs:prefs', sync); sync();
-  }
+  comp.addEventListener('click', () => { say(ROBOTS[cur], comp); comp.classList.add('glitch'); setTimeout(() => comp && comp.classList.remove('glitch'), 380); });
+  heads = $$('h2.sect'); lastY = scrollY; measure();
+  addEventListener('scroll', onScroll, { passive: true });
+  addEventListener('resize', onResize);
+  addEventListener('load', onResize);
+  addEventListener('pointerdown', onPointer, true);
+  addEventListener('keydown', onKey);
+  addEventListener('click', onLink, true);
+  if (typeof ResizeObserver === 'function') { let t = 0; ro = new ResizeObserver(() => { clearTimeout(t); t = setTimeout(onResize, 150); }); ro.observe(document.body); }
+  update();
 }
-if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+
+/* Everything init() set up is taken down again, so switching the robots off leaves nothing running. */
+export function stop() {
+  if (!on) return;
+  on = false;
+  removeEventListener('scroll', onScroll); removeEventListener('resize', onResize); removeEventListener('load', onResize);
+  removeEventListener('pointerdown', onPointer, true); removeEventListener('keydown', onKey); removeEventListener('click', onLink, true);
+  clearTimeout(napT); clearTimeout(bubbleTimer);
+  if (ro) ro.disconnect();
+  ro = null;
+  if (wrap) wrap.remove();
+  if (bubble) bubble.remove();
+  wrap = comp = name = bubble = null; cur = -1;
+}
+
+/* Pages that load this file directly (the Word Lab, the crate) get the robots only if they were switched on. */
+const wanted = () => prefs.get('robots') && !prefs.get('calm');
+addEventListener('darklabs:prefs', (e) => { const k = e.detail && e.detail.key; if (k === 'robots' || k === 'calm') { if (wanted()) init(); else stop(); } });
+const start = () => { if (wanted()) init(); };
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();

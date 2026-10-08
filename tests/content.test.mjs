@@ -72,7 +72,7 @@ test('desk/projects.js against tools/hub/hub_data.py counts', () => {
   
   // Very simple parsing of the python file just to count dicts in each list
   const countDicts = (varName) => {
-    const match = hubData.match(new RegExp(`${varName}\\s*=\\s*\\[(.*?)\\]`, 's'));
+    const match = hubData.match(new RegExp(`^${varName}\\s*=\\s*\\[(.*?)\\n\\]`, 'ms'));   // a list ends at a "]" alone at the start of a line
     if (!match) return 0;
     return (match[1].match(/dict\(/g) || []).length;
   };
