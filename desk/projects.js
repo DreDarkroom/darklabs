@@ -57,6 +57,14 @@ export const SEEDS = [
   "group": "on the line"
  },
  {
+  "id": "mixingmagic",
+  "title": "MixingMagic",
+  "blurb": "One desk for drums, bass, cello, meows, monkey beats and a PenrosePulse melody. Draw a groove on a grid, mix it, and export it as a WAV.",
+  "url": "/darklabs/mixingmagic/",
+  "status": "Testing",
+  "group": "on the line"
+ },
+ {
   "id": "drumdj",
   "title": "DarkDeck",
   "blurb": "Modelled acoustic drum kit with sequencer, a two-deck DJ mixer (load your own tracks), a sampler, a master effects rack and an SFX maker. Bring your own audio or use the built-in demos.",
