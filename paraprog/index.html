@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<title>ParaProg · Darklabs</title>
+<meta name="description" content="ParaProg: drum theory you can hear. Paradiddles, time signatures, how to count odd and weird meters, and breakdowns of Tool and other prog and jazz favourites.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="wrap">
+  <header>
+    <p class="crumb"><a href="../">&larr; Dre DarkLabs</a></p>
+    <h1>ParaProg</h1>
+    <p class="lede">Drum theory you can hear. Paradiddles, time signatures, how to count the weird ones, and what Tool and friends are really doing.</p>
+  </header>
+  <nav class="tabs" role="tablist" aria-label="Sections">
+    <button role="tab" id="t-learn" aria-controls="p-learn" aria-selected="true">Learn</button>
+    <button role="tab" id="t-para" aria-controls="p-para" aria-selected="false">Paradiddles</button>
+    <button role="tab" id="t-meter" aria-controls="p-meter" aria-selected="false">Meter Lab</button>
+    <button role="tab" id="t-poly" aria-controls="p-poly" aria-selected="false">Polyrhythm</button>
+    <button role="tab" id="t-bands" aria-controls="p-bands" aria-selected="false">Bands</button>
+  </nav>
+  <main id="main">
+    <section id="p-learn" role="tabpanel" aria-labelledby="t-learn"></section>
+    <section id="p-para" role="tabpanel" aria-labelledby="t-para" hidden></section>
+    <section id="p-meter" role="tabpanel" aria-labelledby="t-meter" hidden></section>
+    <section id="p-poly" role="tabpanel" aria-labelledby="t-poly" hidden></section>
+    <section id="p-bands" role="tabpanel" aria-labelledby="t-bands" hidden></section>
+  </main>
+  <footer>
+    <p>Every sound is synthesised in your browser. Nothing is uploaded. Tap Play to start the audio.</p>
+    <p>Song time signatures are flagged <b class="chip solid">checked</b> or <b class="chip approx">approximate</b>. Where sources disagree, the app says so rather than guessing. Spot a mistake? Open an issue on the <a href="https://github.com/DreDarkroom/darklabs/issues">Darklabs repository</a>.</p>
+  </footer>
+</div>
+<script type="module" src="app.js"></script>
+</body>
+</html>
