@@ -106,3 +106,31 @@ export function stickingPattern(sticking, cell, { accents = true } = {}) {
 
 /* total pulses of a song section list: sum of (pulses x bars) */
 export const songPulses = (sections) => sections.reduce((a, s) => a + pulsesOf(s.groups) * s.bars, 0);
+
+/* ---------- polyrhythm and polymeter ---------- */
+
+/* a:b as the shared grid of lcm(a,b) steps. mode 'rhythm' = both fit one bar (3:2); 'meter' = two bar lengths on one pulse (3 against 2 pulses) */
+export function polyGrid(a, b, mode = 'rhythm') {
+  const len = lcm(a, b);
+  const sa = mode === 'rhythm' ? len / a : a, sb = mode === 'rhythm' ? len / b : b;
+  const cells = (every) => Array.from({ length: len }, (_, i) => i % every === 0);
+  return { len, a: cells(sa), b: cells(sb) };
+}
+
+/* both voices as engine steps: a = right-hand voice, b = low voice */
+export function polySteps(a, b, mode = 'rhythm') {
+  const g = polyGrid(a, b, mode);
+  return Array.from({ length: g.len }, (_, i) => {
+    const s = [];
+    if (g.a[i]) s.push(['rim', i === 0 ? 1 : 0.8]);
+    if (g.b[i]) s.push(['tom', i === 0 ? 1 : 0.8]);
+    if (!s.length) s.push(['hat', 0.18]);
+    return s;
+  });
+}
+
+/* the validated pair: 2..9 against 2..9, different, and a shared grid of at most 72 steps */
+export function parsePoly(a, b) {
+  const ok = (n) => Number.isInteger(n) && n >= 2 && n <= 9;
+  return ok(a) && ok(b) && a !== b && lcm(a, b) <= 72 ? [a, b] : null;
+}

@@ -115,6 +115,36 @@ test('section labels match their pulse counts', () => {
 test('lessons are present and non-empty; the page has all four tabs', () => {
   assert.ok(LESSONS.length >= 4 && LESSONS.every((l) => l.title && l.body.length));
   const page = fs.readFileSync('paraprog/index.html', 'utf8');
-  for (const id of ['p-learn', 'p-para', 'p-meter', 'p-bands']) assert.ok(page.includes(`id="${id}"`), id);
+  for (const id of ['p-learn', 'p-para', 'p-meter', 'p-poly', 'p-bands']) assert.ok(page.includes(`id="${id}"`), id);
   assert.ok(/<script type="module" src="app\.js">/.test(page));
+});
+
+test('polyGrid: 3:2 polyrhythm and 3 against 2 polymeter', () => {
+  const g = L.polyGrid(3, 2);
+  assert.equal(g.len, 6);
+  assert.deepEqual(g.a.map(Number), [1, 0, 1, 0, 1, 0]);
+  assert.deepEqual(g.b.map(Number), [1, 0, 0, 1, 0, 0]);
+  const m = L.polyGrid(3, 2, 'meter');
+  assert.equal(m.len, 6);
+  assert.deepEqual(m.a.map(Number), [1, 0, 0, 1, 0, 0]);
+  assert.deepEqual(m.b.map(Number), [1, 0, 1, 0, 1, 0]);
+  const g45 = L.polyGrid(4, 5);
+  assert.equal(g45.len, 20);
+  assert.equal(g45.a.filter(Boolean).length, 4);
+  assert.equal(g45.b.filter(Boolean).length, 5);
+});
+
+test('polySteps: every step sounds something and only step 1 is shared at 3:2 rhythm', () => {
+  const s = L.polySteps(3, 2);
+  assert.equal(s.length, 6);
+  assert.ok(s.every((x) => x.length >= 1));
+  assert.deepEqual(s[0].map(([v]) => v).sort(), ['rim', 'tom']);
+  assert.equal(s.filter((x) => x.length === 2).length, 1);
+});
+
+test('parsePoly accepts 2..9 and rejects equal pairs and out-of-range numbers', () => {
+  assert.deepEqual(L.parsePoly(3, 2), [3, 2]);
+  for (const [a, b] of [[3, 3], [1, 2], [10, 3], [2.5, 3]]) assert.equal(L.parsePoly(a, b), null, `${a}:${b}`);
+  assert.deepEqual(L.parsePoly(8, 9), [8, 9], 'the largest grid (72) is allowed');
+  assert.deepEqual(L.parsePoly(7, 9), [7, 9]);
 });

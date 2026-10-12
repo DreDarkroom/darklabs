@@ -38,7 +38,8 @@ Audio API, live at **[dredarkroom.github.io/darklabs](https://dredarkroom.github
   feedback arrives as GitHub issues labelled `beta-feedback`, or privately if
   `FB.endpoint` in `drumdj/beta/index.html` is set to a form URL.
 - **ParaProg** — drum theory you can hear: paradiddles and their inversions
-  (and what happens when you play them across a 5, 7 or 9-note bar), a Meter
+  (and what happens when you play them across a 5, 7 or 9-note bar), a
+  polyrhythm/polymeter trainer (3:2, 4:3, 5:4 and more), a Meter
   Lab that counts 3+2, 2+2+3, 3+3+3+2 and any grouping you type over a
   synthesised kit, and breakdowns of Tool (Lateralus, Schism), Brubeck, Pink
   Floyd and others. Each song is flagged checked or approximate, with

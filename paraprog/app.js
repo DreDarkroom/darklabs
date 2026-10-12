@@ -241,6 +241,55 @@ function buildBands() {
   p.append(h('h2', {}, 'Still to come'), h('ul', {}, WISHLIST.map((w) => h('li', {}, w))));
 }
 
-buildLearn(); buildMeter(); buildPara(); buildBands();
-const start = { learn: 't-learn', para: 't-para', meter: 't-meter', bands: 't-bands' }[location.hash.slice(1)];
+/* ---------------- Polyrhythm ---------------- */
+function buildPoly() {
+  const p = $('#p-poly');
+  const st = { a: 3, b: 2, mode: 'rhythm', speed: 20, bpm: 120 };
+  const host = h('div'), info = h('div'), err = h('div', { id: 'err', role: 'status' });
+  let cols = [];
+  const num = (v) => h('select', { 'aria-label': v }, [2, 3, 4, 5, 6, 7, 8, 9].map((n) => h('option', { value: n }, n)));
+  const selA = num('First voice'), selB = num('Second voice');
+  selA.value = st.a; selB.value = st.b;
+  const row = (label, hits, cls) => h('div', { class: 'stick' }, h('div', { class: 'barlbl', style: 'width:100%' }, label), hits.map((x, i) => h('div', { class: `cell ${cls}${x ? ' acc' : ''}`, style: 'min-width:30px;height:34px' }, x ? '\u25cf' : '')));
+  const draw = () => {
+    const g = L.polyGrid(st.a, st.b, st.mode);
+    const ra = row(`Voice A (rim, right hand): ${st.mode === 'rhythm' ? st.a + ' evenly spaced hits' : 'a bar of ' + st.a}`, g.a, 'R'), rb = row(`Voice B (low tom, left hand): ${st.mode === 'rhythm' ? st.b + ' evenly spaced hits' : 'a bar of ' + st.b}`, g.b, 'L');
+    host.replaceChildren(ra, rb);
+    cols = g.a.map((_, i) => [ra.children[i + 1], rb.children[i + 1]]);
+    const hits = g.a.filter(Boolean).length + g.b.filter((x, i) => x && !g.a[i]).length;
+    info.replaceChildren(st.mode === 'rhythm'
+      ? h('p', {}, `${st.a}:${st.b} divides one bar into ${g.len} equal steps. A hits every ${g.len / st.a} steps and B every ${g.len / st.b}. They only land together on step 1. There are ${hits} separate attacks in the bar.`)
+      : h('p', {}, `A repeats every ${st.a} pulses and B every ${st.b}. They line up again after lcm(${st.a}, ${st.b}) = ${g.len} pulses, which is ${g.len / st.a} bars of ${st.a} against ${g.len / st.b} bars of ${st.b}.`));
+    if (st.mode === 'rhythm' && st.a === 3 && st.b === 2) info.append(h('p', { class: 'hint' }, 'Common teaching trick for 3:2: say "nice cup of tea". "Nice" is both hands, "cup" is the 3, "of" is the 2, "tea" is the 3.'));
+  };
+  const flashCols = (i) => { cols.forEach((c) => c.forEach((x) => x.classList.remove('on'))); cols[i] && cols[i].forEach((x) => x.classList.add('on')); };
+  const apply = () => {
+    const ok = L.parsePoly(+selA.value, +selB.value);
+    if (!ok) { err.textContent = 'Pick two different numbers from 2 to 9.'; return false; }
+    err.textContent = ''; if (stopCurrent) { stopCurrent(); stopCurrent = null; }
+    [st.a, st.b] = ok; draw(); return true;
+  };
+  selA.addEventListener('change', apply); selB.addEventListener('change', apply);
+  const presets = h('div', { class: 'row' }, h('span', { class: 'hint' }, 'Try:'), [[3, 2], [4, 3], [5, 4], [5, 3], [7, 4], [3, 4]].map(([a, b]) => h('button', { onclick: () => { selA.value = a; selB.value = b; apply(); } }, `${a}:${b}`)));
+  const modeBtns = ['rhythm', 'meter'].map((m) => h('button', { 'aria-pressed': m === st.mode, onclick: () => { st.mode = m; modeBtns.forEach((b, i) => b.setAttribute('aria-pressed', ['rhythm', 'meter'][i] === m)); label.textContent = m === 'rhythm' ? 'Cycles per minute' : 'Pulses per minute'; slide.value = m === 'rhythm' ? st.speed : st.bpm; out.textContent = (m === 'rhythm' ? st.speed : st.bpm); apply(); } }, m === 'rhythm' ? 'Polyrhythm' : 'Polymeter'));
+  const out = h('span', {}, String(st.speed));
+  const label = h('span', {}, 'Cycles per minute');
+  const slide = slider(10, 240, st.speed, (v) => { if (st.mode === 'rhythm') st.speed = Math.min(v, 60); else st.bpm = v; out.textContent = st.mode === 'rhythm' ? st.speed : st.bpm; });
+  const go = playBtn(() => {
+    const steps = L.polySteps(st.a, st.b, st.mode);
+    player.start(steps, () => (st.mode === 'rhythm' ? 60 / st.speed / steps.length : 60 / st.bpm), flashCols);
+  });
+  p.append(h('h2', {}, 'Polyrhythm and polymeter'),
+    h('p', { class: 'hint' }, 'Two voices at once. Polyrhythm fits both inside one bar (3 hits against 2). Polymeter repeats two different bar lengths on the same pulse (a bar of 3 against a bar of 2). Start by tapping one voice and counting the other out loud.'),
+    h('div', { class: 'panel' },
+      h('div', { class: 'row' }, ...modeBtns, go),
+      h('div', { class: 'row' }, h('label', {}, 'A', selA), h('span', {}, ' against '), h('label', {}, 'B', selB)),
+      presets,
+      h('div', { class: 'row' }, h('label', {}, label, slide), out),
+      err, host, info));
+  draw();
+}
+
+buildLearn(); buildMeter(); buildPara(); buildPoly(); buildBands();
+const start = { learn: 't-learn', para: 't-para', poly: 't-poly', meter: 't-meter', bands: 't-bands' }[location.hash.slice(1)];
 if (start) show(start);
