@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 
 const ALLOW_LIST_FILE = 'tools/linkcheck.allow.json';
 
-const dirsToCheck = ['.', 'learn', 'crate', 'desk', 'vr'];
+const dirsToCheck = ['.', 'learn', 'crate', 'desk', 'vr', 'paraprog'];
 
 let brokenLinks = 0;
 const allowedBroken = JSON.parse(fs.readFileSync(ALLOW_LIST_FILE, 'utf8'));

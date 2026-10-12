@@ -1,0 +1,53 @@
+*{box-sizing:border-box}
+:root{--red:#d1122b;--soft:#ff7d89;--ink:#050304;--text:#f3e9e9;--dim:#c4b2b2;--card:#140a0c;--line:rgba(209,18,43,.45);--ok:#6fd38a;--warn:#f0b34a}
+html{background:var(--ink)}
+body{margin:0;color:var(--text);font:1.02rem/1.6 system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:radial-gradient(ellipse at 50% -10%,#240609,#090405 55%,#030203);min-height:100vh}
+a{color:var(--soft)}
+.skip{position:absolute;left:-999px;top:0;background:#000;color:#fff;padding:.7rem 1rem;z-index:99}.skip:focus{left:8px;top:8px}
+.wrap{max-width:900px;margin:0 auto;padding:1rem 16px 4rem}
+.crumb{margin:.2rem 0}
+h1{font-size:clamp(2rem,7vw,3.2rem);line-height:1.1;margin:.2rem 0;letter-spacing:.03em;text-shadow:0 0 22px rgba(209,18,43,.7)}
+h2{margin:1.6rem 0 .4rem;font-size:1.3rem;color:var(--soft);letter-spacing:.05em}
+h3{margin:.2rem 0 .3rem;font-size:1.1rem}
+.lede{color:var(--dim);margin:.2rem 0 1rem;max-width:60ch}
+button,select,input{font:inherit;color:var(--text)}
+button,select,input[type=text]{min-height:44px;padding:0 .9rem;border-radius:5px;border:1px solid var(--line);background:#1d0d10}
+button{cursor:pointer;font-weight:600}
+button:hover{border-color:var(--soft)}
+button:focus-visible,select:focus-visible,input:focus-visible,summary:focus-visible,a:focus-visible{outline:3px solid #fff;outline-offset:2px}
+button[aria-pressed=true],button[aria-selected=true]{background:var(--red);border-color:var(--red);color:#fff}
+.play{background:var(--red);border-color:var(--red);min-width:104px}
+.play[aria-pressed=true]{background:#fff;color:#000;border-color:#fff}
+.tabs{display:flex;gap:.4rem;flex-wrap:wrap;margin:.6rem 0 1rem;position:sticky;top:0;z-index:5;padding:.4rem 0;background:rgba(5,3,4,.92)}
+.tabs button{flex:1 1 auto}
+.panel,.card{border:1px solid var(--line);border-radius:8px;background:var(--card);padding:.9rem 1rem;margin:.8rem 0}
+.row{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center;margin:.6rem 0}
+.row label{display:flex;flex-direction:column;font-size:.8rem;color:var(--dim);gap:.15rem}
+.row label.inline{flex-direction:row;align-items:center;gap:.4rem;font-size:.95rem;color:var(--text)}
+input[type=range]{width:min(260px,70vw);min-height:44px;accent-color:var(--red)}
+details{border:1px solid var(--line);border-radius:8px;background:var(--card);margin:.6rem 0;padding:.1rem 1rem}
+summary{cursor:pointer;padding:.7rem 0;font-weight:700;min-height:44px}
+details p{margin:.4rem 0 .8rem}
+.hint{color:var(--dim);font-size:.92rem;margin:.3rem 0}
+.chip{display:inline-block;font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;padding:.1rem .5rem;border-radius:99px;border:1px solid}
+.chip.solid{color:var(--ok);border-color:var(--ok)}
+.chip.approx{color:var(--warn);border-color:var(--warn)}
+.bar{display:flex;flex-wrap:wrap;gap:3px;margin:.5rem 0}
+.group{display:flex;gap:3px;margin-right:12px;padding-bottom:3px;border-bottom:3px solid var(--line)}
+.cell{min-width:40px;height:48px;display:flex;align-items:center;justify-content:center;border-radius:5px;border:1px solid var(--line);background:#1d0d10;font-weight:700;font-size:1.05rem;transition:background .06s}
+.cell.start{border-color:var(--soft);color:#fff}
+.cell.on{background:var(--red);border-color:#fff;color:#fff;transform:translateY(-2px)}
+.cell.hidden-count{color:transparent}
+.stick{display:flex;flex-wrap:wrap;gap:3px;margin:.5rem 0}
+.stick .cell{min-width:36px;height:44px}
+.stick .cell.R{color:#ffb3bb}.stick .cell.L{color:#9fd2ff}
+.stick .cell.acc{border-width:2px;border-color:#fff}
+.stick .cell.cut{margin-right:10px}
+.barlbl{font-size:.78rem;color:var(--dim);margin:.4rem 0 0}
+.legend{font-size:.9rem;color:var(--dim)}
+.meta{color:var(--dim);font-size:.92rem;margin:0 0 .4rem}
+.srcs{font-size:.88rem;color:var(--dim)}
+footer{margin-top:2rem;color:var(--dim);font-size:.9rem}
+#err{color:var(--warn);min-height:1.3em;font-size:.9rem}
+@media (max-width:520px){.cell{min-width:34px;height:44px}.group{margin-right:8px}}
+@media (prefers-reduced-motion:reduce){.cell{transition:none}.cell.on{transform:none}}
