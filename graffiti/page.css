@@ -1,0 +1,35 @@
+/* Shared page chrome for the graffiti pieces: a dark page and the concrete wall the paint goes on. */
+:root { color-scheme: dark; --red: #e0262b; --purple: #8b3dff; --warn: #ffb020; --line-hot: #6b2224; }
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100vh; background: #0a0a0c; color: #ecebf2; font: 1rem/1.6 system-ui, -apple-system, "Segoe UI", sans-serif; }
+.wrap { max-width: 62rem; margin: 0 auto; padding: 1.25rem; }
+a { color: #c4b0ff; }
+h1 { font-size: 1.4rem; margin: 0.5rem 0 0.25rem; }
+.note { color: #a39db8; font-size: 0.9rem; }
+.row { display: flex; flex-wrap: wrap; gap: 0.7rem; align-items: center; margin: 1rem 0; }
+button, .btn { font: 700 1rem system-ui, sans-serif; min-height: 44px; padding: 0.55rem 1.2rem; border-radius: 10px; border: 2px solid #fff; background: transparent; color: #fff; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; }
+button:hover, .btn:hover { background: #fff; color: #0a0a0c; }
+:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+
+.wall {
+  position: relative; width: 100%; aspect-ratio: var(--ratio, 862 / 410);
+  margin: 1rem 0; border-radius: 12px; overflow: hidden; border: 1px solid var(--line-hot);
+  background:
+    radial-gradient(ellipse at 50% -10%, rgba(255, 205, 170, 0.18), transparent 62%),
+    linear-gradient(rgba(0, 0, 0, 0.30) 2px, transparent 2px) 0 0 / 100% 56px,
+    linear-gradient(90deg, rgba(0, 0, 0, 0.22) 2px, transparent 2px) 0 0 / 150px 100%,
+    linear-gradient(170deg, #3f3a3c, #28232a 70%, #1c1820);
+  box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.75), 0 0 40px -12px rgba(139, 61, 255, 0.35), 0 0 40px -16px rgba(224, 38, 43, 0.45);
+}
+.wall::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 9px; opacity: 0.9;
+  background: repeating-linear-gradient(135deg, var(--warn) 0 10px, #17090a 10px 20px); }
+.wall[data-state="loading"]::before { content: ""; position: absolute; left: 50%; top: 50%; width: 34px; height: 34px; margin: -17px 0 0 -17px; border-radius: 50%;
+  border: 3px solid rgba(224, 38, 43, 0.25); border-top-color: var(--red); animation: wall-spin .8s linear infinite; }
+@keyframes wall-spin { to { transform: rotate(360deg); } }
+.wall[data-state="failed"] { display: grid; place-items: center; color: #ff8c8c; }
+@media (prefers-reduced-motion: reduce) { .wall[data-state="loading"]::before { animation: none; } }
+
+.cards { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); margin: 1.5rem 0; }
+.card { display: block; padding: 1.25rem; border: 1px solid #2a2142; border-radius: 14px; background: #14101f; color: inherit; text-decoration: none; }
+.card:hover { border-color: #8b3dff; }
+.card strong { display: block; font-size: 1.15rem; }

@@ -1,0 +1,55 @@
+/* Dre DarkLabs graffiti: the spray-paint robot and the finished piece "by DreDarkroom". Moved here from the HD Labs
+   site so the artwork is its own project. The base rules describe the FINISHED piece, which is completely static;
+   the animation only plays the build-up once (graffiti.js skips it for reduced motion). Generated, then committed.
+   Animated: transform, opacity, stroke-dashoffset. Filters: spray (static), goo on the drips, a one-off wet gloss. */
+.tag-art { display: block; width: 100%; height: auto; overflow: visible; }
+.tag-art .bot { opacity: 0; }
+.tag-art .l, .tag-art .lh, .tag-art .stem, .tag-art .swoosh { stroke-dasharray: 1; stroke-dashoffset: 0; }
+.tag-art .specks circle, .tag-art .bulb, .tag-art .spark { transform-box: fill-box; transform-origin: center; }
+.tag-art .stack { transition: filter 0.6s; }
+/* when the build-up is done, the paint gets its wet shine (one filter pass, then nothing moves) */
+.is-finished .tag-art .stack { filter: url(#g-spray) url(#g-gloss); }
+
+.is-spraying .tag-art .l, .is-spraying .tag-art .lh { animation: g-draw 0.27s cubic-bezier(.3, .6, .4, 1) both; animation-delay: calc(0.21999999999999997s + var(--i) * 0.165s); }
+.is-spraying .tag-art .lag { animation-delay: calc(0.27999999999999997s + var(--i) * 0.165s); }
+@keyframes g-draw { 0% { stroke-dashoffset: 1; opacity: 0; } 4% { opacity: 1; } 100% { stroke-dashoffset: 0; opacity: 1; } }
+.is-spraying .tag-art .specks circle { animation: g-speck .35s ease-out both; animation-delay: calc(var(--d) * 1s); }
+@keyframes g-speck { from { opacity: 0; transform: scale(.2); } to { opacity: .9; transform: scale(1); } }
+
+/* a drip runs: the runnel lengthens while its bulb rides down the end of it (same easing, so they stay joined) */
+.is-spraying .tag-art .stem { animation: g-run 1.3s cubic-bezier(.5, 0, .75, .55) both; animation-delay: calc(2.6799999999999997s + var(--k) * .15s); }
+.is-spraying .tag-art .bulb { animation: g-ride 1.3s cubic-bezier(.5, 0, .75, .55) both; animation-delay: calc(2.6799999999999997s + var(--k) * .15s); }
+@keyframes g-run { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes g-ride { from { transform: translateY(calc(var(--len) * -1px)); } to { transform: none; } }
+
+.is-spraying .tag-art .swoosh { animation: g-draw .6s ease-out both; animation-delay: 2.6299999999999994s; }
+.is-spraying .tag-art .spark { animation: g-spark .7s ease-out both; animation-delay: calc(2.9799999999999995s + var(--k) * .09s); }
+@keyframes g-spark { 0% { opacity: 0; transform: scale(0) rotate(-40deg); } 55% { opacity: 1; transform: scale(1.4) rotate(8deg); } 100% { opacity: 1; transform: scale(1) rotate(0); } }
+
+/* the robot flies in, aims its nozzle at each letter in turn, then leaves */
+.is-spraying .tag-art .bot { animation: g-bot 3.23s linear both; }
+@keyframes g-bot {
+  0% { transform: translate(-240px, 130px); opacity: 0; }
+  1.86% { opacity: 1; }
+  9.29% { transform: translate(52.6px, 142px); opacity: 1; }
+  14.40% { transform: translate(114.8px, 164px); opacity: 1; }
+  19.50% { transform: translate(228.2px, 142px); opacity: 1; }
+  24.61% { transform: translate(333.2px, 164px); opacity: 1; }
+  29.72% { transform: translate(425.2px, 142px); opacity: 1; }
+  34.83% { transform: translate(538.2px, 164px); opacity: 1; }
+  39.94% { transform: translate(651.2px, 142px); opacity: 1; }
+  45.05% { transform: translate(743.2px, 164px); opacity: 1; }
+  50.15% { transform: translate(833.2px, 142px); opacity: 1; }
+  55.26% { transform: translate(923.2px, 164px); opacity: 1; }
+  60.37% { transform: translate(1021.2px, 142px); opacity: 1; }
+  65.48% { transform: translate(1133.2px, 164px); opacity: 1; }
+  70.59% { transform: translate(1264.2px, 142px); opacity: 1; }
+  79.88% { transform: translate(1276.2px, 146px); opacity: 1; }
+  100% { transform: translate(1620px, 70px); opacity: 0; }
+}
+.is-spraying .tag-art .armcan { animation: g-wob .16s ease-in-out 14 alternate both; animation-delay: 0.3s; }
+@keyframes g-wob { from { transform: translateY(-3px) rotate(-2deg); } to { transform: translateY(4px) rotate(2deg); } }
+.is-spraying .tag-art .pf { opacity: 0; animation: g-puff .24s ease-out 9 both; animation-delay: calc(0.3s + var(--j, 0) * .08s); transform-box: fill-box; transform-origin: center; }
+@keyframes g-puff { 0% { opacity: .85; transform: translateX(0) scale(.5); } 100% { opacity: 0; transform: translateX(-26px) scale(1.7); } }
+.is-spraying .tag-art .fl { animation: g-flick .14s ease-in-out 23 alternate; transform-box: fill-box; transform-origin: top; animation-delay: calc(var(--j, 0) * .05s); }
+@keyframes g-flick { from { transform: scaleY(.75); opacity: .8; } to { transform: scaleY(1.2); opacity: 1; } }
