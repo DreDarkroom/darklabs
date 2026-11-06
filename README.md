@@ -1,3 +1,5 @@
+> **DarkLabs has moved.** The new home is https://darklabs.dredarkroom.com . This repository and its GitHub Pages site are kept as an archive of where DarkLabs used to be.
+
 # Dre DarkLabs
 
 Browser-based music and sound instruments. No frameworks, no build step, no
