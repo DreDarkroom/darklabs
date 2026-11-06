@@ -4,7 +4,7 @@
 <link rel="canonical" href="https://darklabs.dredarkroom.com/drumdj/">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>DarkDeck — Drums, DJ, Sampler &amp; SFX</title>
+<title>DeckDJ — Drums, DJ, Sampler &amp; SFX</title>
 <meta name="description" content="A browser drum kit, two-deck DJ mixer, sampler, effects rack and SFX maker. No samples, no backend — all Web Audio.">
 <style>
 :root{--bg:#0b0710;--panel:#160e21;--panel2:#1e1330;--line:#33214d;--fg:#eee6ff;--mut:#9a88bd;--acc:#b56cff;--hot:#ff3b5c;--ok:#3be0a0}
@@ -70,7 +70,7 @@ canvas#sfxwave{width:100%;max-width:640px;height:90px;background:#0008;border-ra
 </style>
 </head>
 <body><div data-dl-moved style="position:sticky;top:0;z-index:2147483000;background:#2a0a10;color:#fff;font:14px/1.4 system-ui,sans-serif;padding:8px 14px;text-align:center;border-bottom:1px solid #ff3b52">DarkLabs has moved. This page is an archive of where it used to be. <a href="https://darklabs.dredarkroom.com/drumdj/" style="color:#ff9aa6;font-weight:700">Go to the new home at darklabs.dredarkroom.com &rarr;</a></div>
-<a class="betabn" href="beta/"><span class="bp">NEW · BETA</span> <b>Try the new DarkDeck Beta</b> — lower latency, keyboard shortcuts, a guided tour and more colour. Tell me what you think! <u>Open the Beta →</u></a>
+<a class="betabn" href="beta/"><span class="bp">NEW · BETA</span> <b>Try the new DeckDJ Beta</b> — lower latency, keyboard shortcuts, a guided tour and more colour. Tell me what you think! <u>Open the Beta →</u></a>
 <header>
   <h1>DARK<span>DECK</span></h1>
   <canvas id="scope" width="340" height="34"></canvas>
@@ -109,7 +109,7 @@ canvas#sfxwave{width:100%;max-width:640px;height:90px;background:#0008;border-ra
 </section>
 
 <section class="tab" id="t-sampler">
-  <p class="hint">Load a file, record the mic, or <b>Resample</b> whatever is playing in DarkDeck onto a pad. Keys 1–8 trigger. Drop files onto a pad.</p>
+  <p class="hint">Load a file, record the mic, or <b>Resample</b> whatever is playing in DeckDJ onto a pad. Keys 1–8 trigger. Drop files onto a pad.</p>
   <div class="samp" id="samp"></div>
 </section>
 
@@ -306,7 +306,7 @@ $('#seqExport').onclick=async()=>{
   const bpm=+$('#bpm').value,sd=stepDur(bpm),off=$('#swing').value/100*sd*.5,bars=2,len=bars*16*sd+1.5;
   const oc=new OfflineAudioContext(2,Math.ceil(44100*len),44100),d=oc.createGain();d.gain.value=.5;d.connect(oc.destination);
   for(let i=0;i<bars*16;i++)playStep(oc,d,.02+i*sd,i%16,grid,off);
-  download(wavBlob(await oc.startRendering()),'darkdeck-loop.wav');
+  download(wavBlob(await oc.startRendering()),'deckdj-loop.wav');
 };
 function raf(){
   if(ctx){const now=ctx.currentTime;
@@ -341,7 +341,7 @@ $('#recBtn').onclick=()=>{
   if(mixRec){mixRec.stop();return}
   const ch=[],mr=new MediaRecorder(recDest.stream);mixRec=mr;
   mr.ondataavailable=e=>ch.push(e.data);
-  mr.onstop=()=>{download(new Blob(ch,{type:mr.mimeType}),'darkdeck-mix.'+(mr.mimeType.includes('ogg')?'ogg':'webm'));mixRec=null;$('#recBtn').textContent='● Record mix';$('#recBtn').classList.remove('rec')};
+  mr.onstop=()=>{download(new Blob(ch,{type:mr.mimeType}),'deckdj-mix.'+(mr.mimeType.includes('ogg')?'ogg':'webm'));mixRec=null;$('#recBtn').textContent='● Record mix';$('#recBtn').classList.remove('rec')};
   mr.start();$('#recBtn').textContent='■ Stop & save';$('#recBtn').classList.add('rec');
 };
 
@@ -591,7 +591,7 @@ async function sfxPlay(){
   for(let x=0;x<cv.width;x++){let m=0;for(let j=0;j<step;j+=4)m=Math.max(m,Math.abs(d[x*step+j]||0));g.fillRect(x,cv.height/2-m*cv.height/2,1,m*cv.height)}
 }
 $('#sfxPlay').onclick=sfxPlay;
-$('#sfxWav').onclick=()=>sfxBuf&&download(wavBlob(sfxBuf),'darkdeck-sfx.wav');
+$('#sfxWav').onclick=()=>sfxBuf&&download(wavBlob(sfxBuf),'deckdj-sfx.wav');
 $('#sfxSend').onclick=()=>{if(sfxBuf)padSet(+$('#sfxTo').value,sfxBuf,'sfx')};
 $('#sfxRand').onclick=()=>{
   SFXP.wave=['square','sawtooth','triangle','sine','noise'][Math.floor(Math.random()*5)];

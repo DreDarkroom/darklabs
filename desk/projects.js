@@ -66,7 +66,7 @@ export const SEEDS = [
  },
  {
   "id": "drumdj",
-  "title": "DarkDeck",
+  "title": "DeckDJ",
   "blurb": "Modelled acoustic drum kit with sequencer, a two-deck DJ mixer (load your own tracks), a sampler, a master effects rack and an SFX maker. Bring your own audio or use the built-in demos.",
   "url": "/darklabs/drumdj/",
   "status": "Live",

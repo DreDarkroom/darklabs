@@ -21,7 +21,7 @@ for now (each deploys alone); migrating them to import from here is a later, opt
 | file | what it is |
 |---|---|
 | `groove/arrange.js` | pure: what plays bar by bar for a page position `p` (0..1). Tempo 84 to 174 BPM, the kit built up one piece at a time, then bass, cello, meows, all in A minor. Tested exactly. |
-| `groove/bank.js` | every sound rendered **once**, offline: DarkDeck's drum recipes, the BlueHeronBass and ChungusCello worklets, the MeowSynth recordings |
+| `groove/bank.js` | every sound rendered **once**, offline: DeckDJ's drum recipes, the BlueHeronBass and ChungusCello worklets, the MeowSynth recordings |
 | `groove/engine.js` | `Sequencer` (look-ahead on the audio clock, voice budget), `Groove` (the live player, volume, visibility) and `renderOffline` (the same engine into a buffer, for measuring and export) |
 | `groove/scene.js` | the canvas drummer: two-bone arms, camera that eases toward what is about to play |
 | `groove/desk.js` | the small mixing desk (level, mute, solo, kit pieces, tempo) |

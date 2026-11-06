@@ -4,7 +4,7 @@
 <link rel="canonical" href="https://darklabs.dredarkroom.com/drumdj/beta/">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>DarkDeck BETA — Drums, DJ, Sampler &amp; SFX</title>
+<title>DeckDJ BETA — Drums, DJ, Sampler &amp; SFX</title>
 <meta name="description" content="A browser drum kit, two-deck DJ mixer, sampler, effects rack and SFX maker. No samples, no backend — all Web Audio.">
 <style>
 :root{--bg:#0b0710;--panel:#160e21;--panel2:#1e1330;--line:#33214d;--fg:#eee6ff;--mut:#9a88bd;--acc:#ff4d6d;--hot:#ff3b5c;--ok:#3be0a0;--A:#36d6ff;--B:#ff9a3b}
@@ -231,7 +231,7 @@ canvas#sfxwave{width:100%;max-width:640px;height:90px;background:#0008;border-ra
   <details class="help"><summary>How this works</summary><ul>
     <li><b>Load:</b> pick a file or drag one onto a pad.</li>
     <li><b>● Mic:</b> press to record, press again to stop. Your browser will ask for mic permission.</li>
-    <li><b>● Resample:</b> records whatever DarkDeck is playing (drums, decks, FX) — then you can pitch and reverse it.</li>
+    <li><b>● Resample:</b> records whatever DeckDJ is playing (drums, decks, FX) — then you can pitch and reverse it.</li>
     <li><b>Pitch</b> shifts in semitones. <b>Loop</b> repeats until you press the pad again.</li>
     <li>Made a sound in the <b>SFX Maker</b>? Send it here.</li>
   </ul></details>
@@ -453,7 +453,7 @@ $('#seqExport').onclick=async()=>{
   const bpm=+$('#bpm').value,sd=stepDur(bpm),off=$('#swing').value/100*sd*.5,bars=2,len=bars*16*sd+1.5;
   const oc=new OfflineAudioContext(2,Math.ceil(44100*len),44100),d=oc.createGain();d.gain.value=.5;d.connect(oc.destination);
   for(let i=0;i<bars*16;i++)playStep(oc,d,.02+i*sd,i%16,grid,off);
-  download(wavBlob(await oc.startRendering()),'darkdeck-loop.wav');
+  download(wavBlob(await oc.startRendering()),'deckdj-loop.wav');
 };
 function setCol(s){if(curCol===s)return;if(curCol>=0)colEls[curCol].forEach(c=>c.classList.remove('cur'));curCol=s;if(s>=0)colEls[s].forEach(c=>c.classList.add('cur'))}
 const fa=new Uint8Array(128),ta=new Uint8Array(128),scopeCv=$('#scope'),sg=scopeCv.getContext('2d');
@@ -492,11 +492,11 @@ function recToggle(){
   if(mixRec){mixRec.stop();return}
   const ch=[],mr=new MediaRecorder(recDest.stream);mixRec=mr;
   mr.ondataavailable=e=>ch.push(e.data);
-  mr.onstop=()=>{download(new Blob(ch,{type:mr.mimeType}),'darkdeck-mix.'+(mr.mimeType.includes('ogg')?'ogg':'webm'));mixRec=null;$('#recBtn').textContent='● Record mix';$('#recBtn').classList.remove('rec')};
+  mr.onstop=()=>{download(new Blob(ch,{type:mr.mimeType}),'deckdj-mix.'+(mr.mimeType.includes('ogg')?'ogg':'webm'));mixRec=null;$('#recBtn').textContent='● Record mix';$('#recBtn').classList.remove('rec')};
   mr.start();$('#recBtn').textContent='■ Stop & save';$('#recBtn').classList.add('rec');
 }
 $('#recBtn').onclick=recToggle;
-function mute(){muted=!muted;ensure();applyFx();document.title=(muted?'🔇 ':'')+'DarkDeck — Drums, DJ, Sampler & SFX'}
+function mute(){muted=!muted;ensure();applyFx();document.title=(muted?'🔇 ':'')+'DeckDJ — Drums, DJ, Sampler & SFX'}
 function peaksOf(buf,N=1200){const d=buf.getChannelData(0),step=Math.floor(d.length/N)||1,p=new Float32Array(N);for(let i=0;i<N;i++){let m=0;for(let j=0;j<step;j+=8)m=Math.max(m,Math.abs(d[i*step+j]||0));p[i]=m}return p}
 
 /* ============ DJ DECKS ============ */
@@ -662,7 +662,7 @@ const sp=Array.from({length:8},()=>({buf:null,play:null,pitch:0,rev:false,loop:f
 sp.forEach((p,i)=>{
   const d=document.createElement('div');d.className='sp';d.style.setProperty('--c',SPC[i]);
   d.innerHTML=`<button class="go" title="Trigger (key ${i+1})">${i+1} — empty<br><small>drop a file, or use the buttons</small></button><canvas width="200" height="28"></canvas>
-   <div class="row"><label class="file" title="Load an audio file">Load<input type="file" accept="audio/*"></label><button data-r="mic" title="Record from your microphone">● Mic</button><button data-r="mix" title="Record what DarkDeck is playing">● Resample</button></div>
+   <div class="row"><label class="file" title="Load an audio file">Load<input type="file" accept="audio/*"></label><button data-r="mic" title="Record from your microphone">● Mic</button><button data-r="mix" title="Record what DeckDJ is playing">● Resample</button></div>
    <label class="ctl" title="Transpose in semitones">Pitch (semitones) <input type="range" min="-12" max="12" step="1" value="0"></label>
    <div class="row"><label><input type="checkbox" data-o="rev"> Reverse</label> <label><input type="checkbox" data-o="loop"> Loop</label></div>`;
   $('#samp').appendChild(d);p.el=d;
@@ -767,7 +767,7 @@ async function sfxPlay(){
   for(let x=0;x<cv.width;x++){let m=0;for(let j=0;j<step;j+=4)m=Math.max(m,Math.abs(d[x*step+j]||0));g.fillRect(x,cv.height/2-m*cv.height/2,1,Math.max(1,m*cv.height))}
 }
 $('#sfxPlay').onclick=sfxPlay;
-const sfxSave=()=>sfxBuf&&download(wavBlob(sfxBuf),'darkdeck-sfx.wav'),sfxSend=()=>{if(sfxBuf)padSet(+$('#sfxTo').value,sfxBuf,'sfx')};
+const sfxSave=()=>sfxBuf&&download(wavBlob(sfxBuf),'deckdj-sfx.wav'),sfxSend=()=>{if(sfxBuf)padSet(+$('#sfxTo').value,sfxBuf,'sfx')};
 $('#sfxWav').onclick=sfxSave;$('#sfxSend').onclick=sfxSend;
 function sfxRand(){
   SFXP.wave=['square','sawtooth','triangle','sine','noise'][Math.floor(Math.random()*5)];
@@ -859,7 +859,7 @@ addEventListener('pointerup',()=>{const a=document.activeElement;if(a&&(a.tagNam
 
 /* ============ GUIDED TOUR ============ */
 const TOUR=[
- {tab:'drums',t:'Welcome to DarkDeck',x:'Four instruments share one effects rack: <b>Drums</b>, <b>DJ</b>, <b>Sampler</b> and <b>SFX</b>. Everything is synthesised in your browser — nothing to download.',m:'Each tab has its own colour (red, cyan, green, yellow). The Master FX strip at the bottom affects all of them, and “Record mix” captures everything you hear. Quit the tour any time with Esc.'},
+ {tab:'drums',t:'Welcome to DeckDJ',x:'Four instruments share one effects rack: <b>Drums</b>, <b>DJ</b>, <b>Sampler</b> and <b>SFX</b>. Everything is synthesised in your browser — nothing to download.',m:'Each tab has its own colour (red, cyan, green, yellow). The Master FX strip at the bottom affects all of them, and “Record mix” captures everything you hear. Quit the tour any time with Esc.'},
  {el:'#pads',t:'Hit a pad',x:'Click or tap a pad, or press its key (Q W E R / A S D F / Z X C V).',task:'Hit any pad',wait:'hit',m:'Hit the lower half of a pad for a harder hit. Colours group the kit: red kick, yellow snare/rim/clap, cyan hats, orange toms, blue cymbals, green cowbell. Closed hats cut off open hats, like a real pedal.'},
  {el:'#grid',t:'Build a pattern',x:'Rows are drums, columns are 16th notes. Click a square to place a hit.',task:'Click a square',wait:'cell',m:'Every 4th column is a beat (slightly lighter). Click a lit square again to remove it. Kick on 1 and snare on 3 and 5 is a classic backbeat.'},
  {el:'#seqPlay',t:'Play it',x:'Press Play (or Space). The white column is the playhead. Change Tempo and Swing while it plays.',task:'Press Play',wait:'seqplay',m:'Swing delays every other 16th note for a looser, shuffled feel. Tune pitches the whole kit and Decay makes every drum ring longer.'},
@@ -869,7 +869,7 @@ const TOUR=[
  {el:'#decks',t:'Play',x:'Press ▶ on the deck (Q for A, U for B). Click the waveform to jump around.',task:'Start a deck',wait:'deckplay',m:'The white line is the playhead, faint lines are beats. CUE sets or returns to a cue point; hot cues 1–4 save spots to jump back to.'},
  {el:'#decks',t:'Beatmatch',x:'Load a track on the <i>other</i> deck, then press <b>SYNC</b> on it so both run at the same tempo.',task:'Press SYNC',wait:'sync',m:'SYNC adjusts this deck’s speed to match the other deck’s current BPM (within ±20%). Loop buttons repeat 1/2/4/8 beats; BRAKE is a vinyl-style slow-down.'},
  {el:'.xf',t:'Crossfade',x:'Slide the crossfader from A to B to blend the two decks.',task:'Move the crossfader',wait:'xf',m:'Keys ← → move it, ↓ centres it. Each deck also has volume, 3-band EQ and a filter (left = muffled, right = thin) for smooth transitions.'},
- {tab:'sampler',el:'#samp',t:'Sampler',x:'Fill a pad with a file, a mic recording, or a <b>Resample</b> of whatever DarkDeck is playing. Trigger with keys 1–8.',task:'Load something onto a pad (optional)',wait:'padload',m:'Resample is the trick: play a drum loop, hit ● Resample, stop it — you now have that loop on a pad that you can pitch down or reverse. Mic needs your browser’s permission.'},
+ {tab:'sampler',el:'#samp',t:'Sampler',x:'Fill a pad with a file, a mic recording, or a <b>Resample</b> of whatever DeckDJ is playing. Trigger with keys 1–8.',task:'Load something onto a pad (optional)',wait:'padload',m:'Resample is the trick: play a drum loop, hit ● Resample, stop it — you now have that loop on a pad that you can pitch down or reverse. Mic needs your browser’s permission.'},
  {tab:'sfx',el:'#sfxPre',t:'Make a sound effect',x:'Click a preset to hear it (keys 1–8).',task:'Play a preset',wait:'sfx',m:'Every sound is generated from an oscillator or noise plus a pitch curve and an envelope — so you can tweak it into anything.'},
  {el:'#sfxCtl',t:'Tweak, randomise, save',x:'Move any slider and it replays instantly. 🎲 Randomise finds new sounds; Mutate nudges the current one.',m:'Save .wav downloads it; “→ Sampler pad” sends it to a pad so you can play it with the keyboard. Orange = pitch, pink = vibrato, green = envelope, cyan = tone.'},
  {tab:'drums',el:'.fx',t:'Master FX',x:'Everything passes through here. Start a beat and try <b>Reverb mix</b> or <b>Delay mix</b>.',task:'Move an effect slider',wait:'fx',m:'Drive adds grit, the filter muffles or thins everything, delay adds echoes, reverb adds a room. Low-latency mode bypasses the compressor for the snappiest response.'},
@@ -919,13 +919,13 @@ function nudge(kind,force){
   if(kind==='welcome')return fbWelcome();
   if(kind==='first')return fbToastShow('<b>Nice — you’re making noise!</b> 🎶 This is a Beta, so what you think matters most. How’s it going?',[['😍 Love it','love'],['🐛 Something’s off','bug'],['💡 I have an idea','idea']]);
   if(kind==='return')return fbToastShow('<b>Welcome back!</b> Anything you’d change since last time?',[['💡 Tell me','idea'],['🐛 Report a bug','bug']]);
-  if(kind==='idle')return fbOpenForm('Still there? 👋','Before you drift off — what would make DarkDeck better for you? 20 seconds, one sentence is plenty.');
+  if(kind==='idle')return fbOpenForm('Still there? 👋','Before you drift off — what would make DeckDJ better for you? 20 seconds, one sentence is plenty.');
   if(kind==='exit')return fbOpenForm('Leaving already? 😢','Did something put you off, or was it great? One quick note helps more than you’d think.');
   if(kind==='rate')return fbOpenForm('How is the Beta feeling?','You’ve been playing a few minutes — tap a star rating and tell me one thing.');
   return fbOpenForm('You’ve been jamming for a while 🎧','You clearly know your way around now. What’s missing, annoying or brilliant?');
 }
 function fbWelcome(){
-  fbShow(`<h2>🎉 You’re trying the DarkDeck Beta!</h2><p>Drums, DJ decks, sampler, FX and SFX maker — now faster and easier. You’re among the first, so you can steer where it goes.</p>
+  fbShow(`<h2>🎉 You’re trying the DeckDJ Beta!</h2><p>Drums, DJ decks, sampler, FX and SFX maker — now faster and easier. You’re among the first, so you can steer where it goes.</p>
    <ul><li><b>Lower latency</b> — pads respond quicker</li><li><b>Keyboard shortcuts</b> — press <kbd>?</kbd> any time</li><li><b>Guided tour</b> — hands-on, 1 minute</li><li><b>More colour</b> and clearer help everywhere</li></ul>
    <div class="acts"><button class="big" data-a="tour">🎓 Take the 1-minute tour</button><button data-a="form">💬 Give feedback first</button><button data-a="close">Just let me play</button></div>
    <div class="small">Something not right? The <a href="../" style="color:#ff9a3b">original version</a> is still there.</div>`);
@@ -936,7 +936,7 @@ function fbToastShow(msg,btns){
 function fbOpenForm(title,sub,cat){
   fbS.rating=0;fbS.cat=cat||'';
   const ep=!!FB.endpoint;
-  fbShow(`<h2>${title||'Help shape DarkDeck'}</h2><p>${sub||'Tell me what works, what’s broken, and what you wish it did. I read every one.'}</p>
+  fbShow(`<h2>${title||'Help shape DeckDJ'}</h2><p>${sub||'Tell me what works, what’s broken, and what you wish it did. I read every one.'}</p>
    <div class="stars" id="fbStars">${[1,2,3,4,5].map(n=>`<button data-s="${n}" aria-label="${n} stars">★</button>`).join('')}</div>
    <div class="chips" id="fbChips">${[['love','😍 Love it'],['bug','🐛 Bug'],['idea','💡 Idea'],['other','💬 Other']].map(([c,l])=>`<button data-c="${c}" class="${c===cat?'on':''}">${l}</button>`).join('')}</div>
    <textarea id="fbTxt" placeholder="What did you try? What happened? What do you wish it did?"></textarea>
@@ -972,7 +972,7 @@ $('#fbm').addEventListener('click',e=>{
   if(b.dataset.c){fbS.cat=b.dataset.c;$$('#fbChips button').forEach(x=>x.classList.toggle('on',x===b));return}
   ({later:()=>fbClose('later'),never:()=>fbClose('never'),close:()=>fbClose(),send:fbSend,
     tour:()=>{fbClose();tourGo(0)},form:()=>fbOpenForm(),
-    copy:()=>{const p=fbPayload();navigator.clipboard&&navigator.clipboard.writeText(`DarkDeck Beta feedback (${p.rating||'-'}/5, ${p.cat})\n${p.text}${p.info}`).then(()=>b.textContent='Copied ✓')},
+    copy:()=>{const p=fbPayload();navigator.clipboard&&navigator.clipboard.writeText(`DeckDJ Beta feedback (${p.rating||'-'}/5, ${p.cat})\n${p.text}${p.info}`).then(()=>b.textContent='Copied ✓')},
     share:()=>navigator.clipboard&&navigator.clipboard.writeText(FB.beta).then(()=>b.textContent='Link copied ✓')})[b.dataset.a]?.();
 });
 $('#fbToast').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;

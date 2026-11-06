@@ -1,11 +1,11 @@
 /* The mixing desk: the essential controls of each instrument in one strip, bound to a running Groove.
-   Drums (DarkDeck), Bass (BlueHeronBass), Cello (ChungusCello), Meows (MeowSynth): level, mute and solo for each,
+   Drums (DeckDJ), Bass (BlueHeronBass), Cello (ChungusCello), Meows (MeowSynth): level, mute and solo for each,
    the kit's pieces switched on and off, and a tempo you can pin. "Open MixingMagic" hands over to the full instrument.
    Built with DOM calls, not HTML strings, so nothing typed anywhere can become markup. */
 import { LAYER_GAIN } from './engine.js';
 
 const STRIPS = {
-  drums: { label: 'Drums', from: 'DarkDeck', hue: '#ff3a52' },
+  drums: { label: 'Drums', from: 'DeckDJ', hue: '#ff3a52' },
   bass: { label: 'Bass', from: 'BlueHeronBass', hue: '#5ab0ff' },
   cello: { label: 'Cello', from: 'ChungusCello', hue: '#e0a050' },
   meow: { label: 'Meows', from: 'MeowSynth', hue: '#9be37a' },

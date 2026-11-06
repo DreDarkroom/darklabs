@@ -18,7 +18,7 @@ export const MONKEY_ROWS = [[0, 'Chest thump'], [1, 'Slap'], [2, 'Clap'], [3, 'C
 const notes = (list) => [...list].sort((a, b) => b - a).map((m) => [m, noteLabel(m)]);
 export const MELODY_NOTES = [57, 59, 60, 62, 64, 65, 67, 69, 71, 72, 74, 76];           // A minor, A3 to E5
 export const TRACKS = [
-  { id: 'drums', label: 'Drums', from: 'DarkDeck', hue: '#ff3a52', rows: DRUM_ROWS, poly: true },
+  { id: 'drums', label: 'Drums', from: 'DeckDJ', hue: '#ff3a52', rows: DRUM_ROWS, poly: true },
   { id: 'monkey', label: 'Monkey beat', from: 'MonkeyBeat', hue: '#e0a050', rows: MONKEY_ROWS, poly: true },
   { id: 'bass', label: 'Bass', from: 'BlueHeronBass', hue: '#5ab0ff', rows: notes(BASS_NOTES), poly: false },
   { id: 'cello', label: 'Cello', from: 'ChungusCello', hue: '#d98a3a', rows: notes(CELLO_NOTES), poly: true },

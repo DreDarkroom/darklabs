@@ -2,7 +2,7 @@
    Playing a note afterwards is one BufferSource and one gain: no oscillators, filters or worklets running while you scroll.
    That is what keeps the page smooth: the old engine built a whole synth graph for every hit.
 
-   drums   DarkDeck's own drum recipes (drumdj), plus hat variants, splash and china, rendered with an OfflineAudioContext
+   drums   DeckDJ's own drum recipes (drumdj), plus hat variants, splash and china, rendered with an OfflineAudioContext
    bass    BlueHeronBass's Karplus-Strong string worklet ("bhb-bass"), one finger-style note per pitch
    cello   ChungusCello's bowed-string waveguide worklet ("chungus-cello"), one bowed note per pitch
    meow    MeowSynth's recorded meows (decoded once, pitched with playbackRate)
@@ -12,7 +12,7 @@ import { BASS_NOTES, CELLO_NOTES } from './arrange.js';
 
 export const mtof = (m) => 440 * Math.pow(2, (m - 69) / 12);
 
-/* ---------- drums: DarkDeck's synth helpers, context-agnostic, so they render offline ---------- */
+/* ---------- drums: DeckDJ's synth helpers, context-agnostic, so they render offline ---------- */
 const nbc = new WeakMap();
 function noiseBuf(c) {
   let b = nbc.get(c);
